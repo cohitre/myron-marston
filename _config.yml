@@ -1,0 +1,4 @@
+source:      .
+destination: ./_site
+exclude: [ Gemfile, Gemfile.lock, config.ru ]
+
