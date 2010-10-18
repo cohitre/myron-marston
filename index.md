@@ -1,6 +1,13 @@
 ---
 layout: default
-title: Test page
+title: Home
 ---
 
-## Test Index Page
+# Myron Marston
+
+<br />
+<br />
+
+## Sorry, there's not much to see yet :(.
+
+You can check out my [resume](/resume.html).
