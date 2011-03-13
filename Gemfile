@@ -9,6 +9,7 @@ group :development do
   gem 'jekyll'
   gem 'amatch'
   gem 'nokogiri'
+  gem 'compass', '~> 0.11.beta.2'
 
   platform :mri_19 do
     gem 'ruby-debug19'

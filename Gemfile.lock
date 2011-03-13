@@ -3,9 +3,13 @@ GEM
   specs:
     amatch (0.2.5)
     archive-tar-minitar (0.5.2)
+    chunky_png (0.12.0)
     classifier (1.3.3)
       fast-stemmer (>= 1.0.0)
     columnize (0.3.2)
+    compass (0.11.beta.2)
+      chunky_png (~> 0.12.0)
+      sass (>= 3.1.0.alpha.218)
     configuration (1.2.0)
     directory_watcher (1.3.2)
     fast-stemmer (1.0.0)
@@ -44,6 +48,7 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.4)
       archive-tar-minitar (>= 0.5.2)
+    sass (3.1.0.alpha.221)
     syntax (1.0.0)
 
 PLATFORMS
@@ -51,6 +56,7 @@ PLATFORMS
 
 DEPENDENCIES
   amatch
+  compass (~> 0.11.beta.2)
   heroku
   jekyll
   nokogiri
