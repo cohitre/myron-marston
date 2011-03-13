@@ -61,3 +61,160 @@ q:before, q:after, blockquote:before, blockquote:after {
 a img {
   border: none;
 }
+
+/* line 4, ../../sass/_dorothy.scss */
+html {
+  margin: 20px;
+}
+
+/* line 7, ../../sass/_dorothy.scss */
+body {
+  margin: 0 auto;
+  font-family: 'Baskerville', Georgia, Times, serif;
+  font-size: 20px;
+  line-height: 30px;
+  padding: 15px;
+  width: 720px;
+}
+
+/* line 15, ../../sass/_dorothy.scss */
+header, footer, section, article {
+  display: block;
+}
+
+/* line 20, ../../sass/_dorothy.scss */
+#by {
+  font-style: italic;
+  margin-right: 5px;
+  font-size: 28px;
+}
+
+/* line 25, ../../sass/_dorothy.scss */
+#caption {
+  position: absolute;
+  font-size: 24px;
+  margin: -135px 0 0 70px;
+}
+
+/* line 30, ../../sass/_dorothy.scss */
+#path {
+  color: #b53131;
+}
+
+/* line 33, ../../sass/_dorothy.scss */
+.date {
+  font-style: italic;
+  float: right;
+  line-height: 43px;
+  margin-right: 30px;
+}
+
+/* line 39, ../../sass/_dorothy.scss */
+a {
+  color: #b83000;
+}
+
+/* line 42, ../../sass/_dorothy.scss */
+h1 a {
+  color: black;
+  text-decoration: none;
+}
+
+/* line 46, ../../sass/_dorothy.scss */
+a:hover {
+  text-decoration: underline;
+}
+
+/* line 49, ../../sass/_dorothy.scss */
+body > header > h1 {
+  border-left: 30px solid black;
+  padding-left: 30px;
+  font-size: 201px;
+  margin: 100px 0 15px 0;
+  font-weight: normal;
+}
+
+/* line 56, ../../sass/_dorothy.scss */
+.post {
+  margin-bottom: 30px;
+}
+/* line 57, ../../sass/_dorothy.scss */
+.post header {
+  margin-bottom: 10px;
+}
+/* line 60, ../../sass/_dorothy.scss */
+.post .body p:first-child {
+  margin-top: 0;
+}
+/* line 62, ../../sass/_dorothy.scss */
+.post .body p:last-child {
+  margin-bottom: 0;
+}
+/* line 65, ../../sass/_dorothy.scss */
+.post:last-child {
+  margin-bottom: 10px;
+}
+/* line 67, ../../sass/_dorothy.scss */
+.post p {
+  margin: 10px 0;
+}
+/* line 69, ../../sass/_dorothy.scss */
+.post .more {
+  margin-top: -10px;
+  margin-right: 30px;
+  font-style: italic;
+  text-align: right;
+}
+
+/* line 75, ../../sass/_dorothy.scss */
+.more a {
+  text-decoration: none;
+}
+/* line 77, ../../sass/_dorothy.scss */
+.more a:hover {
+  text-decoration: underline;
+}
+
+/* line 80, ../../sass/_dorothy.scss */
+body > header {
+  display: block;
+  padding-top: 30px;
+  line-height: 180px;
+  margin-bottom: 20px;
+}
+
+/* line 86, ../../sass/_dorothy.scss */
+h1, h2, h3, h4 {
+  display: inline;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* line 91, ../../sass/_dorothy.scss */
+ul, li {
+  list-style-type: none;
+}
+
+/* line 94, ../../sass/_dorothy.scss */
+code {
+  font-family: 'Anonymous Pro', 'Bitstream Vera Sans', 'Monaco', Courier, mono;
+}
+
+/* line 97, ../../sass/_dorothy.scss */
+pre {
+  padding: 20px;
+}
+
+/* line 100, ../../sass/_dorothy.scss */
+blockquote {
+  font-style: italic;
+}
+
+/* line 103, ../../sass/_dorothy.scss */
+body > footer {
+  text-align: left;
+  margin-left: 10px;
+  font-style: italic;
+  font-size: 18px;
+  color: #888;
+}
