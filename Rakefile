@@ -12,6 +12,12 @@ namespace :blogspot do
     mkdir_p 'static/china'
     mv '_posts', 'static/china/_posts'
   end
+
+  desc "converts the posts from html to markdown"
+  task :convert_to_markdown => :download do
+    require './lib/blogspot_importer'
+    BlogspotImporter.convert_to_markdown
+  end
 end
 
 desc "Compiles the china blog posts"
