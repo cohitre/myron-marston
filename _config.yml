@@ -1,4 +1,3 @@
-source:      .
-destination: ./_site
-exclude: [ Gemfile, Gemfile.lock, config.ru ]
+source:      static
+destination: static/_site
 
