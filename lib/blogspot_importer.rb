@@ -1,6 +1,5 @@
-require 'tempfile'
-require 'amatch'
 require 'date'
+require 'nokogiri'
 
 module BlogspotImporter
   extend self
@@ -10,16 +9,7 @@ module BlogspotImporter
   end
 
   def post_files
-    @post_file ||= posts_dir.entries.select { |e| e =~ /md/ }
-  end
-
-  def markdown_from(html)
-    tempfile = Tempfile.new('html')
-    tempfile.write(html)
-    tempfile.close
-    `cat #{tempfile.path} | tidy -utf8 | ./html2text.py`.tap do |m|
-      tempfile.unlink
-    end
+    @post_file ||= posts_dir.entries.select { |e| e =~ /html/ }
   end
 
   def parse_post(filename)
@@ -27,54 +17,44 @@ module BlogspotImporter
     File.read(filename).match(post_regex).captures
   end
 
-  def convert_to_markdown
-    posts_dir.entries.each do |filename|
-      next unless filename =~ /\.html$/
-      filename = "#{posts_dir.path}/#{filename}"
+  def fix_post_links(html)
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
 
-      yaml_front_matter, html_content = parse_post(filename)
-      markdown = markdown_from(html_content)
+    doc.search('a').each do |link|
+      href = link.attribute('href')
+      next unless href.value =~ %r|myronmarston\.blogspot\.com/\d{4}/\d{2}/([\w\-]+)(?:\.html)$|
+      slug = $1
+      matching_files = post_files.select { |f| f.end_with?(slug + '.html') }
 
-      File.open(filename.sub(/\.html$/, '.md'), 'w') do |file|
-        file.write(yaml_front_matter)
-        file.puts
-        file.write(markdown)
+      unless matching_files.size == 1
+        puts
+        puts "Could not find a single file for slug '#{slug}': #{matching_files.inspect}"
+        puts
+        next
       end
 
-      FileUtils.rm filename
+      file = matching_files.first
+      year, month, day = file.match(/(\d{4})-(\d{2})-(\d{2})/).captures
+      new_href = "/china/#{year}/#{month}/#{day}/#{slug}"
 
-      puts "Converted #{filename} to markdown"
+      puts "replacing #{href.value} with #{new_href}"
+      href.value = new_href
     end
-  end
 
-  # http://rubular.com/r/VbzKn5lbgA
-  LINK_REGEX = /(^   \[\d+\]: )https?:\/\/myronmarston.blogspot.com\/(\d{4})\/(\d{2})\/([\w\-]+)(?:\.html)?(\s*$)/
+    doc.to_html
+  end
 
   def fix_links
     post_files.each do |filename|
       filename = "#{posts_dir.path}/#{filename}"
 
-      content = File.read(filename)
-      content.gsub!(LINK_REGEX) do |match|
-        whole_match, prefix, year, month, fragment, suffix = $&, $1, $2, $3, $4, $5
-        path = whole_match[/\d{4}.*$/]
-        blogspot_month_date = Date.civil(year.to_i, month.to_i, 1)
+      yaml_front_matter, html_content = parse_post(filename)
+      fixed_html = fix_post_links(html_content)
 
-        nearby_posts = post_files.select do |p|
-          post_date = Date.parse(p)
-          (post_date - blogspot_month_date).to_i.abs < 60
-        end
-
-        fragment = fragment.sub(/my-winter-travels-part-\d+-/, '')
-        pattern = Amatch::Levenshtein.new(fragment)
-        best_match = nearby_posts.sort { |a, b| pattern.match(a) <=> pattern.match(b) }.first
-
-        best_match_path = best_match.sub(/^(\d{4})\-(\d{2})\-(\d{2})\-([\w\-]+)\.md$/, '/\1/\2/\3/\4')
-        puts "Replacing #{path} with #{best_match_path}"
-        prefix + best_match_path + suffix
+      File.open(filename, 'w') do |file|
+        file.write(yaml_front_matter)
+        file.write(fixed_html)
       end
-
-      File.open(filename, 'w') { |f| f.write(content) }
     end
   end
 end
