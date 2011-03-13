@@ -7,6 +7,7 @@ group :development do
   gem 'heroku'
   gem 'jekyll'
   gem 'amatch'
+  gem 'nokogiri'
 
   platform :mri_19 do
     gem 'ruby-debug19'

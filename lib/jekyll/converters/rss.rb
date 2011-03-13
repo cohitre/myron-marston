@@ -1,39 +1,35 @@
-module Jekyll
+require 'time'
+require "yaml"
+require 'nokogiri'
+require 'ruby-debug'
 
-  require 'rexml/document'
-  require 'time'
-  require "YAML"
+module Jekyll
 
   module RSS
     #Reads posts from an RSS feed.
     #It creates a post file for each entry in the RSS.
     def self.process(source = "rss.xml")
-      #FileUtils.mkdir_p "_posts"
-      content = ""
-      open(source, "r") { |f| content << f.read }
-      doc = REXML::Document.new(content)
+      content = File.read(source)
+      doc = Nokogiri::XML(content)
       posts = 0
-      doc.elements.each("rss/channel/item") do |item|
-        link = item.elements["link"].text
+      doc.xpath("/rss/channel/item").each do |item|
+        link = item.css("link").text
 
         # Use the URL after the last slash as the post's name
         name = link.split("/")[-1]
         
         # Remove html extension
-        name = $1 if name =~ /(.*)\.html/
+        name.gsub!(/\.html$/, '')
 
-        # Remove the leading digits and dash that Serendipity adds
-        name = $1 if name =~ /\d+\-(.*)/
+        title = item.css("title").text
 
-        title = item.elements["title"].text
-
-        content_element = (item.elements["content:encoded"] or item.elements["description"])
+        content_element = item.css('description')
         unless content_element
           puts "No content in RSS item '#{name}'\n"
           next
         end
         content = content_element.text
-        timestamp = Time.parse(item.elements["pubDate"].text)
+        timestamp = Time.parse(item.css("pubDate").text)
         filename = "_posts/#{timestamp.strftime("%Y-%m-%d")}-#{name}.html"
         puts "#{link} -> #{filename}"
         File.open(filename, "w") do |f|
