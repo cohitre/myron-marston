@@ -6,6 +6,8 @@ gem 'refraction'
 group :development do
   gem 'rake'
   gem 'heroku'
+  gem 'heroku-rails'
+  gem 'activesupport', '3.0.4'
   gem 'jekyll'
   gem 'amatch'
   gem 'nokogiri'

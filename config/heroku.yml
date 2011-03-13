@@ -1,0 +1,22 @@
+apps:
+  production: myron-marston
+  staging: myron-marston-staging
+
+stacks:
+  all: bamboo-mri-1.9.2
+
+config:
+  all:
+    BUNDLE_WITHOUT: "test:development:os_x"
+
+collaborators:
+  all:
+    - "myron.marston@gmail.com"
+
+domains:
+  production:
+    - "myronmarston.com"
+
+addons:
+  production:
+    - custom_domains:basic

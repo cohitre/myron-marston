@@ -1,5 +1,6 @@
 require 'rake'
 require 'ruby-debug'
+require './tasks/heroku.rb'
 
 namespace :china_blog do
   desc "Downloads the blogposts from my China blog into the _posts/china folder."
