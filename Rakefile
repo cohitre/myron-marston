@@ -14,3 +14,8 @@ namespace :blogspot do
     mv 'old_posts', '_posts/china'
   end
 end
+
+desc "Compiles the china blog posts"
+task :compile do
+  sh "bundle exec jekyll"
+end
