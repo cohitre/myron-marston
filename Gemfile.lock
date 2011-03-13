@@ -1,6 +1,8 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    archive-tar-minitar (0.5.2)
+    columnize (0.3.2)
     configuration (1.2.0)
     heroku (1.18.3)
       launchy (~> 0.3.2)
@@ -8,6 +10,8 @@ GEM
     launchy (0.3.7)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
+    linecache19 (0.5.11)
+      ruby_core_source (>= 0.1.4)
     mime-types (1.16)
     rack (1.2.1)
     rack-contrib (1.1.0)
@@ -15,6 +19,16 @@ GEM
     rake (0.8.7)
     rest-client (1.6.1)
       mime-types (>= 1.16)
+    ruby-debug-base19 (0.11.24)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby_core_source (>= 0.1.4)
+    ruby-debug19 (0.11.6)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby-debug-base19 (>= 0.11.19)
+    ruby_core_source (0.1.4)
+      archive-tar-minitar (>= 0.5.2)
 
 PLATFORMS
   ruby
@@ -22,3 +36,5 @@ PLATFORMS
 DEPENDENCIES
   heroku
   rack-contrib
+  rake
+  ruby-debug19
