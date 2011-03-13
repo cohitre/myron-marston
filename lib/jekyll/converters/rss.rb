@@ -2,6 +2,7 @@ require 'time'
 require "yaml"
 require 'nokogiri'
 require 'ruby-debug'
+require 'psych'
 
 module Jekyll
 
@@ -33,7 +34,7 @@ module Jekyll
         filename = "_posts/#{timestamp.strftime("%Y-%m-%d")}-#{name}.html"
         puts "#{link} -> #{filename}"
         File.open(filename, "w") do |f|
-          YAML.dump(
+          Psych.dump(
             {
               "layout" => "post",
               "name" => name,
