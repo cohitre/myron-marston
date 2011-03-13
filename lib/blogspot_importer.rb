@@ -17,7 +17,7 @@ module BlogspotImporter
     tempfile = Tempfile.new('html')
     tempfile.write(html)
     tempfile.close
-    `cat #{tempfile.path} | tidyp -f /tmp/tidyp_errors.txt | ./html2text.py`.tap do |m|
+    `cat #{tempfile.path} | tidy -utf8 | ./html2text.py`.tap do |m|
       tempfile.unlink
     end
   end
