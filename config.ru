@@ -1,6 +1,13 @@
 require "rubygems"
 require "bundler/setup"
+require 'rack'
+require 'rack/contrib/try_static'
 
-require "rack/jekyll"
+use Rack::TryStatic,
+    :root => "_site",  # static files root dir
+    :urls => %w[/],     # match all requests
+    :try => ['.html', 'index.html', '/index.html'] # try these postfixes sequentially
 
-run Rack::Jekyll.new
+# otherwise 404 NotFound
+run lambda { [404, {'Content-Type' => 'text/html'}, ['whoops! Not Found']]}
+

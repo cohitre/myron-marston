@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rack-jekyll'
+gem 'rack-contrib'
 
 group :development do
   gem 'heroku'
