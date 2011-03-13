@@ -1,7 +1,7 @@
 require 'rake'
 require 'ruby-debug'
 
-namespace :blogspot do
+namespace :china_blog do
   desc "Downloads the blogposts from my China blog into the _posts/china folder."
   task :download do
     mkdir_p '_posts'
