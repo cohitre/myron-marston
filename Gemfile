@@ -1,6 +1,7 @@
 source :rubygems
 
 gem 'rack-contrib'
+gem 'refraction'
 
 group :development do
   gem 'rake'
