@@ -13,10 +13,16 @@ namespace :blogspot do
     mv '_posts', 'static/china/_posts'
   end
 
-  desc "converts the posts from html to markdown"
+  desc "Converts the posts from html to markdown"
   task :convert_to_markdown => :download do
     require './lib/blogspot_importer'
     BlogspotImporter.convert_to_markdown
+  end
+
+  desc "Fix the china blog post links so they point to the local posts."
+  task :fix_links => :convert_to_markdown do
+    require './lib/blogspot_importer'
+    BlogspotImporter.fix_links
   end
 end
 
