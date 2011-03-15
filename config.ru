@@ -5,39 +5,6 @@ require 'rack/contrib/try_static'
 require 'rack/contrib/response_headers'
 require 'refraction'
 
-if ENV['RACK_ENV'] == 'development'
-  require 'ruby-debug'
-  class JekyllReloader
-    def initialize(app)
-      @app = app
-    end
-
-    def reload!
-      if @reload_pid
-        Process.wait(@reload_pid)
-        @reload_pid = nil
-      else
-        @reload_pid = fork do
-          puts "Recompiling site..."
-          `jekyll`
-          puts "...done."
-        end
-      end
-    end
-
-    def asset?(env)
-      env['PATH_INFO'] =~ /\.(js|css|ico|png|jpg|jpeg|gif)$/
-    end
-
-    def call(env)
-      reload! unless asset?(env)
-      @app.call(env)
-    end
-  end
-
-  use JekyllReloader
-end
-
 use Rack::ResponseHeaders do |headers|
   unless headers['Content-Type'] =~ /charset/
     headers['Content-Type'] << '; charset=utf8'
