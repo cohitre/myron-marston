@@ -1,3 +1,5 @@
+require 'pathname'
+
 # heroku-rails assumes the presence of Rails.root, so we'll define it here
 module Rails
   def self.root
