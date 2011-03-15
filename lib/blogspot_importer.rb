@@ -17,25 +17,35 @@ module BlogspotImporter
     File.read(filename).match(post_regex).captures
   end
 
+  def new_url_for(blogspot_url)
+    return nil unless blogspot_url =~ %r|myronmarston\.blogspot\.com/(\d{4})/(\d{2})/([\w\-]+)(?:\.html)$|
+    year, month, slug = $1, $2, $3
+
+    matching_files = post_files.select { |f| f.end_with?(slug + '.html') }
+
+    if matching_files.size > 1
+      matching_files = matching_files.select { |f| f.include?(year) }
+    end
+
+    unless matching_files.size == 1
+      puts
+      puts "Could not find a single file for slug '#{slug}': #{matching_files.inspect}"
+      puts
+      return nil
+    end
+
+    file = matching_files.first
+    year, month, day = file.match(/(\d{4})-(\d{2})-(\d{2})/).captures
+    "/china/#{year}/#{month}/#{day}/#{slug}"
+  end
+
   def fix_post_links(html)
     doc = Nokogiri::HTML::DocumentFragment.parse(html)
 
     doc.search('a').each do |link|
       href = link.attribute('href')
-      next unless href.value =~ %r|myronmarston\.blogspot\.com/\d{4}/\d{2}/([\w\-]+)(?:\.html)$|
-      slug = $1
-      matching_files = post_files.select { |f| f.end_with?(slug + '.html') }
-
-      unless matching_files.size == 1
-        puts
-        puts "Could not find a single file for slug '#{slug}': #{matching_files.inspect}"
-        puts
-        next
-      end
-
-      file = matching_files.first
-      year, month, day = file.match(/(\d{4})-(\d{2})-(\d{2})/).captures
-      new_href = "/china/#{year}/#{month}/#{day}/#{slug}"
+      new_href = new_url_for(href.value)
+      next unless new_href
 
       puts "replacing #{href.value} with #{new_href}"
       href.value = new_href
