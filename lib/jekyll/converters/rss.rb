@@ -31,14 +31,14 @@ module Jekyll
         end
         content = content_element.text
         timestamp = Time.parse(item.css("pubDate").text)
-        filename = "_posts/#{timestamp.strftime("%Y-%m-%d")}-#{name}.html"
+        filename = "static/china/_posts/#{timestamp.strftime("%Y-%m-%d")}-#{name}.html"
         puts "#{link} -> #{filename}"
         File.open(filename, "w") do |f|
           Psych.dump(
             {
-              "layout" => "post",
+              "layout" => "china_post",
               "name" => name,
-              "title" => title,
+              "title" => title.gsub('&', '&amp;'),
               "time" => timestamp,
             },
             f

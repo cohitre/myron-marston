@@ -36,7 +36,7 @@ module BlogspotImporter
 
     file = matching_files.first
     year, month, day = file.match(/(\d{4})-(\d{2})-(\d{2})/).captures
-    "/china/#{year}/#{month}/#{day}/#{slug}"
+    "/n/china/#{year}/#{month}/#{slug}"
   end
 
   def fix_post_links(html)
