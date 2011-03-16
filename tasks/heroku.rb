@@ -17,3 +17,11 @@ begin
 rescue LoadError
   puts "Could not load heroku-rails tasks"
 end
+
+namespace :db do
+  task :migrate do
+    # No-op: this is just hear because heroku-rails runs db:migrate on
+    # each deploy, and we don't want to get an error because of a
+    # missing task.
+  end
+end
