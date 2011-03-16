@@ -161,11 +161,11 @@ body > footer {
 }
 
 /* line 2, ../../sass/_common.scss */
-#post .content {
+#page .content, #post .content {
   margin: 30px inherit;
 }
 /* line 6, ../../sass/_common.scss */
-#post li {
+#page li, #post li {
   padding: 0;
   margin: 0;
   list-style-position: inside;
@@ -173,7 +173,7 @@ body > footer {
   padding-left: 24px;
 }
 /* line 13, ../../sass/_common.scss */
-#post li:before {
+#page li:before, #post li:before {
   content: "➜";
   position: absolute;
   top: 0;

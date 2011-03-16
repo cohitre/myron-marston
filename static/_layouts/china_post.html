@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: main
 ---
 <div id="post">
   <h2>{{ page.title }}</h2>
@@ -8,3 +8,7 @@ layout: default
     {{ content }}
   </div>
 </div>
+
+{% include disqus.html %}
+
+{% include other_posts.html %}

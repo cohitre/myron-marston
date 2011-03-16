@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Home
 ---
 
@@ -11,3 +11,5 @@ title: Home
 ## Sorry, there's not much to see yet :(.
 
 You can check out my [resume](/resume).
+
+{% include other_posts.html %}

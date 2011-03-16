@@ -7,20 +7,7 @@
     <link href="/stylesheets/screen.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <section>
     {{ content }}
-    </section>
   </body>
-  <div id="footer">
-    <h2>Other Posts</h2>
-    <ul class="posts">
-      {% for post in site.posts %}
-      <li>
-        <span>{{ post.date | date_to_string }}</span> &raquo;
-        <a href="{{ post.url | remove:'.html' }}">{{ post.title }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
 </html>
 
