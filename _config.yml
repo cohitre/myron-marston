@@ -1,4 +1,5 @@
 source:      static
 destination: static/_site
 plugins:     ./jekyll_plugins
+permalink:   /n/:categories/:year/:month/:title
 

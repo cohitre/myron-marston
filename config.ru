@@ -13,6 +13,8 @@ end
 
 Refraction.configure do |req|
   case req.path
+  when /^$/; req.permanent! :path => '/n'
+  when %r|^(/[^n].*)$|; req.permanent! :path => "/n#{$1}"
   when %r|^(.*)\.html$|; req.permanent! :path => $1
   when %r|^(.*)/index(\.html)?$|; req.permanent! :path => $1
   end
