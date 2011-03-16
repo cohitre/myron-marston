@@ -7,9 +7,16 @@ task :compile do
   sh "bundle exec jekyll"
 end
 
-desc "Starts jekyll so that it watches changes and recompiles the site."
-task :watch do
-  sh "bundle exec jekyll --auto"
+namespace :watch do
+  desc "Starts jekyll so that it watches changes and recompiles the site."
+  task :jekyll do
+    sh "bundle exec jekyll --auto"
+  end
+
+  desc "Starts compass so that it watches changes to the sass and recompiles it"
+  task :compass do
+    sh "bundle exec compass watch"
+  end
 end
 
 desc "Runs the site"
