@@ -30,7 +30,7 @@ module Jekyll
           next
         end
         content = content_element.text
-        timestamp = Time.parse(item.css("pubDate").text)
+        timestamp = Time.parse(item.css("pubDate").text).utc
         filename = "static/china/_posts/#{timestamp.strftime("%Y-%m-%d")}-#{name}.html"
         puts "#{link} -> #{filename}"
         File.open(filename, "w") do |f|
