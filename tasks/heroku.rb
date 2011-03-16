@@ -9,7 +9,11 @@ end
 
 # heroku-rails assumes these have already been required...
 require 'yaml'
-require 'active_support/core_ext/object/blank'
 
-require 'heroku-rails'
-require 'heroku/rails/tasks'
+begin
+  require 'active_support/core_ext/object/blank'
+  require 'heroku-rails'
+  require 'heroku/rails/tasks'
+rescue LoadError
+  puts "Could not load heroku-rails tasks"
+end
