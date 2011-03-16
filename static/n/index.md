@@ -10,6 +10,6 @@ title: Home
 
 ## Sorry, there's not much to see yet :(.
 
-You can check out my [resume](/resume).
+You can check out my [resume](/n/resume).
 
 {% include other_posts.html %}
