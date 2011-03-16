@@ -1,3 +1,4 @@
 source:      static
 destination: static/_site
+plugins:     ./jekyll_plugins
 
