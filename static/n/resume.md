@@ -5,7 +5,10 @@ title: Resume
 
 # Myron Marston
 
-myron.marston@gmail.com | [@myronmarston](http://twitter.com/myronmarston)
+<myron.marston@gmail.com> |
+[myronmars.to/n](http://myronmars.to/n) <br />
+[@myronmarston](http://twitter.com/myronmarston) |
+[github.com/myronmarston](https://github.com/myronmarston)
 
 ## Summary
 
@@ -69,9 +72,9 @@ See my [github profile](http://github.com/myronmarston) for a complete and curre
 ## Professional Experience
 <br />
 
-### Kashless | Seattle, WA | January 2009 - June 2010
+### Kashless | Seattle, WA | Jan 2009 - Jun 2010
 
-Lead Software Engineer for [Tippr.com](http://tippr.com/) (March 2010 — June 2010)
+Lead Software Engineer for [Tippr.com](http://tippr.com/) (Mar 2010 — Jun 2010)
 
 * Wrote most of the system’s back end processing, including the geocoding and credit card processing.
 * Developed a REST-like HTTP API, for use by deal aggregators and for an iPhone app.
@@ -82,14 +85,14 @@ Lead Software Engineer for [Tippr.com](http://tippr.com/) (March 2010 — June 2
 * Setup a continuous integration server so that our dev team would be instantly notified of a broken build.
 * Led a 3-member development team, making most of the architectural decisions.
 
-Software Engineer for [Kashless.org](http://kashless.org/) (January 2009 — November 2009)
+Software Engineer for [Kashless.org](http://kashless.org/) (Jan 2009 — Nov 2009)
 
 * Developed most of the system’s back-end processing, including the conversation system, SMS and yahoo
   groups integration (via multiple rounds of asynchronous processing, screen scraping and email parsing).
 * Also responsible for the Kashless API, Twitter integration and more.
 * Maintained large (3000+) test suite that helped us regularly deploy with confidence.
 
-Self-Employed Ruby on Rails Consultant (December 2009 – February 2010)
+Self-Employed Ruby on Rails Consultant (Dec 2009 – Feb 2010)
 
 * Continued contracting with Kashless for kashless.org maintenance.
 * Prototyped, built, tested and deployed a data-tracking web app for
@@ -98,30 +101,18 @@ Self-Employed Ruby on Rails Consultant (December 2009 – February 2010)
   dev team, helping them learn and use BDD practices and tools. Implemented the search
   functionality of their new site using sphinx.
 
-### [Consona](http://consona.com/) (formerly [Intuitive](http://www.intuitivemfg.com/)) | Kirkland, WA | July 2004 - January 2008
+### [Consona](http://consona.com/) (formerly [Intuitive](http://www.intuitivemfg.com/)) | Kirkland, WA | Jul 2004 - Jan 2008
 
-Software Developer, Customizations (July 2007 — January 2008)
+Software Developer, Customizations (Jul 2007 — Jan 2008)
 
 * Trusted to work remotely from China without direct supervision.
 * Built custom extensions to Consona's .NET ERP platform based on customer requirements.
 
-Software Application Developer (July 2004 — August 2006)
+Software Application Developer (Jul 2004 — Aug 2006)
 
 * Worked as part of a 17-developer team to create an ERP system using .NET and SQL Server.
 
-### [White Pages](http://www.whitepages.com/) | Seattle, WA | June 2010 - Present
-
-Software Engineer
-
-* Worked with the monetization products team to build services around advertising for a RoR app.
-
-### [Jobster](http://jobster.com/) | Seattle, WA | September 2008 - November 2008
-
-Software Development Engineer
-
-* Worked with 7 other developers on a new sourcing tools product using Ruby on Rails and PostgreSQL.
-
-### Qinhuangdao Foreign Language Professional College | Hebei Province, China | August 2006 - August 2008
+### Qinhuangdao Foreign Language Professional College<br /> Hebei Province, China | Aug 2006 - Aug 2008
 
 Oral English Teacher and Website Developer
 
