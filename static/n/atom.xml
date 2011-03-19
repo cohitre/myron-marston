@@ -1,0 +1,26 @@
+---
+layout: nil
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>myronmars.to/n</title>
+  <link href="http://myronmars.to/n/atom.xml" rel="self"/>
+  <link href="http://myronmars.to/n"/>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <id>http://myronmars.to/n</id>
+  <author>
+   <name>Myron Marston</name>
+   <email>myron.marston@gmail.com</email>
+  </author>
+
+  {% for post in site.posts %}
+  <entry>
+    <title>{{ post.title | xml_escape }}</title>
+    <link href="http://myronmars.to/n{{ post.url }}"/>
+    <updated>{{ post.date | date_to_xmlschema }}</updated>
+    <id>http://myronmars.to/n{{ post.id }}</id>
+    <content type="html">{{ post.content | xml_escape }}</content>
+  </entry>
+  {% endfor %}
+</feed>
+
