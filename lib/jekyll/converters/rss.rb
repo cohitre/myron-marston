@@ -38,7 +38,7 @@ module Jekyll
             {
               "layout" => "china_post",
               "name" => name,
-              "title" => title.gsub('&', '&amp;'),
+              "title" => title,
               "time" => timestamp,
             },
             f
