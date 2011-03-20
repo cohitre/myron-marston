@@ -7,8 +7,8 @@ title: Resume
 
 <myron.marston@gmail.com> |
 [myronmars.to/n](http://myronmars.to/n) <br />
-[@myronmarston](http://twitter.com/myronmarston) |
-[github.com/myronmarston](https://github.com/myronmarston)
+[github.com/myronmarston](https://github.com/myronmarston) |
+[@myronmarston](http://twitter.com/myronmarston)
 
 ## Summary
 
