@@ -1,13 +1,11 @@
 /*
-Syntax error: Undefined mixin 'relative'.
-        on line 2 of /Users/carlos/Projects/myron-marston/sass/common.sass, in `relative'
-        from line 2 of /Users/carlos/Projects/myron-marston/sass/common.sass
-
-1: /Users/carlos/Projects/myron-marston/sass/common.sass
+Syntax error: Undefined mixin 'block'.
+        on line 8 of /Users/carlos/Projects/myron-marston/sass/common.sass, in `block'
+        from line 8 of /Users/carlos/Projects/myron-marston/sass/common.sass
 
 Backtrace:
-/Users/carlos/Projects/myron-marston/sass/common.sass:2:in `relative'
-/Users/carlos/Projects/myron-marston/sass/common.sass:2
+/Users/carlos/Projects/myron-marston/sass/common.sass:8:in `block'
+/Users/carlos/Projects/myron-marston/sass/common.sass:8
 /usr/local/Cellar/ruby/1.9.2-p0/lib/ruby/gems/1.9.1/gems/sass-3.1.0.alpha.221/lib/sass/tree/visitors/perform.rb:162:in `visit_mixin'
 /usr/local/Cellar/ruby/1.9.2-p0/lib/ruby/gems/1.9.1/gems/sass-3.1.0.alpha.221/lib/sass/tree/visitors/base.rb:37:in `visit'
 /usr/local/Cellar/ruby/1.9.2-p0/lib/ruby/gems/1.9.1/gems/sass-3.1.0.alpha.221/lib/sass/tree/visitors/perform.rb:18:in `visit'
@@ -78,4 +76,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined mixin 'relative'.\A         on line 2 of /Users/carlos/Projects/myron-marston/sass/common.sass, in `relative'\A         from line 2 of /Users/carlos/Projects/myron-marston/sass/common.sass\A \A 1: /Users/carlos/Projects/myron-marston/sass/common.sass"; }
+  content: "Syntax error: Undefined mixin 'block'.\A         on line 8 of /Users/carlos/Projects/myron-marston/sass/common.sass, in `block'\A         from line 8 of /Users/carlos/Projects/myron-marston/sass/common.sass"; }

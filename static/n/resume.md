@@ -1,14 +1,17 @@
 ---
 layout: page
 title: Resume
+contents_class: wide
 ---
 
 # Myron Marston
 
-<myron.marston@gmail.com> |
-[myronmars.to/n](http://myronmars.to/n) <br />
+<div markdown="1" class="subheader">
+[myron.marston@gmail.com](mailto:myron.marston@gmail.com) |
+[myronmars.to/n](http://myronmars.to/n) |
 [github.com/myronmarston](https://github.com/myronmarston) |
 [@myronmarston](http://twitter.com/myronmarston)
+</div>
 
 ## Summary
 
@@ -34,7 +37,7 @@ title: Resume
 
 ## Education
 
-[Seattle Pacific University](http://spu.edu/): September 2000 - August 2004, Seattle, WA.
+### [Seattle Pacific University](http://spu.edu/): September 2000 - August 2004, Seattle, WA.
 
 * Double Major: Bachelor of Science in Computer Science and Bachelor of Arts in Music.
 * Cumulative GPA: 3.94; Major GPA: 3.99 (Computer Science) and 4.0 (Music)
@@ -70,11 +73,10 @@ I've also contributed to numerous projects, including:
 See my [github profile](http://github.com/myronmarston) for a complete and current list.
 
 ## Professional Experience
-<br />
 
 ### Kashless | Seattle, WA | Jan 2009 - Jun 2010
 
-Lead Software Engineer for [Tippr.com](http://tippr.com/) (Mar 2010 — Jun 2010)
+#### Lead Software Engineer for [Tippr.com](http://tippr.com/) (Mar 2010 — Jun 2010)
 
 * Wrote most of the system’s back end processing, including the geocoding and credit card processing.
 * Developed a REST-like HTTP API, for use by deal aggregators and for an iPhone app.
@@ -85,36 +87,35 @@ Lead Software Engineer for [Tippr.com](http://tippr.com/) (Mar 2010 — Jun 2010
 * Setup a continuous integration server so that our dev team would be instantly notified of a broken build.
 * Led a 3-member development team, making most of the architectural decisions.
 
-Software Engineer for [Kashless.org](http://kashless.org/) (Jan 2009 — Nov 2009)
-
+#### Software Engineer for [Kashless.org](http://kashless.org/) (Jan 2009 — Nov 2009)
 * Developed most of the system’s back-end processing, including the conversation system, SMS and yahoo
   groups integration (via multiple rounds of asynchronous processing, screen scraping and email parsing).
 * Also responsible for the Kashless API, Twitter integration and more.
 * Maintained large (3000+) test suite that helped us regularly deploy with confidence.
 
-Self-Employed Ruby on Rails Consultant (Dec 2009 – Feb 2010)
+#### Self-Employed Ruby on Rails Consultant (Dec 2009 – Feb 2010)
 
 * Continued contracting with Kashless for kashless.org maintenance.
 * Prototyped, built, tested and deployed a data-tracking web app for
-  [Level Field Property Management](http://levelfieldpm.com/).
+[Level Field Property Management](http://levelfieldpm.com/).
 * Consulted with [Desiring God ministries](http://desiringgod.org/). Mentored their
-  dev team, helping them learn and use BDD practices and tools. Implemented the search
-  functionality of their new site using sphinx.
+dev team, helping them learn and use BDD practices and tools. Implemented the search
+functionality of their new site using sphinx.
 
 ### [Consona](http://consona.com/) (formerly [Intuitive](http://www.intuitivemfg.com/)) | Kirkland, WA | Jul 2004 - Jan 2008
 
-Software Developer, Customizations (Jul 2007 — Jan 2008)
+#### Software Developer, Customizations (Jul 2007 — Jan 2008)
 
 * Trusted to work remotely from China without direct supervision.
 * Built custom extensions to Consona's .NET ERP platform based on customer requirements.
 
-Software Application Developer (Jul 2004 — Aug 2006)
+#### Software Application Developer (Jul 2004 — Aug 2006)
 
 * Worked as part of a 17-developer team to create an ERP system using .NET and SQL Server.
 
 ### Qinhuangdao Foreign Language Professional College<br /> Hebei Province, China | Aug 2006 - Aug 2008
 
-Oral English Teacher and Website Developer
+#### Oral English Teacher and Website Developer
 
 * Taught Oral English lessons to more than 400 students, improving their English fluency.
 * Studied basic Chinese and put it into practice while traveling extensively around China.

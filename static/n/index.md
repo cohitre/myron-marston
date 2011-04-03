@@ -2,11 +2,7 @@
 layout: page
 title: Home
 ---
-
 # Myron Marston
-
-<br />
-<br />
 
 ## Sorry, there's not much to see yet :(.
 

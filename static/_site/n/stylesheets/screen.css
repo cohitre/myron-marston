@@ -275,73 +275,110 @@ body > footer {
   color: #888;
 }
 
-/* line 1, ../../../sass/common.sass */
+/* line 4, ../../../sass/common.sass */
+html {
+  background-color: #f4f4f4;
+}
+
+/* line 7, ../../../sass/common.sass */
+h1, h2, h3, h4 {
+  display: block;
+}
+
+/* line 10, ../../../sass/common.sass */
 body {
   position: relative;
   background-color: white;
+  padding-top: 30px;
   width: auto;
 }
 
-/* line 6, ../../../sass/common.sass */
+/* line 16, ../../../sass/common.sass */
 #contents {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   border-radius: 10px;
   background-color: #f4f4f4;
   border: 1px solid #d5d6d8;
-  margin: 30px 0 30px 200px;
+  margin: 0 0 30px 200px;
   padding: 30px 0;
+  min-height: 250px;
   width: 600px;
 }
-/* line 12, ../../../sass/common.sass */
-#contents #post, #contents #disqus_thread {
-  padding: 10px 50px;
+/* line 23, ../../../sass/common.sass */
+#contents.wide {
+  width: 800px;
 }
-/* line 14, ../../../sass/common.sass */
+/* line 25, ../../../sass/common.sass */
+#contents .subheader {
+  font-size: 18px;
+}
+/* line 27, ../../../sass/common.sass */
 #contents h2 {
   font-weight: bold;
   color: #b83000;
+  padding: 40px 0 20px;
+}
+/* line 31, ../../../sass/common.sass */
+#contents h3 {
+  padding: 20px 0 10px;
+}
+/* line 33, ../../../sass/common.sass */
+#contents h4 {
+  padding: 10px 0 5px;
+}
+/* line 35, ../../../sass/common.sass */
+#contents .section {
+  padding: 10px 50px;
+}
+/* line 37, ../../../sass/common.sass */
+#contents #post {
+  border-bottom: 1px solid #d5d6d8;
+}
+/* line 39, ../../../sass/common.sass */
+#contents #disqus_thread {
+  border-top: 1px solid white;
 }
 
-/* line 18, ../../../sass/common.sass */
+/* line 42, ../../../sass/common.sass */
 #about {
-  background-color: #f4f4f4;
-  border: 1px solid #d5d6d8;
   position: relative;
   font-family: "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
   font-size: 14px;
+  border-top: 1px solid #d5d6d8;
+  background-color: #f4f4f4;
   padding: 30px 0 30px 200px;
 }
-/* line 24, ../../../sass/common.sass */
+/* line 49, ../../../sass/common.sass */
 #about h2 {
   font-weight: bold;
   font-size: 14px;
 }
-/* line 27, ../../../sass/common.sass */
+/* line 52, ../../../sass/common.sass */
 #about .links {
   position: absolute;
   left: 0;
   margin: 30px 0 30px 80px;
   top: 0;
 }
-/* line 33, ../../../sass/common.sass */
+/* line 58, ../../../sass/common.sass */
 #about .bio {
   width: 600px;
 }
 
-/* line 37, ../../../sass/common.sass */
+/* line 62, ../../../sass/common.sass */
 #page .content, #post .content {
   margin: 15px 0;
 }
-/* line 40, ../../../sass/common.sass */
+/* line 65, ../../../sass/common.sass */
 #page li, #post li {
   padding: 0;
-  margin: 0;
+  margin: 5px 0 5px 20px;
   list-style-position: inside;
   position: relative;
   padding-left: 24px;
 }
-/* line 47, ../../../sass/common.sass */
+/* line 72, ../../../sass/common.sass */
 #page li:before, #post li:before {
   content: "➜";
   position: absolute;
@@ -354,7 +391,7 @@ body {
   position: absolute;
   font-family: "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
   left: 0;
-  margin-top: 25px;
+  margin-top: 70px;
   top: 0;
 }
 /* line 7, ../../../sass/menu.sass */

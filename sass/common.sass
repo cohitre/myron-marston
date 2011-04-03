@@ -1,25 +1,50 @@
+$light_gray = #F4F4F4
+$medium_gray = #D5D6D8
+
+html
+  background-color: $light_gray
+
+h1,h2,h3,h4
+  +block
+
 body
   +relative
   background-color: #fff
+  padding-top: 30px
   width: auto
 
 #contents
   +box-round(10px)
-  +colorize(#F4F4F4, #D5D6D8)
-  margin: 30px 0 30px 200px
+  +colorize($light_gray, $medium_gray)
+  margin: 0 0 30px 200px
   padding: 30px 0
+  min-height: 250px
   width: 600px
-  #post, #disqus_thread
-    padding: 10px 50px
+  &.wide
+    width: 800px
+  .subheader
+    font-size: 18px
   h2
     +bold
     color: #B83000
+    padding: 40px 0 20px
+  h3
+    padding: 20px 0 10px
+  h4
+    padding: 10px 0 5px
+  .section
+    padding: 10px 50px
+  #post
+    border-bottom: 1px solid $medium_gray
+  #disqus_thread
+    border-top: 1px solid #fff
 
 #about
-  +colorize(#F4F4F4, #D5D6D8)
   +relative
   +sans-serif
   font-size: 14px
+  border-top: 1px solid $medium_gray
+  background-color: $light_gray
   padding: 30px 0 30px 200px
   h2
     +bold
@@ -39,7 +64,7 @@ body
 
   li
     padding: 0
-    margin: 0
+    margin: 5px 0 5px 20px
     list-style-position: inside
     position: relative
     padding-left: 24px
