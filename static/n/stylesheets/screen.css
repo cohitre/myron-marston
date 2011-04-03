@@ -1,48 +1,163 @@
 @charset "UTF-8";
-/* Welcome to Compass.
- * In this file you should write your main styles. (or centralize your imports)
- * Import this file using the following HTML or equivalent:
- * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
-/* line 4, ../../sass/_dorothy.scss */
-html {
-  margin: 20px;
+/*Copyright (c) 2010, Yahoo! Inc. All rights reserved.
+ *Code licensed under the BSD License:
+ *http://developer.yahoo.com/yui/license.html
+ *version: 2.8.1 */
+/* line 6, ../../../sass/reset.sass */
+html, body {
+  padding: 0;
+  margin: 0;
 }
 
-/* line 7, ../../sass/_dorothy.scss */
+/* line 11, ../../../sass/reset.sass */
+h1 {
+  font-size: 138.5%;
+}
+
+/* line 14, ../../../sass/reset.sass */
+h2 {
+  font-size: 123.1%;
+}
+
+/* line 17, ../../../sass/reset.sass */
+h3 {
+  font-size: 108%;
+}
+
+/* line 20, ../../../sass/reset.sass */
+h1, h2, h3 {
+  margin: 0;
+}
+
+/* line 23, ../../../sass/reset.sass */
+h1, h2, h3, h4, h5, h6, strong, dt {
+  font-weight: bold;
+}
+
+/* line 26, ../../../sass/reset.sass */
+optgroup {
+  font-weight: normal;
+}
+
+/* line 29, ../../../sass/reset.sass */
+abbr, acronym {
+  border-bottom: 1px dotted black;
+  cursor: help;
+}
+
+/* line 33, ../../../sass/reset.sass */
+em {
+  font-style: italic;
+}
+
+/* line 36, ../../../sass/reset.sass */
+del {
+  text-decoration: line-through;
+}
+
+/* line 39, ../../../sass/reset.sass */
+blockquote, ul, ol, dl {
+  margin: 0;
+}
+
+/* line 42, ../../../sass/reset.sass */
+ol, ul, dl {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 46, ../../../sass/reset.sass */
+ol li {
+  list-style: none outside;
+}
+
+/* line 49, ../../../sass/reset.sass */
+ul li {
+  list-style: none outside;
+}
+
+/* line 52, ../../../sass/reset.sass */
+dl dd {
+  margin-left: 1em;
+}
+
+/* line 55, ../../../sass/reset.sass */
+th, td {
+  border: 1px solid black;
+  padding: 0.5em;
+}
+
+/* line 59, ../../../sass/reset.sass */
+th {
+  font-weight: bold;
+  text-align: center;
+}
+
+/* line 63, ../../../sass/reset.sass */
+caption {
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+/* line 67, ../../../sass/reset.sass */
+sup {
+  vertical-align: super;
+}
+
+/* line 70, ../../../sass/reset.sass */
+sub {
+  vertical-align: sub;
+}
+
+/* line 73, ../../../sass/reset.sass */
+p, fieldset, table, pre {
+  margin: 0;
+}
+
+/* line 76, ../../../sass/reset.sass */
+button {
+  padding: 1px;
+}
+
+/* line 80, ../../../sass/reset.sass */
+input[type="checkbox"], input[type="radio"], input[type="reset"], input[type="submit"] {
+  padding: 1px;
+}
+
+/* line 4, ../../../sass/_dorothy.scss */
 body {
   margin: 0 auto;
   font-family: 'Baskerville', Georgia, Times, serif;
   font-size: 20px;
   line-height: 30px;
-  padding: 15px;
   width: 720px;
 }
 
-/* line 15, ../../sass/_dorothy.scss */
+/* line 11, ../../../sass/_dorothy.scss */
 header, footer, section, article {
   display: block;
 }
 
-/* line 20, ../../sass/_dorothy.scss */
+/* line 16, ../../../sass/_dorothy.scss */
 #by {
   font-style: italic;
   margin-right: 5px;
   font-size: 28px;
 }
 
-/* line 25, ../../sass/_dorothy.scss */
+/* line 21, ../../../sass/_dorothy.scss */
 #caption {
   position: absolute;
   font-size: 24px;
   margin: -135px 0 0 70px;
 }
 
-/* line 30, ../../sass/_dorothy.scss */
+/* line 26, ../../../sass/_dorothy.scss */
 #path {
   color: #b53131;
 }
 
-/* line 33, ../../sass/_dorothy.scss */
+/* line 29, ../../../sass/_dorothy.scss */
 .date {
   font-style: italic;
   float: right;
@@ -50,23 +165,23 @@ header, footer, section, article {
   margin-right: 30px;
 }
 
-/* line 39, ../../sass/_dorothy.scss */
+/* line 35, ../../../sass/_dorothy.scss */
 a {
   color: #b83000;
 }
 
-/* line 42, ../../sass/_dorothy.scss */
+/* line 38, ../../../sass/_dorothy.scss */
 h1 a {
   color: black;
   text-decoration: none;
 }
 
-/* line 46, ../../sass/_dorothy.scss */
+/* line 42, ../../../sass/_dorothy.scss */
 a:hover {
   text-decoration: underline;
 }
 
-/* line 49, ../../sass/_dorothy.scss */
+/* line 45, ../../../sass/_dorothy.scss */
 body > header > h1 {
   border-left: 30px solid black;
   padding-left: 30px;
@@ -75,31 +190,31 @@ body > header > h1 {
   font-weight: normal;
 }
 
-/* line 56, ../../sass/_dorothy.scss */
+/* line 52, ../../../sass/_dorothy.scss */
 .post {
   margin-bottom: 30px;
 }
-/* line 57, ../../sass/_dorothy.scss */
+/* line 53, ../../../sass/_dorothy.scss */
 .post header {
   margin-bottom: 10px;
 }
-/* line 60, ../../sass/_dorothy.scss */
+/* line 56, ../../../sass/_dorothy.scss */
 .post .body p:first-child {
   margin-top: 0;
 }
-/* line 62, ../../sass/_dorothy.scss */
+/* line 58, ../../../sass/_dorothy.scss */
 .post .body p:last-child {
   margin-bottom: 0;
 }
-/* line 65, ../../sass/_dorothy.scss */
+/* line 61, ../../../sass/_dorothy.scss */
 .post:last-child {
   margin-bottom: 10px;
 }
-/* line 67, ../../sass/_dorothy.scss */
+/* line 63, ../../../sass/_dorothy.scss */
 .post p {
   margin: 10px 0;
 }
-/* line 69, ../../sass/_dorothy.scss */
+/* line 65, ../../../sass/_dorothy.scss */
 .post .more {
   margin-top: -10px;
   margin-right: 30px;
@@ -107,16 +222,16 @@ body > header > h1 {
   text-align: right;
 }
 
-/* line 75, ../../sass/_dorothy.scss */
+/* line 71, ../../../sass/_dorothy.scss */
 .more a {
   text-decoration: none;
 }
-/* line 77, ../../sass/_dorothy.scss */
+/* line 73, ../../../sass/_dorothy.scss */
 .more a:hover {
   text-decoration: underline;
 }
 
-/* line 80, ../../sass/_dorothy.scss */
+/* line 76, ../../../sass/_dorothy.scss */
 body > header {
   display: block;
   padding-top: 30px;
@@ -124,34 +239,34 @@ body > header {
   margin-bottom: 20px;
 }
 
-/* line 86, ../../sass/_dorothy.scss */
+/* line 82, ../../../sass/_dorothy.scss */
 h1, h2, h3, h4 {
   display: inline;
   margin: 0;
   font-weight: 600;
 }
 
-/* line 91, ../../sass/_dorothy.scss */
+/* line 87, ../../../sass/_dorothy.scss */
 ul, li {
   list-style-type: none;
 }
 
-/* line 94, ../../sass/_dorothy.scss */
+/* line 90, ../../../sass/_dorothy.scss */
 code {
   font-family: 'Anonymous Pro', 'Bitstream Vera Sans', 'Monaco', Courier, mono;
 }
 
-/* line 97, ../../sass/_dorothy.scss */
+/* line 93, ../../../sass/_dorothy.scss */
 pre {
   padding: 20px;
 }
 
-/* line 100, ../../sass/_dorothy.scss */
+/* line 96, ../../../sass/_dorothy.scss */
 blockquote {
   font-style: italic;
 }
 
-/* line 103, ../../sass/_dorothy.scss */
+/* line 99, ../../../sass/_dorothy.scss */
 body > footer {
   text-align: left;
   margin-left: 10px;
@@ -160,11 +275,65 @@ body > footer {
   color: #888;
 }
 
-/* line 2, ../../sass/_common.scss */
-#page .content, #post .content {
-  margin: 30px inherit;
+/* line 1, ../../../sass/common.sass */
+body {
+  position: relative;
+  background-color: white;
+  width: auto;
 }
-/* line 6, ../../sass/_common.scss */
+
+/* line 6, ../../../sass/common.sass */
+#contents {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  border: 1px solid #d5d6d8;
+  margin: 30px 0 30px 200px;
+  padding: 30px 0;
+  width: 600px;
+}
+/* line 12, ../../../sass/common.sass */
+#contents #post, #contents #disqus_thread {
+  padding: 10px 50px;
+}
+/* line 14, ../../../sass/common.sass */
+#contents h2 {
+  font-weight: bold;
+  color: #b83000;
+}
+
+/* line 18, ../../../sass/common.sass */
+#about {
+  background-color: #f4f4f4;
+  border: 1px solid #d5d6d8;
+  position: relative;
+  font-family: "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
+  font-size: 14px;
+  padding: 30px 0 30px 200px;
+}
+/* line 24, ../../../sass/common.sass */
+#about h2 {
+  font-weight: bold;
+  font-size: 14px;
+}
+/* line 27, ../../../sass/common.sass */
+#about .links {
+  position: absolute;
+  left: 0;
+  margin: 30px 0 30px 80px;
+  top: 0;
+}
+/* line 33, ../../../sass/common.sass */
+#about .bio {
+  width: 600px;
+}
+
+/* line 37, ../../../sass/common.sass */
+#page .content, #post .content {
+  margin: 15px 0;
+}
+/* line 40, ../../../sass/common.sass */
 #page li, #post li {
   padding: 0;
   margin: 0;
@@ -172,10 +341,39 @@ body > footer {
   position: relative;
   padding-left: 24px;
 }
-/* line 13, ../../sass/_common.scss */
+/* line 47, ../../../sass/common.sass */
 #page li:before, #post li:before {
   content: "➜";
   position: absolute;
   top: 0;
   left: 0;
+}
+
+/* line 1, ../../../sass/menu.sass */
+#menu {
+  position: absolute;
+  font-family: "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
+  left: 0;
+  margin-top: 25px;
+  top: 0;
+}
+/* line 7, ../../../sass/menu.sass */
+#menu div {
+  font-size: 16px;
+  line-height: 30px;
+  padding: 0 20px;
+}
+/* line 11, ../../../sass/menu.sass */
+#menu div a {
+  color: #bbbbbb;
+  text-decoration: none;
+}
+/* line 14, ../../../sass/menu.sass */
+#menu div a:hover {
+  text-decoration: underline;
+}
+/* line 17, ../../../sass/menu.sass */
+#menu div.active a {
+  font-weight: bold;
+  color: #b83000;
 }

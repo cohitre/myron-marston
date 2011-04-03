@@ -1,0 +1,61 @@
+@import css3please
+
+
+// Readable fonts
+=sans-serif
+  font-family: 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif
+=serif
+  font-family: Georgia,"Times New Roman",Times,serif
+=monospace
+  font-family: 'Bitstream Vera Sans Mono', Courier, monospace
+
+// Display shorthands
+=inline-block
+  display: inline-block
+=block
+  display: block
+=inline
+  display: inline
+
+// Position shorthands
+=absolute
+  position: absolute
+=relative
+  position: relative
+
+// Cursor shorthands
+=pointer 
+  cursor: pointer
+=crosshair
+  cursor: crosshair
+
+// Font shorthands
+=bold
+  font-weight: bold
+
+//
+=colorize($color1, $color2)
+  background-color: $color1
+  border: 1px solid $color2
+
+=paint($color)
+  +colorize($color, darken($color, 10%))
+
+=dim($width, $height)
+  width: $width
+  height: $height
+
+=drop-shadow
+  +box-shadow(0, 0, 5px, #888)
+
+=global-style-light
+  +serif
+  background-color: #f3f3f3
+  color: #888
+
+=global-style-dark
+  +serif
+  background-color: #333
+  color: #888
+
+  
