@@ -58,4 +58,16 @@
   background-color: #333
   color: #888
 
-  
+=pretty-li
+  li
+    padding: 0
+    margin: 5px 0 5px 20px
+    list-style-position: inside
+    position: relative
+    padding-left: 24px
+
+    &:before
+      content: "➜"
+      position: absolute
+      top: 0
+      left: 0

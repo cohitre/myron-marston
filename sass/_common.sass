@@ -19,7 +19,7 @@ body
   margin: 0 0 30px 200px
   padding: 30px 0
   min-height: 250px
-  width: 600px
+  width: 640px
   &.wide
     width: 800px
   .subheader
@@ -38,6 +38,9 @@ body
     border-bottom: 1px solid $medium_gray
   #disqus_thread
     border-top: 1px solid #fff
+
+  &.resume
+    +pretty-li
 
 #about
   +relative
@@ -61,16 +64,3 @@ body
 #page, #post
   .content
     margin: 15px 0
-
-  li
-    padding: 0
-    margin: 5px 0 5px 20px
-    list-style-position: inside
-    position: relative
-    padding-left: 24px
-
-    &:before
-      content: "➜"
-      position: absolute
-      top: 0
-      left: 0

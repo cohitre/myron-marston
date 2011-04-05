@@ -3,123 +3,123 @@
  *Code licensed under the BSD License:
  *http://developer.yahoo.com/yui/license.html
  *version: 2.8.1 */
-/* line 6, ../../../sass/_reset.sass */
+/* line 6, sass/_reset.sass */
 html, body {
   padding: 0;
   margin: 0;
 }
 
-/* line 11, ../../../sass/_reset.sass */
+/* line 11, sass/_reset.sass */
 h1 {
   font-size: 138.5%;
 }
 
-/* line 14, ../../../sass/_reset.sass */
+/* line 14, sass/_reset.sass */
 h2 {
   font-size: 123.1%;
 }
 
-/* line 17, ../../../sass/_reset.sass */
+/* line 17, sass/_reset.sass */
 h3 {
   font-size: 108%;
 }
 
-/* line 20, ../../../sass/_reset.sass */
+/* line 20, sass/_reset.sass */
 h1, h2, h3 {
   margin: 0;
 }
 
-/* line 23, ../../../sass/_reset.sass */
+/* line 23, sass/_reset.sass */
 h1, h2, h3, h4, h5, h6, strong, dt {
   font-weight: bold;
 }
 
-/* line 26, ../../../sass/_reset.sass */
+/* line 26, sass/_reset.sass */
 optgroup {
   font-weight: normal;
 }
 
-/* line 29, ../../../sass/_reset.sass */
+/* line 29, sass/_reset.sass */
 abbr, acronym {
   border-bottom: 1px dotted black;
   cursor: help;
 }
 
-/* line 33, ../../../sass/_reset.sass */
+/* line 33, sass/_reset.sass */
 em {
   font-style: italic;
 }
 
-/* line 36, ../../../sass/_reset.sass */
+/* line 36, sass/_reset.sass */
 del {
   text-decoration: line-through;
 }
 
-/* line 39, ../../../sass/_reset.sass */
+/* line 39, sass/_reset.sass */
 blockquote, ul, ol, dl {
   margin: 0;
 }
 
-/* line 42, ../../../sass/_reset.sass */
+/* line 42, sass/_reset.sass */
 ol, ul, dl {
   margin: 0;
   padding: 0;
 }
 
-/* line 46, ../../../sass/_reset.sass */
+/* line 46, sass/_reset.sass */
 ol li {
   list-style: none outside;
 }
 
-/* line 49, ../../../sass/_reset.sass */
+/* line 49, sass/_reset.sass */
 ul li {
   list-style: none outside;
 }
 
-/* line 52, ../../../sass/_reset.sass */
+/* line 52, sass/_reset.sass */
 dl dd {
   margin-left: 1em;
 }
 
-/* line 55, ../../../sass/_reset.sass */
+/* line 55, sass/_reset.sass */
 th, td {
   border: 1px solid black;
   padding: 0.5em;
 }
 
-/* line 59, ../../../sass/_reset.sass */
+/* line 59, sass/_reset.sass */
 th {
   font-weight: bold;
   text-align: center;
 }
 
-/* line 63, ../../../sass/_reset.sass */
+/* line 63, sass/_reset.sass */
 caption {
   margin-bottom: 0.5em;
   text-align: center;
 }
 
-/* line 67, ../../../sass/_reset.sass */
+/* line 67, sass/_reset.sass */
 sup {
   vertical-align: super;
 }
 
-/* line 70, ../../../sass/_reset.sass */
+/* line 70, sass/_reset.sass */
 sub {
   vertical-align: sub;
 }
 
-/* line 73, ../../../sass/_reset.sass */
+/* line 73, sass/_reset.sass */
 p, fieldset, table, pre {
   margin: 0;
 }
 
-/* line 76, ../../../sass/_reset.sass */
+/* line 76, sass/_reset.sass */
 button {
   padding: 1px;
 }
 
-/* line 80, ../../../sass/_reset.sass */
+/* line 80, sass/_reset.sass */
 input[type="checkbox"], input[type="radio"], input[type="reset"], input[type="submit"] {
   padding: 1px;
 }
@@ -275,17 +275,17 @@ body > footer {
   color: #888;
 }
 
-/* line 4, ../../../sass/_common.sass */
+/* line 4, sass/_common.sass */
 html {
   background-color: #f4f4f4;
 }
 
-/* line 7, ../../../sass/_common.sass */
+/* line 7, sass/_common.sass */
 h1, h2, h3, h4 {
   display: block;
 }
 
-/* line 10, ../../../sass/_common.sass */
+/* line 10, sass/_common.sass */
 body {
   position: relative;
   background-color: white;
@@ -293,7 +293,7 @@ body {
   width: auto;
 }
 
-/* line 16, ../../../sass/_common.sass */
+/* line 16, sass/_common.sass */
 #contents {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -303,44 +303,59 @@ body {
   margin: 0 0 30px 200px;
   padding: 30px 0;
   min-height: 250px;
-  width: 600px;
+  width: 640px;
 }
-/* line 23, ../../../sass/_common.sass */
+/* line 23, sass/_common.sass */
 #contents.wide {
   width: 800px;
 }
-/* line 25, ../../../sass/_common.sass */
+/* line 25, sass/_common.sass */
 #contents .subheader {
   font-size: 17px;
 }
-/* line 27, ../../../sass/_common.sass */
+/* line 27, sass/_common.sass */
 #contents h2 {
   font-weight: bold;
   color: #b83000;
   padding: 40px 0 20px;
 }
-/* line 31, ../../../sass/_common.sass */
+/* line 31, sass/_common.sass */
 #contents h3 {
   padding: 20px 0 10px;
 }
-/* line 33, ../../../sass/_common.sass */
+/* line 33, sass/_common.sass */
 #contents h4 {
   padding: 10px 0 5px;
 }
-/* line 35, ../../../sass/_common.sass */
+/* line 35, sass/_common.sass */
 #contents .section {
   padding: 10px 50px;
 }
-/* line 37, ../../../sass/_common.sass */
+/* line 37, sass/_common.sass */
 #contents #post {
   border-bottom: 1px solid #d5d6d8;
 }
-/* line 39, ../../../sass/_common.sass */
+/* line 39, sass/_common.sass */
 #contents #disqus_thread {
   border-top: 1px solid white;
 }
+/* line 62, sass/_simple_mixins.sass */
+#contents.resume li {
+  padding: 0;
+  margin: 5px 0 5px 20px;
+  list-style-position: inside;
+  position: relative;
+  padding-left: 24px;
+}
+/* line 69, sass/_simple_mixins.sass */
+#contents.resume li:before {
+  content: "➜";
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
-/* line 42, ../../../sass/_common.sass */
+/* line 45, sass/_common.sass */
 #about {
   position: relative;
   font-family: "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
@@ -349,41 +364,26 @@ body {
   background-color: #f4f4f4;
   padding: 30px 0 30px 200px;
 }
-/* line 49, ../../../sass/_common.sass */
+/* line 52, sass/_common.sass */
 #about h2 {
   font-weight: bold;
   font-size: 14px;
 }
-/* line 52, ../../../sass/_common.sass */
+/* line 55, sass/_common.sass */
 #about .links {
   position: absolute;
   left: 0;
   margin: 30px 0 30px 80px;
   top: 0;
 }
-/* line 58, ../../../sass/_common.sass */
+/* line 61, sass/_common.sass */
 #about .bio {
   width: 600px;
 }
 
-/* line 62, ../../../sass/_common.sass */
+/* line 65, sass/_common.sass */
 #page .content, #post .content {
   margin: 15px 0;
-}
-/* line 65, ../../../sass/_common.sass */
-#page li, #post li {
-  padding: 0;
-  margin: 5px 0 5px 20px;
-  list-style-position: inside;
-  position: relative;
-  padding-left: 24px;
-}
-/* line 72, ../../../sass/_common.sass */
-#page li:before, #post li:before {
-  content: "➜";
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 
 /* line 1, sass/_menu.sass */
