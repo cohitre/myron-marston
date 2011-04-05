@@ -340,7 +340,7 @@ body {
   border-top: 1px solid white;
 }
 /* line 62, sass/_simple_mixins.sass */
-#contents.resume li {
+#contents.resume li, #contents.open-source li {
   padding: 0;
   margin: 5px 0 5px 20px;
   list-style-position: inside;
@@ -348,7 +348,7 @@ body {
   padding-left: 24px;
 }
 /* line 69, sass/_simple_mixins.sass */
-#contents.resume li:before {
+#contents.resume li:before, #contents.open-source li:before {
   content: "➜";
   position: absolute;
   top: 0;
