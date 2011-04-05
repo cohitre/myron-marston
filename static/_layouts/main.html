@@ -7,7 +7,9 @@
   </head>
   <body>
     {% include header.html %}
-    <div id='contents' class='{{ page.contents_class }}'>{{ content }}</div>
+    <div id='contents' class='{{ page.contents_class }} {{ page.section }}'>
+      {{ content }}
+    </div>
     {% include footer.html %}
   </body>
 </html>
