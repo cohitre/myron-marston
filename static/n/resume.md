@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Resume
-contents_class: wide
+contents_class: wide resume
 ---
 
 # Myron Marston
