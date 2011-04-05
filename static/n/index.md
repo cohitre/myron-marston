@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Home
+section: home
 ---
 # Myron Marston
 
