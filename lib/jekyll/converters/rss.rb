@@ -40,6 +40,7 @@ module Jekyll
               "name" => name,
               "title" => title,
               "time" => timestamp,
+              "section" => "china"
             },
             f
           )
