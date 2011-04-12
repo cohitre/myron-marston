@@ -8,6 +8,8 @@ section: music
 
 ## Recordings
 
+{% include recordings.html %}
+
 ![Ghosts and Spirits](/n/images/ghosts-and-spirits-cover.jpg)
 
 [Phil Woodward: _Ghosts and Spirits_](http://www.ghostsandspirits.net/)
@@ -28,5 +30,7 @@ section: music
 [Phileas Fogg: _Sun &amp; Rain_](http://www.cdbaby.com/cd/phileasfogg)
 
 ## Compositions
+
+{% include compositions.html %}
 
 ...To come...
