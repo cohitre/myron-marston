@@ -1,0 +1,22 @@
+window do
+  before do
+    run "rvm use 1.9.2@myron-marston"
+    run "bundle install"
+  end
+
+  tab do
+    run "bundle exec rake watch:jekyll"
+  end
+
+  tab do
+    run "bundle exec rake watch:compass"
+  end
+
+  tab do
+    run "bundle exec rake run"
+  end
+
+  tab do
+    run "open http://localhost:9292/"
+  end
+end

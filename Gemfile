@@ -17,3 +17,7 @@ group :development do
     gem 'ruby-debug19'
   end
 end
+
+group :os_x do
+  gem 'terminitor'
+end
