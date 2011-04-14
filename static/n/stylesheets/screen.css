@@ -275,17 +275,17 @@ body > footer {
   color: #888;
 }
 
-/* line 4, sass/_common.sass */
+/* line 5, sass/_common.sass */
 html {
   background-color: #f4f4f4;
 }
 
-/* line 7, sass/_common.sass */
+/* line 8, sass/_common.sass */
 h1, h2, h3, h4 {
   display: block;
 }
 
-/* line 10, sass/_common.sass */
+/* line 11, sass/_common.sass */
 body {
   position: relative;
   background-color: white;
@@ -293,7 +293,7 @@ body {
   width: auto;
 }
 
-/* line 16, sass/_common.sass */
+/* line 17, sass/_common.sass */
 #contents {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -305,37 +305,37 @@ body {
   min-height: 250px;
   width: 640px;
 }
-/* line 23, sass/_common.sass */
+/* line 24, sass/_common.sass */
 #contents.wide {
   width: 800px;
 }
-/* line 25, sass/_common.sass */
+/* line 26, sass/_common.sass */
 #contents .subheader {
   font-size: 17px;
 }
-/* line 27, sass/_common.sass */
+/* line 28, sass/_common.sass */
 #contents h2 {
   font-weight: bold;
   color: #b83000;
   padding: 40px 0 20px;
 }
-/* line 31, sass/_common.sass */
+/* line 32, sass/_common.sass */
 #contents h3 {
   padding: 20px 0 10px;
 }
-/* line 33, sass/_common.sass */
+/* line 34, sass/_common.sass */
 #contents h4 {
   padding: 10px 0 5px;
 }
-/* line 35, sass/_common.sass */
+/* line 36, sass/_common.sass */
 #contents .section {
   padding: 10px 50px;
 }
-/* line 37, sass/_common.sass */
+/* line 38, sass/_common.sass */
 #contents #post {
   border-bottom: 1px solid #d5d6d8;
 }
-/* line 39, sass/_common.sass */
+/* line 40, sass/_common.sass */
 #contents #disqus_thread {
   border-top: 1px solid white;
 }
@@ -355,7 +355,7 @@ body {
   left: 0;
 }
 
-/* line 45, sass/_common.sass */
+/* line 46, sass/_common.sass */
 #about {
   position: relative;
   font-family: "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
@@ -364,24 +364,24 @@ body {
   background-color: #f4f4f4;
   padding: 30px 0 30px 200px;
 }
-/* line 52, sass/_common.sass */
+/* line 53, sass/_common.sass */
 #about h2 {
   font-weight: bold;
   font-size: 14px;
 }
-/* line 55, sass/_common.sass */
+/* line 56, sass/_common.sass */
 #about .links {
   position: absolute;
   left: 0;
   margin: 30px 0 30px 80px;
   top: 0;
 }
-/* line 61, sass/_common.sass */
+/* line 62, sass/_common.sass */
 #about .bio {
   width: 600px;
 }
 
-/* line 65, sass/_common.sass */
+/* line 66, sass/_common.sass */
 #page .content, #post .content {
   margin: 15px 0;
 }

@@ -1,5 +1,6 @@
 $light_gray = #F4F4F4
 $medium_gray = #D5D6D8
+$left_column_width = 200px
 
 html
   background-color: $light_gray
@@ -16,7 +17,7 @@ body
 #contents
   +box-round(10px)
   +colorize($light_gray, $medium_gray)
-  margin: 0 0 30px 200px
+  margin: 0 0 30px $left_column_width
   padding: 30px 0
   min-height: 250px
   width: 640px
@@ -48,7 +49,7 @@ body
   font-size: 14px
   border-top: 1px solid $medium_gray
   background-color: $light_gray
-  padding: 30px 0 30px 200px
+  padding: 30px 0 30px $left_column_width
   h2
     +bold
     font-size: 14px
