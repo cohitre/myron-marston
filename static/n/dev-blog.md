@@ -5,3 +5,5 @@ section: dev-blog
 ---
 
 # Dev Blog
+
+Blog posts to come!
