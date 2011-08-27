@@ -2,35 +2,23 @@
 layout: page
 title: Music
 section: music
+contents_class: wide
 ---
 
 # Music
 
+I have a BA in Music from [Seattle Pacific University](http://spu.edu/),
+and used to do a fair bit of recording and composition.
+
+Unfortunately, I rarely have the time (or energy) for music these days,
+but I've collected a few of my recordings and compositions here.
+
 ## Recordings
 
+I played lead guitar on all of these.
+
 {% include recordings.html %}
-
-![Ghosts and Spirits](/n/images/ghosts-and-spirits-cover.jpg)
-
-[Phil Woodward: _Ghosts and Spirits_](http://www.ghostsandspirits.net/)
-
-
-![Oratorio of Prayers: Supplication](/n/images/oratorio-of-prayers-cover.jpg)
-
-[Grace Seattle Experimental Orchestra: _Oratorio of Prayers: Supplication_](http://www.cdbaby.com/cd/gseo2)
-
-
-![Waking Dreaming Holding Dying](/n/images/waking-holding-dreaming-dying-cover.jpg)
-
-[Lacey Brown: _Waking Dreaming Holding Dying_](http://www.cdbaby.com/cd/laceybrown)
-
-
-![Sun &amp; Rain](/n/images/sun-and-rain-cover.jpg)
-
-[Phileas Fogg: _Sun &amp; Rain_](http://www.cdbaby.com/cd/phileasfogg)
 
 ## Compositions
 
 {% include compositions.html %}
-
-...To come...
