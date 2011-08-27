@@ -5,6 +5,4 @@ section: home
 ---
 # Myron Marston
 
-## Sorry, there's not much to see yet :(.
-
-You can check out my [resume](/n/resume).
+I'm not sure what to put here yet...
