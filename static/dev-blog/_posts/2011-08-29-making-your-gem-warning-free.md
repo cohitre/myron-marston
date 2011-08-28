@@ -9,7 +9,7 @@ published: false
 There's been an [on-going](http://avdi.org/devblog/2011/06/23/how-ruby-helps-you-fix-your-broken-code/)
 [discussion](http://mislav.uniqpath.com/2011/06/ruby-verbose-mode/) in the ruby community recently about
 warnings. I've never used ruby's `-w` much, but I'm always in favor of
-more automated tools that can help improve your code. Furthermore, as a
+more automated tools that can help improve my code. Furthermore, as a
 gem author, I strive to make my gems play nice with other ruby tools.
 Some rubyists will never run their code with `-w`, but for those who
 do, I don't want my gems to generate warnings for them.
@@ -24,7 +24,7 @@ options we need:
 
 <script src="https://gist.github.com/1176143.js"> </script>
 
-You'll notice I set `skip_bundler = true`; with bundler, I discovered
+You'll notice I set `skip_bundler = true`; when the specs were run with `bundle exec`, I discovered
 that the warnings were silenced.  I'm not sure why, but there's an
 [open issue](https://github.com/carlhuda/bundler/issues/969) for it, so
 hopefully it'll be fixed at some point. In the meantime, running the
@@ -52,14 +52,14 @@ In a nutshell, here's how it works:
 
 * I redirect stderr into a temporary file, since ruby prints warnings to
   stderr.
-* I pass `-r ./capture_warnings.rb` so that this file gets loaded
+* I pass ruby a `-r ./capture_warnings.rb` option so that this file gets loaded
   first and ensures _all_ warnings get captured.
 * In the `at_exit` hook, I reformat the output, printing only unique
-  warnings that are traced back to files under the current directory
+  warnings that originate from files under the current directory
   (which is a good clue that VCR is responsible for them).
 * Finally, I exit with a non-zero status if there are any warnings
-  from VCR.  This will help me keep VCR warning-free by failing the
-  build.
+  from VCR.  This will help me keep VCR warning-free in the future
+  by failing the build and forcing me to remove the warnings.
 
 This made the output much more useful:
 
