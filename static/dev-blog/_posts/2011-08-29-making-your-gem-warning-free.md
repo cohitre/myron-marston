@@ -2,7 +2,6 @@
 layout: dev_post
 title: Making your Gem Warning Free
 section: dev-blog
-contents_class: wide
 ---
 
 There's been an [on-going](http://avdi.org/devblog/2011/06/23/how-ruby-helps-you-fix-your-broken-code/)
@@ -18,5 +17,14 @@ that it was time to make it warning free.
 
 ## Initial configuration
 
-<script src="https://gist.github.com/1161260.js"> </script>
+The rake task included with RSpec provides all the configuration
+options we need:
 
+<script src="https://gist.github.com/1176143.js"> </script>
+
+You'll notice I set `skip_bundler = true`; with bundler, I discovered
+that the warnings were silenced.  I'm not sure why, but there's an
+[open issue](https://github.com/carlhuda/bundler/issues/969) for it, so
+hopefully it'll be fixed at some point. In the meantime, running the
+specs without `bundle exec` works fine since I setup bundler in my
+`spec_helper` file and only have one version of RSpec installed.

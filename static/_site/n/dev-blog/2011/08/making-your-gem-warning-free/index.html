@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Myron Marston &raquo; Making your Gem Warning Free</title>
-    <link href="/n/stylesheets/screen.css?1314496485" rel="stylesheet" type="text/css" />
+    <link href="/n/stylesheets/screen.css?1314510667" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
   <body>
@@ -22,7 +22,7 @@
   </div>
 </div>
 
-    <div id='contents' class='wide dev-blog'>
+    <div id='contents' class=' dev-blog'>
       <div id="post" class='section'>
   <h1>Making your Gem Warning Free</h1>
 
@@ -32,7 +32,10 @@
 <p>The primary gem I work on is <a href='http://relishapp.com/myronmarston/vcr'>VCR</a>, and I decided that it was time to make it warning free.</p>
 
 <h2 id='initial_configuration'>Initial configuration</h2>
-<script src='https://gist.github.com/1161260.js'> </script>
+
+<p>The rake task included with RSpec provides all the configuration options we need:</p>
+<script src='https://gist.github.com/1176143.js'> </script>
+<p>You&#8217;ll notice I set <code>skip_bundler = true</code>; with bundler, I discovered that the warnings were silenced. I&#8217;m not sure why, but there&#8217;s an <a href='https://github.com/carlhuda/bundler/issues/969'>open issue</a> for it, so hopefully it&#8217;ll be fixed at some point. In the meantime, running the specs without <code>bundle exec</code> works fine since I setup bundler in my <code>spec_helper</code> file and only have one version of RSpec installed.</p>
   </div>
 </div>
 
