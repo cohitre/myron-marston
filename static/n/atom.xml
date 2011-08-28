@@ -16,9 +16,9 @@ layout: nil
   {% for post in site.posts %}
   <entry>
     <title>{{ post.title | xml_escape }}</title>
-    <link href="http://myronmars.to/n{{ post.url }}"/>
+    <link href="http://myronmars.to{{ post.url }}"/>
     <updated>{{ post.date | date_to_xmlschema }}</updated>
-    <id>http://myronmars.to/n{{ post.id }}</id>
+    <id>http://myronmars.to{{ post.id }}</id>
     <content type="html">{{ post.content | xml_escape }}</content>
   </entry>
   {% endfor %}
