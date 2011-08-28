@@ -1,0 +1,12 @@
+---
+layout: main
+---
+<div id="post" class='section'>
+  <h2>{{ page.title | xml_escape }}</h2>
+
+  <div class="content">
+    {{ content }}
+  </div>
+</div>
+
+{% include disqus.html %}

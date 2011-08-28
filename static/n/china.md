@@ -12,4 +12,4 @@ had the opportunity to travel quite a bit.
 
 This is the blog I kept while I was there.
 
-{% include other_posts.html %}
+{% include china_blog_posts.html %}
