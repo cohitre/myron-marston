@@ -3,6 +3,7 @@ layout: main
 ---
 <div id="post" class='section'>
   <h1>{{ page.title | xml_escape }}</h1>
+  <p class="post-date">➜ {{ page.date | date_to_string }}</p>
 
   <div class="content">
     {{ content }}
