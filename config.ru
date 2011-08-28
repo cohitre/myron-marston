@@ -6,6 +6,11 @@ require 'rack/contrib/response_headers'
 require 'refraction'
 
 use Rack::ResponseHeaders do |headers|
+  if headers['Content-Type'] =~ %r|text/html|
+    # cache for 5 minutes
+    headers['Cache-Control'] = 'public, max-age=300'
+  end
+
   unless headers['Content-Type'] =~ /charset/
     headers['Content-Type'] << '; charset=utf8'
   end
