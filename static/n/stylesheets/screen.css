@@ -390,17 +390,16 @@ body {
 #page .content, #post .content {
   margin: 15px 0;
 }
-
-/* line 73, sass/_common.sass */
-#page p {
+/* line 71, sass/_common.sass */
+#page p, #post p {
   margin-top: 15px;
 }
 
-/* line 77, sass/_common.sass */
+/* line 75, sass/_common.sass */
 #contents.music h2 {
   padding: 20px 0 5px 0;
 }
-/* line 79, sass/_common.sass */
+/* line 77, sass/_common.sass */
 #contents.music #recordings + p {
   margin: 0 0 5px 0;
 }
@@ -432,4 +431,9 @@ body {
 #menu div.active a {
   font-weight: bold;
   color: #b83000;
+}
+
+/* line 1, sass/_gist.sass */
+.gist {
+  font-size: 12px;
 }

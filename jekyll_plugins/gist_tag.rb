@@ -4,6 +4,7 @@ require 'cgi'
 require 'digest/md5'
 require 'net/https'
 require 'uri'
+require 'fileutils'
 
 module Jekyll
   class GistTag < Liquid::Tag
@@ -11,7 +12,8 @@ module Jekyll
       super
       @text           = text
       @cache_disabled = false
-      @cache_folder   = File.expand_path "../_gist_cache", File.dirname(__FILE__)
+      @cache_folder   = File.expand_path "../.gist.cache", File.dirname(__FILE__)
+      FileUtils.mkdir_p @cache_folder
     end
 
     def render(context)
@@ -35,7 +37,7 @@ module Jekyll
     end
 
     def get_gist_url_for(gist, file)
-      "https://gist.github.com/raw/#{gist}/#{file}"
+      "https://raw.github.com/gist/#{gist}/#{file}"
     end
 
     def cache(gist, file, data)
