@@ -3,13 +3,68 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-08-28T23:20:39-07:00</updated>
+  <updated>2011-08-29T07:40:09-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>Making your Gem Warning Free</title>
+    <link href="http://myronmars.to/n/dev-blog/2011/08/making-your-gem-warning-free"/>
+    <updated>2011-08-29T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2011/08/making-your-gem-warning-free</id>
+    <content type="html">&lt;p&gt;There&amp;#8217;s been an &lt;a href='http://avdi.org/devblog/2011/06/23/how-ruby-helps-you-fix-your-broken-code/'&gt;on-going&lt;/a&gt; &lt;a href='http://mislav.uniqpath.com/2011/06/ruby-verbose-mode/'&gt;discussion&lt;/a&gt; in the ruby community recently about warnings. I&amp;#8217;ve never used ruby&amp;#8217;s &lt;code&gt;-w&lt;/code&gt; option much, but I&amp;#8217;m always in favor of more automated tools that can help improve my code. Furthermore, as a gem author, I strive to make my gems play nice with other ruby tools. Some rubyists will never run their code with &lt;code&gt;-w&lt;/code&gt;, but for those who do, I don&amp;#8217;t want my gems to generate warnings for them.&lt;/p&gt;
+
+&lt;p&gt;The primary gem I work on is &lt;a href='http://relishapp.com/myronmarston/vcr'&gt;VCR&lt;/a&gt;, and I decided that it was time to make it warning free.&lt;/p&gt;
+
+&lt;h2 id='initial_configuration'&gt;Initial configuration&lt;/h2&gt;
+
+&lt;p&gt;The rake task included with RSpec provides all the configuration options we need:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1176143.js'&gt; &lt;/script&gt;
+&lt;p&gt;You&amp;#8217;ll notice I set &lt;code&gt;skip_bundler = true&lt;/code&gt;; when the specs were run with &lt;code&gt;bundle exec&lt;/code&gt;, I discovered that the warnings were silenced. I&amp;#8217;m not sure why, but there&amp;#8217;s an &lt;a href='https://github.com/carlhuda/bundler/issues/969'&gt;open issue&lt;/a&gt; for it, so hopefully it&amp;#8217;ll be fixed at some point. In the meantime, running the specs without &lt;code&gt;bundle exec&lt;/code&gt; works fine since I setup bundler in my &lt;code&gt;spec_helper&lt;/code&gt; file and only have one version of RSpec installed.&lt;/p&gt;
+
+&lt;h2 id='too_many_warnings'&gt;Too many warnings&lt;/h2&gt;
+
+&lt;p&gt;After making this change, when I run my specs, I&amp;#8217;m greeted with over 6500 lines of warnings like these:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1176301.js'&gt; &lt;/script&gt;
+&lt;p&gt;&amp;#8230;not exactly the most useful output. It&amp;#8217;s a bit overwhelming, and beyond that, many of the warnings are coming from other libraries.&lt;/p&gt;
+
+&lt;h2 id='my_solution'&gt;My solution&lt;/h2&gt;
+
+&lt;p&gt;What I really wanted is a list of unique warnings coming from VCR. To that end, I came up with a way to filter and format the warnings:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1176316.js'&gt; &lt;/script&gt;
+&lt;p&gt;In a nutshell, here&amp;#8217;s how it works:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I redirect stderr into a temporary file, since ruby prints warnings to stderr.&lt;/li&gt;
+
+&lt;li&gt;I pass ruby a &lt;code&gt;-r ./capture_warnings.rb&lt;/code&gt; option so that this file gets loaded first and ensures &lt;em&gt;all&lt;/em&gt; warnings get captured.&lt;/li&gt;
+
+&lt;li&gt;In the &lt;code&gt;at_exit&lt;/code&gt; hook, I reformat the output, printing only unique warnings that originate from files under the current directory (which is a good clue that VCR is responsible for them).&lt;/li&gt;
+
+&lt;li&gt;Finally, I exit with a non-zero status if there are any warnings from VCR. This will help me keep VCR warning-free in the future by failing the build and forcing me to remove the warnings.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This made the output much more useful:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1176335.js'&gt; &lt;/script&gt;
+&lt;h2 id='my_solution_may_not_be_your_solution'&gt;My solution may not be your solution&lt;/h2&gt;
+
+&lt;p&gt;This is working really well for me, and I just released VCR 1.11.2 yesterday with all warnings fixed. That said, my solution definitely makes a couple assumptions that may not be true of every project:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It uses a very simple heuristic (&lt;code&gt;line.include?(current_dir)&lt;/code&gt;) to figure out if VCR is responsible for the warning. Does ruby always include the current working directory in the output of every warning that originates from code in your current working directory? That seems to be the case so far but I have no idea if this is true. &lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+
+&lt;li&gt;It assumes that all stderr output is from warnings. This is true for my project but may not be true for yours.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I&amp;#8217;m curious if others have come up with better or alternate solutions to the problem of isolating the warnings output to just the ones your code is responsible for. Please let me know in the comments!&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;Actually, on JRuby, I had the opposite problem: Excon &lt;a href='https://github.com/geemus/excon/blob/v0.6.5/lib/excon/connection.rb#L46'&gt;uses an instance variable before it has been defined&lt;/a&gt;, but JRuby &lt;a href='http://travis-ci.org/#!/myronmarston/vcr/builds/106602'&gt;reported the warning&lt;/a&gt; as originating from one of VCR&amp;#8217;s files. Weird.&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
   
   <entry>
     <title>Summer 2007 Travels Part 3: Chengdu</title>
