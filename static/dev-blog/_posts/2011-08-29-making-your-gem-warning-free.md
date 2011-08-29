@@ -71,9 +71,11 @@ This is working really well for me, but it definitely makes a couple
 assumptions that may not be true of every project:
 
 * It uses a very simple heuristic (`line.include?(current_dir)`) to
-  figure out if VCR is responsible for the error.  Does ruby always
-  include the current working directory in the output of every error?
+  figure out if VCR is responsible for the warning.  Does ruby always
+  include the current working directory in the output of every warning
+  that originates from code in your current working directory?
   That seems to be the case so far but I have no idea if this is true.
+  [^foot]
 * It assumes that all stderr output is from warnings.  This is true for
   my project but may not be true for yours.
 
@@ -81,3 +83,9 @@ I'm curious if others have come up with better or alternate solutions
 to the problem of isolating the warnings output to just the ones your
 code is responsible for.  Please let me know in the comments!
 
+[^foot]: Actually, on JRuby, I had the opposite problem: Excon
+[uses an instance variable before it has been
+defined](https://github.com/geemus/excon/blob/v0.6.5/lib/excon/connection.rb#L46),
+but JRuby [reported the
+warning](http://travis-ci.org/#!/myronmarston/vcr/builds/106602)
+as originating from one of VCR's files.  Weird.
