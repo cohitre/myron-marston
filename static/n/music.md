@@ -2,7 +2,6 @@
 layout: page
 title: Music
 section: music
-contents_class: wide
 ---
 
 # Music
