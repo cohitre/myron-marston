@@ -67,8 +67,9 @@ This made the output much more useful:
 
 ## My solution may not be your solution
 
-This is working really well for me, but it definitely makes a couple
-assumptions that may not be true of every project:
+This is working really well for me, and I just released VCR 1.11.2
+yesterday with all warnings fixed. That said, my solution definitely
+makes a couple assumptions that may not be true of every project:
 
 * It uses a very simple heuristic (`line.include?(current_dir)`) to
   figure out if VCR is responsible for the warning.  Does ruby always
