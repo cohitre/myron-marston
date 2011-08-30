@@ -21,7 +21,7 @@ that it was time to make it warning free.
 The rake task included with RSpec provides all the configuration
 options we need:
 
-<script src="https://gist.github.com/1176143.js"> </script>
+{% gist 1176143 Rakefile %}
 
 You'll notice I set `skip_bundler = true`; when the specs were run with `bundle exec`, I discovered
 that the warnings were silenced.  I'm not sure why, but there's an
@@ -35,7 +35,7 @@ specs without `bundle exec` works fine since I setup bundler in my
 After making this change, when I run my specs, I'm greeted
 with over 6500 lines of warnings like these:
 
-<script src="https://gist.github.com/1176301.js"> </script>
+{% gist 1176301 warnings.txt %}
 
 ...not exactly the most useful output. It's a bit overwhelming, and
 beyond that, many of the warnings are coming from other libraries.
@@ -45,7 +45,8 @@ beyond that, many of the warnings are coming from other libraries.
 What I really wanted is a list of unique warnings coming from VCR.
 To that end, I came up with a way to filter and format the warnings:
 
-<script src="https://gist.github.com/1176316.js"> </script>
+{% gist 1176316 capture_warnings.rb %}
+{% gist 1176316 Rakefile %}
 
 In a nutshell, here's how it works:
 
@@ -62,7 +63,7 @@ In a nutshell, here's how it works:
 
 This made the output much more useful:
 
-<script src="https://gist.github.com/1176335.js"> </script>
+{% gist 1176335 warnings_output.txt %}
 
 ## My solution may not be your solution
 

@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-08-29T07:40:09-07:00</updated>
+  <updated>2011-08-29T23:03:46-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -23,19 +23,79 @@
 &lt;h2 id='initial_configuration'&gt;Initial configuration&lt;/h2&gt;
 
 &lt;p&gt;The rake task included with RSpec provides all the configuration options we need:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176143.js'&gt; &lt;/script&gt;
+&lt;script src='https://gist.github.com/1176143.js?file=Rakefile'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Rakefile
+
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.ruby_opts = &amp;quot;-w&amp;quot;
+  t.skip_bundler = true
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
 &lt;p&gt;You&amp;#8217;ll notice I set &lt;code&gt;skip_bundler = true&lt;/code&gt;; when the specs were run with &lt;code&gt;bundle exec&lt;/code&gt;, I discovered that the warnings were silenced. I&amp;#8217;m not sure why, but there&amp;#8217;s an &lt;a href='https://github.com/carlhuda/bundler/issues/969'&gt;open issue&lt;/a&gt; for it, so hopefully it&amp;#8217;ll be fixed at some point. In the meantime, running the specs without &lt;code&gt;bundle exec&lt;/code&gt; works fine since I setup bundler in my &lt;code&gt;spec_helper&lt;/code&gt; file and only have one version of RSpec installed.&lt;/p&gt;
 
 &lt;h2 id='too_many_warnings'&gt;Too many warnings&lt;/h2&gt;
 
 &lt;p&gt;After making this change, when I run my specs, I&amp;#8217;m greeted with over 6500 lines of warnings like these:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176301.js'&gt; &lt;/script&gt;
+&lt;script src='https://gist.github.com/1176301.js?file=warnings.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# warnings.txt
+
+/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+/Users/myron/code/vcr/spec/support/sinatra_app.rb:36: warning: instance variable @_boot_failed not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
+/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/typhoeus-0.2.4/lib/typhoeus/hydra.rb:124: warning: instance variable @cache_getter not initialized&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
 &lt;p&gt;&amp;#8230;not exactly the most useful output. It&amp;#8217;s a bit overwhelming, and beyond that, many of the warnings are coming from other libraries.&lt;/p&gt;
 
 &lt;h2 id='my_solution'&gt;My solution&lt;/h2&gt;
 
 &lt;p&gt;What I really wanted is a list of unique warnings coming from VCR. To that end, I came up with a way to filter and format the warnings:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176316.js'&gt; &lt;/script&gt;
+&lt;script src='https://gist.github.com/1176316.js?file=capture_warnings.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# capture_warnings.rb
+
+require 'tempfile'
+stderr_file = Tempfile.new(&amp;quot;vcr.stderr&amp;quot;)
+$stderr.reopen(stderr_file.path)
+current_dir = Dir.pwd
+
+at_exit do
+  stderr_file.rewind
+  lines = stderr_file.read.split(&amp;quot;\n&amp;quot;).uniq
+  stderr_file.close!
+
+  vcr_warnings, other_warnings = lines.partition { |line| line.include?(current_dir) }
+
+  if vcr_warnings.any?
+    puts
+    puts &amp;quot;-&amp;quot; * 30 + &amp;quot; VCR Warnings: &amp;quot; + &amp;quot;-&amp;quot; * 30
+    puts
+    puts vcr_warnings.join(&amp;quot;\n&amp;quot;)
+    puts
+    puts &amp;quot;-&amp;quot; * 75
+    puts
+  end
+
+  if other_warnings.any?
+    File.open('tmp/warnings.txt', 'w') { |f| f.write(other_warnings.join(&amp;quot;\n&amp;quot;)) }
+    puts
+    puts &amp;quot;Non-VCR warnings written to tmp/warnings.txt&amp;quot;
+    puts
+  end
+
+  # fail the build...
+  exit(1) if vcr_warnings.any?
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;&lt;script src='https://gist.github.com/1176316.js?file=Rakefile'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Rakefile
+
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.ruby_opts = &amp;quot;-w -r./capture_warnings&amp;quot;
+  t.skip_bundler = true
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
 &lt;p&gt;In a nutshell, here&amp;#8217;s how it works:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -49,7 +109,31 @@
 &lt;/ul&gt;
 
 &lt;p&gt;This made the output much more useful:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176335.js'&gt; &lt;/script&gt;
+&lt;script src='https://gist.github.com/1176335.js?file=warnings_output.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# warnings_output.txt
+
+------------------------------ VCR Warnings: ------------------------------
+
+/Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:24: warning: useless use of == in void context
+/Users/myron/code/vcr/spec/support/shared_example_groups/ignore_localhost_deprecation.rb:15: warning: `*' interpreted as argument prefix
+/Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1: warning: loading in progress, circular require considered harmful - /Users/myron/code/vcr/spec/spec_helper.rb
+	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `&amp;lt;top (required)&amp;gt;'
+	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `require'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `&amp;lt;top (required)&amp;gt;'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `each'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `block in &amp;lt;top (required)&amp;gt;'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `require'
+	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `&amp;lt;top (required)&amp;gt;'
+	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `require'
+/Users/myron/code/vcr/lib/vcr/config.rb:47: warning: `*' interpreted as argument prefix
+/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+/Users/myron/code/vcr/lib/vcr/http_stubbing_adapters/fakeweb.rb:70: warning: instance variable @http_connections_allowed not initialized
+
+---------------------------------------------------------------------------
+
+
+Non-VCR warnings written to tmp/warnings.txt&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
 &lt;h2 id='my_solution_may_not_be_your_solution'&gt;My solution may not be your solution&lt;/h2&gt;
 
 &lt;p&gt;This is working really well for me, and I just released VCR 1.11.2 yesterday with all warnings fixed. That said, my solution definitely makes a couple assumptions that may not be true of every project:&lt;/p&gt;

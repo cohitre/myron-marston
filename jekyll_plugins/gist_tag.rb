@@ -12,7 +12,7 @@ module Jekyll
       super
       @text           = text
       @cache_disabled = false
-      @cache_folder   = File.expand_path "../.gist.cache", File.dirname(__FILE__)
+      @cache_folder   = File.expand_path "../_gist_cache", File.dirname(__FILE__)
       FileUtils.mkdir_p @cache_folder
     end
 
@@ -21,15 +21,20 @@ module Jekyll
         gist, file = parts[1].strip, parts[2].strip
         script_url = script_url_for gist, file
         code       = get_cached_gist(gist, file) || get_gist_from_web(gist, file)
-        html_output_for script_url, code
+        html_output_for script_url, code, file
       else
         ""
       end
     end
 
-    def html_output_for(script_url, code)
+    def html_output_for(script_url, code, file)
       code = CGI.escapeHTML code
-      "<script src='#{script_url}'></script><noscript><pre><code>#{code}</code></pre></noscript>"
+      <<-NO_SCRIPT_END
+<script src="#{script_url}"> </script>
+<noscript>
+  <pre class="gist-no-script"><code>\# #{file}\n\n#{code}</code></pre>
+</noscript>
+      NO_SCRIPT_END
     end
 
     def script_url_for(gist_id, filename)

@@ -257,16 +257,11 @@ code {
 }
 
 /* line 93, ../../../sass/_dorothy.scss */
-pre {
-  padding: 20px;
-}
-
-/* line 96, ../../../sass/_dorothy.scss */
 blockquote {
   font-style: italic;
 }
 
-/* line 99, ../../../sass/_dorothy.scss */
+/* line 96, ../../../sass/_dorothy.scss */
 body > footer {
   text-align: left;
   margin-left: 10px;
@@ -449,10 +444,25 @@ code {
   color: #b83000;
 }
 
-/* line 1, sass/_gist.sass */
+/* line 7, sass/_gist.sass */
 .gist {
   font-size: 12px;
   line-height: 16px;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+/* line 10, sass/_gist.sass */
+pre.gist-no-script {
+  overflow: auto;
+}
+/* line 13, sass/_gist.sass */
+pre.gist-no-script code {
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
+  padding: 0.25em 0.5em 0.5em 0.5em;
+  border: 1px solid #adadad;
 }

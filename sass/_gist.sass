@@ -1,5 +1,17 @@
-.gist
+=gist-formatting
   font-size: 12px
   line-height: 16px
   margin-top: 20px
   margin-bottom: 20px
+
+.gist
+  +gist-formatting
+
+pre.gist-no-script
+  overflow: auto
+
+  code
+    +gist-formatting
+    display: inline-block
+    padding: .25em .5em .5em .5em
+    border: 1px solid #ADADAD
