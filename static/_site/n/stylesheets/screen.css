@@ -342,8 +342,23 @@ body {
 #contents #disqus_thread {
   border-top: 1px solid white;
 }
+/* line 62, sass/_simple_mixins.sass */
+#contents.resume li, #contents.open-source li, #contents.music li {
+  padding: 0;
+  margin: 5px 0 5px 20px;
+  list-style-position: inside;
+  position: relative;
+  padding-left: 24px;
+}
+/* line 69, sass/_simple_mixins.sass */
+#contents.resume li:before, #contents.open-source li:before, #contents.music li:before {
+  content: "➜";
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
-/* line 53, sass/_common.sass */
+/* line 54, sass/_common.sass */
 #about {
   position: relative;
   font-family: "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
@@ -353,32 +368,32 @@ body {
   padding: 30px 0 30px 200px;
   min-height: 150px;
 }
-/* line 61, sass/_common.sass */
+/* line 62, sass/_common.sass */
 #about h2 {
   font-weight: bold;
   font-size: 14px;
 }
-/* line 64, sass/_common.sass */
+/* line 65, sass/_common.sass */
 #about .links {
   position: absolute;
   left: 0;
   margin: 30px 0 30px 80px;
   top: 0;
 }
-/* line 70, sass/_common.sass */
+/* line 71, sass/_common.sass */
 #about .bio {
   width: 600px;
 }
 
-/* line 74, sass/_common.sass */
+/* line 75, sass/_common.sass */
 #page .content, #post .content {
   margin: 15px 0;
 }
-/* line 76, sass/_common.sass */
+/* line 77, sass/_common.sass */
 #page p, #post p {
   margin-top: 15px;
 }
-/* line 78, sass/_common.sass */
+/* line 79, sass/_common.sass */
 #page p.post-date, #post p.post-date {
   margin-top: -10px;
   margin-left: 30px;
@@ -400,16 +415,16 @@ body {
   left: 0;
 }
 
-/* line 86, sass/_common.sass */
+/* line 87, sass/_common.sass */
 #contents.music h2 {
   padding: 20px 0 5px 0;
 }
-/* line 88, sass/_common.sass */
+/* line 89, sass/_common.sass */
 #contents.music #recordings + p {
   margin: 0 0 5px 0;
 }
 
-/* line 91, sass/_common.sass */
+/* line 92, sass/_common.sass */
 code {
   font-size: 16px;
   background-color: #e9e9e9;
