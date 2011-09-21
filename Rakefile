@@ -23,3 +23,8 @@ desc "Runs the site"
 task :run do
   sh "bundle exec rackup config.ru"
 end
+
+desc "Deploys the site"
+task :deploy do
+  sh "git push production master"
+end
