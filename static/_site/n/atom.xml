@@ -3,13 +3,80 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-08-29T23:08:35-07:00</updated>
+  <updated>2011-09-20T21:42:42-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>How to Contribute to an Open Source Project</title>
+    <link href="http://myronmars.to/n/dev-blog/2011/09/how-to-contribute-to-an-open-source-project"/>
+    <updated>2011-09-20T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2011/09/how-to-contribute-to-an-open-source-project</id>
+    <content type="html">&lt;p&gt;&lt;em&gt;Note: I originally posted this on the &lt;a href='http://devblog.seomoz.org/2011/09/how-to-contribute-to-an-open-source-project/'&gt;SEOmoz Dev Blog&lt;/a&gt; yesterday. I&amp;#8217;m posting it here to keep all my writing in one place.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I contribute to open source on a fairly regular basis. Besides the fact that I enjoy giving back to the community, it also helps make our applications more maintainable: if I can get the bug fix or new feature I need back into an open source library, rather than maintaining a local modification, it makes future library upgrades far, far easier.&lt;/p&gt;
+
+&lt;p&gt;I commonly hear from other developers that they want to contribute to open source projects but they are unsure how to get started. &lt;a href='http://twitter.com/katemats'&gt;Kate&lt;/a&gt; suggested I distill my experiences of working on open source projects into a bit of a &amp;#8220;how to&amp;#8221; guide for contributing to open source&amp;#8230;so here goes :).&lt;/p&gt;
+
+&lt;p&gt;Virtually all of my open source experience has been with ruby projects on github, so that&amp;#8217;ll be the focus of this blog post. I&amp;#8217;m sure different code communities have different conventions/standards around how to contribute to open source, but these tips should prove useful regardless of what community you are a part of.&lt;/p&gt;
+
+&lt;h2 id='look_for_opportunities_to_contribute'&gt;Look for opportunities to contribute&lt;/h2&gt;
+
+&lt;p&gt;Most open source projects have some kind of bug/issue tracker, and you can certainly look there to find ways to contribute. I don&amp;#8217;t recommend it, though, especially if you&amp;#8217;re contributing to an open source project for the first time. Instead, be on the lookout for pain points with the open source libraries that you use. The next time you are dealing with a bug in some library that you use, consider it an opportunity to give back to the library, rather than working around it in your application. If there is a feature that your application needs that is generically useful, consider adding it directly to the library and contributing that back.&lt;/p&gt;
+
+&lt;p&gt;In general, the best open source contributions come from people who are &lt;em&gt;solving their own problems&lt;/em&gt;. If you&amp;#8217;re not the one who is having the problem, you&amp;#8217;ll have difficulty adequately solving it.&lt;/p&gt;
+
+&lt;p&gt;No contribution is too small. I once spent over an hour trying to figure out why &lt;a href='http://gembundler.com/'&gt;bundler&lt;/a&gt; wasn&amp;#8217;t working on a project. I had a simple Gemfile like this:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1217354.js?file=Gemfile'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Gemfile
+
+source :rubygems
+gem :rspec&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;The bundler output confounded me:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1217354.js?file=Output.sh'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Output.sh
+
+$ bundle install
+Fetching source index for http://rubygems.org/
+Could not find gem 'rspec (&amp;gt;= 0, runtime)' in any of the gem sources.&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;I &lt;em&gt;knew&lt;/em&gt; &lt;a href='http://rubygems.org'&gt;rubygems.org&lt;/a&gt; had RSpec in its source index&amp;#8230;and yet bundler was telling me otherwise. After troubleshooting this for an hour, I realized I had specified the gem name using a ruby symbol (i.e. &lt;code&gt;:rspec&lt;/code&gt;) rather than a string (i.e. &lt;code&gt;&amp;quot;rspec&amp;quot;&lt;/code&gt;). Sure enough, when I changed it to a string, it worked.&lt;/p&gt;
+
+&lt;p&gt;My first contribution to bundler was &lt;a href='https://github.com/carlhuda/bundler/commit/5e6b09469afd16719cdc9a0856c6f0da0489f55f'&gt;a simple patch&lt;/a&gt; to provide a more useful error message when gems are specified using symbols. As I said, no contribution is too small.&lt;/p&gt;
+
+&lt;h2 id='setup_your_dev_environment'&gt;Setup your dev environment&lt;/h2&gt;
+
+&lt;p&gt;Now that you&amp;#8217;ve got a an idea of a patch you want to contribute to an open source project, you need to get a proper development environment setup. Most ruby projects have a &amp;#8220;contributing&amp;#8221; or &amp;#8220;hacking&amp;#8221; file that will help get you started. For example, Ryan Tomayko&amp;#8217;s replicate &lt;a href='https://github.com/rtomayko/replicate/blob/1.3/HACKING'&gt;lists instructions&lt;/a&gt; for getting started. For most ruby projects these days, you&amp;#8217;ll just need to fork the project to your github account, &lt;code&gt;git clone&lt;/code&gt; it, run &lt;code&gt;bundle install&lt;/code&gt; to get the dependencies intalled, and run a rake task to run the tests.&lt;/p&gt;
+
+&lt;p&gt;The tests are particularly important on an open source project. They are the primary way the project maintainers communicate to you, the drive-by contributor, how the pieces are supposed to work. With a well-tested project, the tests give you confidence that your changes have not introduced a regression.&lt;/p&gt;
+
+&lt;h2 id='make_your_changes'&gt;Make your changes&lt;/h2&gt;
+
+&lt;p&gt;Now that you have a development environment setup, it&amp;#8217;s time to make your changes. In general, you should follow the conventions that are already present in the project. It&amp;#8217;s not your job as a first-time contributor to do a massive refactoring just because you prefer different conventions. If in doubt about your changes, try to get in touch with the maintainers, over IRC, a mailing list, the issue tracker, or over twitter.&lt;/p&gt;
+
+&lt;p&gt;When I&amp;#8217;m working on fixing an issue in a project, and there are multiple viable solutions, I&amp;#8217;ll often open a ticket describing the issue and possible solutions, to solicit feedback before I make my changes. For example, before making the change to bundler I described above, I &lt;a href='https://github.com/carlhuda/bundler/issues/434'&gt;asked for feedback&lt;/a&gt; from the bundler team about how they wanted bundler to treat symbols.&lt;/p&gt;
+
+&lt;h2 id='ensure_your_changes_are_tested'&gt;Ensure your changes are tested&lt;/h2&gt;
+
+&lt;p&gt;Before submitting your patch, it&amp;#8217;s important that you include test coverage for your change. As I said previously, the tests on an open source project enable contributors to make changes with confidence they aren&amp;#8217;t introducing regressions. If your patch does not include tests, future contributors may inadvertently break your patch, and when they do so, it won&amp;#8217;t be their fault; it&amp;#8217;ll be yours.&lt;/p&gt;
+
+&lt;p&gt;Many projects mention tests as a requirement for contributions, anyway, so your patch will likely not be accepted unless it includes tests.&lt;/p&gt;
+
+&lt;h2 id='prepare_your_patch_to_be_merged'&gt;Prepare your patch to be merged&lt;/h2&gt;
+
+&lt;p&gt;It&amp;#8217;s a good idea to get your patch into an easily mergable form. You want to make it as easy as possible for the project maintainers to merge your patch in. With git, this usually means rebasing commits against the latest commit on the master branch&amp;#8211;that way you have already dealt with any merge conflicts, and it&amp;#8217;s a simple, clean fast-forward for the project maintainers.&lt;/p&gt;
+
+&lt;h2 id='submit_your_patch'&gt;Submit your patch&lt;/h2&gt;
+
+&lt;p&gt;Finally, submit your patch to the project. On github, the preferred way these days is through a pull request. The project maintainer may have further suggestions before accepting your patch. Be sure to follow up on those.&lt;/p&gt;
+
+&lt;p&gt;If you have any additional tips on contributing to open source projects, please let me know in the comments!&lt;/p&gt;</content>
+  </entry>
   
   <entry>
     <title>Making your Gem Warning Free</title>

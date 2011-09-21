@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; How to Contribute to an Open Source Project</title>
+    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>How to Contribute to an Open Source Project</h1>
+  <p class="post-date">➜ 20 Sep 2011</p>
+
+  <div class="content">
+    <p><em>Note: I originally posted this on the <a href='http://devblog.seomoz.org/2011/09/how-to-contribute-to-an-open-source-project/'>SEOmoz Dev Blog</a> yesterday. I&#8217;m posting it here to keep all my writing in one place.</em></p>
+
+<p>I contribute to open source on a fairly regular basis. Besides the fact that I enjoy giving back to the community, it also helps make our applications more maintainable: if I can get the bug fix or new feature I need back into an open source library, rather than maintaining a local modification, it makes future library upgrades far, far easier.</p>
+
+<p>I commonly hear from other developers that they want to contribute to open source projects but they are unsure how to get started. <a href='http://twitter.com/katemats'>Kate</a> suggested I distill my experiences of working on open source projects into a bit of a &#8220;how to&#8221; guide for contributing to open source&#8230;so here goes :).</p>
+
+<p>Virtually all of my open source experience has been with ruby projects on github, so that&#8217;ll be the focus of this blog post. I&#8217;m sure different code communities have different conventions/standards around how to contribute to open source, but these tips should prove useful regardless of what community you are a part of.</p>
+
+<h2 id='look_for_opportunities_to_contribute'>Look for opportunities to contribute</h2>
+
+<p>Most open source projects have some kind of bug/issue tracker, and you can certainly look there to find ways to contribute. I don&#8217;t recommend it, though, especially if you&#8217;re contributing to an open source project for the first time. Instead, be on the lookout for pain points with the open source libraries that you use. The next time you are dealing with a bug in some library that you use, consider it an opportunity to give back to the library, rather than working around it in your application. If there is a feature that your application needs that is generically useful, consider adding it directly to the library and contributing that back.</p>
+
+<p>In general, the best open source contributions come from people who are <em>solving their own problems</em>. If you&#8217;re not the one who is having the problem, you&#8217;ll have difficulty adequately solving it.</p>
+
+<p>No contribution is too small. I once spent over an hour trying to figure out why <a href='http://gembundler.com/'>bundler</a> wasn&#8217;t working on a project. I had a simple Gemfile like this:</p>
+<script src='https://gist.github.com/1217354.js?file=Gemfile'> </script><noscript>
+  <pre class='gist-no-script'><code># Gemfile
+
+source :rubygems
+gem :rspec</code></pre>
+</noscript>
+<p>The bundler output confounded me:</p>
+<script src='https://gist.github.com/1217354.js?file=Output.sh'> </script><noscript>
+  <pre class='gist-no-script'><code># Output.sh
+
+$ bundle install
+Fetching source index for http://rubygems.org/
+Could not find gem 'rspec (&gt;= 0, runtime)' in any of the gem sources.</code></pre>
+</noscript>
+<p>I <em>knew</em> <a href='http://rubygems.org'>rubygems.org</a> had RSpec in its source index&#8230;and yet bundler was telling me otherwise. After troubleshooting this for an hour, I realized I had specified the gem name using a ruby symbol (i.e. <code>:rspec</code>) rather than a string (i.e. <code>&quot;rspec&quot;</code>). Sure enough, when I changed it to a string, it worked.</p>
+
+<p>My first contribution to bundler was <a href='https://github.com/carlhuda/bundler/commit/5e6b09469afd16719cdc9a0856c6f0da0489f55f'>a simple patch</a> to provide a more useful error message when gems are specified using symbols. As I said, no contribution is too small.</p>
+
+<h2 id='setup_your_dev_environment'>Setup your dev environment</h2>
+
+<p>Now that you&#8217;ve got a an idea of a patch you want to contribute to an open source project, you need to get a proper development environment setup. Most ruby projects have a &#8220;contributing&#8221; or &#8220;hacking&#8221; file that will help get you started. For example, Ryan Tomayko&#8217;s replicate <a href='https://github.com/rtomayko/replicate/blob/1.3/HACKING'>lists instructions</a> for getting started. For most ruby projects these days, you&#8217;ll just need to fork the project to your github account, <code>git clone</code> it, run <code>bundle install</code> to get the dependencies intalled, and run a rake task to run the tests.</p>
+
+<p>The tests are particularly important on an open source project. They are the primary way the project maintainers communicate to you, the drive-by contributor, how the pieces are supposed to work. With a well-tested project, the tests give you confidence that your changes have not introduced a regression.</p>
+
+<h2 id='make_your_changes'>Make your changes</h2>
+
+<p>Now that you have a development environment setup, it&#8217;s time to make your changes. In general, you should follow the conventions that are already present in the project. It&#8217;s not your job as a first-time contributor to do a massive refactoring just because you prefer different conventions. If in doubt about your changes, try to get in touch with the maintainers, over IRC, a mailing list, the issue tracker, or over twitter.</p>
+
+<p>When I&#8217;m working on fixing an issue in a project, and there are multiple viable solutions, I&#8217;ll often open a ticket describing the issue and possible solutions, to solicit feedback before I make my changes. For example, before making the change to bundler I described above, I <a href='https://github.com/carlhuda/bundler/issues/434'>asked for feedback</a> from the bundler team about how they wanted bundler to treat symbols.</p>
+
+<h2 id='ensure_your_changes_are_tested'>Ensure your changes are tested</h2>
+
+<p>Before submitting your patch, it&#8217;s important that you include test coverage for your change. As I said previously, the tests on an open source project enable contributors to make changes with confidence they aren&#8217;t introducing regressions. If your patch does not include tests, future contributors may inadvertently break your patch, and when they do so, it won&#8217;t be their fault; it&#8217;ll be yours.</p>
+
+<p>Many projects mention tests as a requirement for contributions, anyway, so your patch will likely not be accepted unless it includes tests.</p>
+
+<h2 id='prepare_your_patch_to_be_merged'>Prepare your patch to be merged</h2>
+
+<p>It&#8217;s a good idea to get your patch into an easily mergable form. You want to make it as easy as possible for the project maintainers to merge your patch in. With git, this usually means rebasing commits against the latest commit on the master branch&#8211;that way you have already dealt with any merge conflicts, and it&#8217;s a simple, clean fast-forward for the project maintainers.</p>
+
+<h2 id='submit_your_patch'>Submit your patch</h2>
+
+<p>Finally, submit your patch to the project. On github, the preferred way these days is through a pull request. The project maintainer may have further suggestions before accepting your patch. Be sure to follow up on those.</p>
+
+<p>If you have any additional tips on contributing to open source projects, please let me know in the comments!</p>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2011/09/how-to-contribute-to-an-open-source-project';
+    var disqus_title      = 'How to Contribute to an Open Source Project';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2011/09/how-to-contribute-to-an-open-source-project';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+
