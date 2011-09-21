@@ -3,7 +3,6 @@ layout: dev_post
 title: Deprecating Constants (and Classes) in Ruby
 section: dev-blog
 contents_class: medium-wide
-published: false
 ---
 
 Ruby has great tools for deprecating obselete code.  One of my favorite

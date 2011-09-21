@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; Deprecating Constants (and Classes) in Ruby</title>
+    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>Deprecating Constants (and Classes) in Ruby</h1>
+  <p class="post-date">➜ 21 Sep 2011</p>
+
+  <div class="content">
+    <p>Ruby has great tools for deprecating obselete code. One of my favorite techniques is one I rarely see: using <code>const_missing</code> to deprecate constants, and, by extension, classes and modules.</p>
+
+<p>Consider this code:</p>
+<script src='https://gist.github.com/1225953.js?file=my_gem_config.rb'> </script><noscript>
+  <pre class='gist-no-script'><code># my_gem_config.rb
+
+module MyGem
+  class Config
+  end
+end
+</code></pre>
+</noscript>
+<p>At a later time, you decide you would rather name this class <code>MyGem::Configuration</code>. It&#8217;s easy enough to change the name, but you may break backwards compatiblity with people who have references to <code>MyGem::Config</code> in their code.</p>
+
+<p><code>const_missing</code> really comes in handy here:</p>
+<script src='https://gist.github.com/1225953.js?file=my_gem_configuration.rb'> </script><noscript>
+  <pre class='gist-no-script'><code># my_gem_configuration.rb
+
+module MyGem
+  class Configuration
+  end
+
+  def self.const_missing(const_name)
+    super unless const_name == :Config
+    warn &quot;WARNING: `MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead.&quot;
+    Configuration
+  end
+end
+</code></pre>
+</noscript>
+<p>This allows existing code that references <code>MyGem::Config</code> to continue to work, and warns the user about their use of the deprecated constant.</p>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2011/09/deprecating-constants-and-classes-in-ruby';
+    var disqus_title      = 'Deprecating Constants (and Classes) in Ruby';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2011/09/deprecating-constants-and-classes-in-ruby';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+
