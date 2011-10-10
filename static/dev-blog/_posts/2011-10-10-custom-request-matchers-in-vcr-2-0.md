@@ -41,7 +41,7 @@ for most REST-ish APIs.
 This gave VCR some nice flexibility, but it never really worked
 well for the most common case where the `:uri`/`:method` matching
 didn't work: APIs that have non-deterministic URIs. Each time your
-tests run, the URI is different, and VCR would not match to the old
+tests run, the URI is different, and VCR would not match the new request the old
 one, causing it to either re-record the HTTP interaction, or raise
 a "real connections are not allowed" error, depending on your
 configuration.
@@ -68,8 +68,8 @@ than a full URI, and this is in fact what VCR 1.x did to support
 `:match_requests_on => [:host, :path]`. This works OK, but doesn't
 provide an easy way to solve the problem of URIs with non-deterministic
 query parameters. Building a regex that correctly matches all of a URI
-except a particular query paramter is not easy, and it would have been
-even more difficult to puts code that does this generically in VCR so
+except a particular query parameter is not easy, and it would have been
+even more difficult to put code that does this generically in VCR so
 that users could easily match on a URI while ignoring particular query
 parameters.
 
