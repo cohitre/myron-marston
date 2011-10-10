@@ -12,7 +12,7 @@ use Rack::ResponseHeaders do |headers|
   end
 
   unless headers['Content-Type'] =~ /charset/
-    headers['Content-Type'] << '; charset=utf8'
+    headers['Content-Type'] << '; charset=utf-8'
   end
 end
 
