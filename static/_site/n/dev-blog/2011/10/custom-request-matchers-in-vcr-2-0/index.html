@@ -48,7 +48,7 @@
 <h2 id='how_vcr_1x_worked'>How VCR 1.x worked</h2>
 
 <p>I&#8217;ve wanted to make VCR work well for these sorts of APIs for a long time, but the way VCR 1.x worked prevented a good solution. In VCR 1.x, it uses declaritive APIs provided by FakeWeb, WebMock and Typhoeus. When you insert a cassette, VCR makes calls to these libraries that are a bit like this:</p>
-<script src='https://gist.github.com/1272818.js?file=vcr_stubs.rb'> </script><noscript>
+<script src='https://gist.github.com/1275914.js?file=vcr_stubs.rb'> </script><noscript>
   <pre class='gist-no-script'><code># vcr_stubs.rb
 
 FakeWeb.register_uri(request.method, request.uri, response.to_fakeweb_hash)
@@ -88,7 +88,7 @@ VCR.use_cassette('example', :match_requests_on =&gt; [:method, port_matcher]) do
 end</code></pre>
 </noscript>
 <p>You can also register it as a named matcher and use the name in your <code>:match_requests_on</code> option:</p>
-<script src='https://gist.github.com/1272818.js?file=register_matcher.rb'> </script><noscript>
+<script src='https://gist.github.com/1275909.js?file=register_matcher.rb'> </script><noscript>
   <pre class='gist-no-script'><code># register_matcher.rb
 
 VCR.configure do |c|
@@ -104,14 +104,14 @@ end</code></pre>
 <p>In fact, this is exactly how the <a href='https://github.com/myronmarston/vcr/blob/v2.0.0.beta1/lib/vcr/request_matcher_registry.rb#L64-71'>built-in request matchers</a> (<code>:method</code>, <code>:uri</code>, <code>:host</code>, <code>:path</code>, <code>:headers</code> and <code>:body</code>) work now.</p>
 
 <p>Finally, for the specific case of URIs with non-deterministic query parameters, VCR provides a simple way to create a request matcher:</p>
-<script src='https://gist.github.com/1272818.js?file=uri_without_timestamp.rb'> </script><noscript>
+<script src='https://gist.github.com/1275911.js?file=uri_without_timestamp.rb'> </script><noscript>
   <pre class='gist-no-script'><code># uri_without_timestamp.rb
 
-VCR.use_cassette('example', :match_requests_on =&gt; [:method, VCR.request_matchers.uri_without_param(:timestamp)]) do
+uri_without_timestamp = VCR.request_matchers.uri_without_param(:timestamp)
+VCR.use_cassette('example', :match_requests_on =&gt; [:method, uri_without_timestamp]) do
   # make an HTTP request with a URI that has a non-determinstic
   # timestamp query parameter
-end
-</code></pre>
+end</code></pre>
 </noscript>
 <p>This is only the tip of the iceberg. You can match requests on specific portions of the request body or headers. I can imagine people using this to wrap up the specific set of matchers used for requests to a particular API into a single matcher that simply delegates to the desired matchers&#8211;that way, you can write <code>:match_requests_on =&gt; [:amazon]</code> rather than <code>:match_requests_on =&gt; [:method, :uri_without_signing, :body]</code> (or whatever).</p>
 

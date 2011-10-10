@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-10-10T08:35:53-07:00</updated>
+  <updated>2011-10-10T10:44:28-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -35,7 +35,7 @@
 &lt;h2 id='how_vcr_1x_worked'&gt;How VCR 1.x worked&lt;/h2&gt;
 
 &lt;p&gt;I&amp;#8217;ve wanted to make VCR work well for these sorts of APIs for a long time, but the way VCR 1.x worked prevented a good solution. In VCR 1.x, it uses declaritive APIs provided by FakeWeb, WebMock and Typhoeus. When you insert a cassette, VCR makes calls to these libraries that are a bit like this:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1272818.js?file=vcr_stubs.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+&lt;script src='https://gist.github.com/1275914.js?file=vcr_stubs.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
   &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_stubs.rb
 
 FakeWeb.register_uri(request.method, request.uri, response.to_fakeweb_hash)
@@ -75,7 +75,7 @@ VCR.use_cassette('example', :match_requests_on =&amp;gt; [:method, port_matcher]
 end&lt;/code&gt;&lt;/pre&gt;
 &lt;/noscript&gt;
 &lt;p&gt;You can also register it as a named matcher and use the name in your &lt;code&gt;:match_requests_on&lt;/code&gt; option:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1272818.js?file=register_matcher.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+&lt;script src='https://gist.github.com/1275909.js?file=register_matcher.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
   &lt;pre class='gist-no-script'&gt;&lt;code&gt;# register_matcher.rb
 
 VCR.configure do |c|
@@ -91,14 +91,14 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In fact, this is exactly how the &lt;a href='https://github.com/myronmarston/vcr/blob/v2.0.0.beta1/lib/vcr/request_matcher_registry.rb#L64-71'&gt;built-in request matchers&lt;/a&gt; (&lt;code&gt;:method&lt;/code&gt;, &lt;code&gt;:uri&lt;/code&gt;, &lt;code&gt;:host&lt;/code&gt;, &lt;code&gt;:path&lt;/code&gt;, &lt;code&gt;:headers&lt;/code&gt; and &lt;code&gt;:body&lt;/code&gt;) work now.&lt;/p&gt;
 
 &lt;p&gt;Finally, for the specific case of URIs with non-deterministic query parameters, VCR provides a simple way to create a request matcher:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1272818.js?file=uri_without_timestamp.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+&lt;script src='https://gist.github.com/1275911.js?file=uri_without_timestamp.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
   &lt;pre class='gist-no-script'&gt;&lt;code&gt;# uri_without_timestamp.rb
 
-VCR.use_cassette('example', :match_requests_on =&amp;gt; [:method, VCR.request_matchers.uri_without_param(:timestamp)]) do
+uri_without_timestamp = VCR.request_matchers.uri_without_param(:timestamp)
+VCR.use_cassette('example', :match_requests_on =&amp;gt; [:method, uri_without_timestamp]) do
   # make an HTTP request with a URI that has a non-determinstic
   # timestamp query parameter
-end
-&lt;/code&gt;&lt;/pre&gt;
+end&lt;/code&gt;&lt;/pre&gt;
 &lt;/noscript&gt;
 &lt;p&gt;This is only the tip of the iceberg. You can match requests on specific portions of the request body or headers. I can imagine people using this to wrap up the specific set of matchers used for requests to a particular API into a single matcher that simply delegates to the desired matchers&amp;#8211;that way, you can write &lt;code&gt;:match_requests_on =&amp;gt; [:amazon]&lt;/code&gt; rather than &lt;code&gt;:match_requests_on =&amp;gt; [:method, :uri_without_signing, :body]&lt;/code&gt; (or whatever).&lt;/p&gt;
 

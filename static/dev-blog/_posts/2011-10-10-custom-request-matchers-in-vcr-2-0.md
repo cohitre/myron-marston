@@ -60,7 +60,7 @@ it uses declaritive APIs provided by FakeWeb, WebMock and Typhoeus.
 When you insert a cassette, VCR makes calls to these libraries that
 are a bit like this:
 
-{% gist 1272818 vcr_stubs.rb %}
+{% gist 1275914 vcr_stubs.rb %}
 
 These libraries all allow you to register a stub using a regex rather
 than a full URI, and this is in fact what VCR 1.x did to support
@@ -108,7 +108,7 @@ The simplest request matcher is probably a lambda:
 You can also register it as a named matcher and use the name
 in your `:match_requests_on` option:
 
-{% gist 1272818 register_matcher.rb %}
+{% gist 1275909 register_matcher.rb %}
 
 In fact, this is exactly how the [built-in request
 matchers](https://github.com/myronmarston/vcr/blob/v2.0.0.beta1/lib/vcr/request_matcher_registry.rb#L64-71)
@@ -119,7 +119,7 @@ Finally, for the specific case of URIs with non-deterministic
 query parameters, VCR provides a simple way to create a request
 matcher:
 
-{% gist 1272818 uri_without_timestamp.rb %}
+{% gist 1275911 uri_without_timestamp.rb %}
 
 This is only the tip of the iceberg. You can match requests on
 specific portions of the request body or headers. I can imagine
