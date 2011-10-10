@@ -3,7 +3,6 @@ layout: dev_post
 title: Custom Request Matchers in VCR 2.0
 section: dev-blog
 contents_class: medium-wide
-published: false
 ---
 
 Over the last six weeks, I've been working extensively on VCR 2.0.
