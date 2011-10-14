@@ -40,7 +40,7 @@ for most REST-ish APIs.
 This gave VCR some nice flexibility, but it never really worked
 well for the most common case where the `:uri`/`:method` matching
 didn't work: APIs that have non-deterministic URIs. Each time your
-tests run, the URI is different, and VCR would not match the new request the old
+tests run, the URI is different, and VCR would not match the new request to the old
 one, causing it to either re-record the HTTP interaction, or raise
 a "real connections are not allowed" error, depending on your
 configuration.
