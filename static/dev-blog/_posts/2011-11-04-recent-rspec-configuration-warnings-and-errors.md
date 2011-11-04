@@ -251,3 +251,7 @@ pain for you. I solved the issues in the best way I could figure out.
 
 If you think I totally screwed up, or if you can think of a better way
 to deal with the ruby 1.9 bug, please let me know in the comments!
+
+Also, I [filed a bug](http://redmine.ruby-lang.org/issues/5236) on
+the ruby issue tracker. Please comment there if you would like to see if
+fixed.
