@@ -19,6 +19,7 @@ section: open-source
   * [The Ruby Show](http://rubyshow.com/episodes/146)
   * [Ruby Inside](http://www.rubyinside.com/vcr-a-recorder-for-all-your-tests-http-interactions-4169.html)
   * [Destroy all Software](https://www.destroyallsoftware.com/screencasts/catalog/acceptance-tests)
+  * [Railscasts](http://railscasts.com/episodes/291-testing-with-vcr)
 
 * [Fractal Composer](https://github.com/myronmarston/fractal_composer):
   Java library to algorithmically generate fractal compositions using
