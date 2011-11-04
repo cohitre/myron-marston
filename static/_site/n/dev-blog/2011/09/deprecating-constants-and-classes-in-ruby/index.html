@@ -38,8 +38,7 @@
 module MyGem
   class Config
   end
-end
-</code></pre>
+end</code></pre>
 </noscript>
 <p>At a later time, you decide you would rather name this class <code>MyGem::Configuration</code>. It&#8217;s easy enough to change the name, but you may break backwards compatiblity with people who have references to <code>MyGem::Config</code> in their code.</p>
 
@@ -53,11 +52,10 @@ module MyGem
 
   def self.const_missing(const_name)
     super unless const_name == :Config
-    warn &quot;WARNING: `MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead.&quot;
+    warn &quot;`MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead.&quot;
     Configuration
   end
-end
-</code></pre>
+end</code></pre>
 </noscript>
 <p>This allows existing code that references <code>MyGem::Config</code> to continue to work, and warns the user about their use of the deprecated constant.</p>
   </div>
