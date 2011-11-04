@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-11-04T07:33:05-07:00</updated>
+  <updated>2011-11-04T07:37:00-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -170,7 +170,7 @@ end&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;If you think I totally screwed up, or if you can think of a better way to deal with the ruby 1.9 bug, please let me know in the comments!&lt;/p&gt;
 
-&lt;p&gt;Also, I &lt;a href='http://redmine.ruby-lang.org/issues/5236'&gt;filed a bug&lt;/a&gt; on the ruby issue tracker. Please comment there if you would like to see if fixed.&lt;/p&gt;</content>
+&lt;p&gt;Also, I &lt;a href='http://redmine.ruby-lang.org/issues/5236'&gt;filed a bug&lt;/a&gt; on the ruby issue tracker. Please comment there if you would like to see it fixed.&lt;/p&gt;</content>
   </entry>
   
   <entry>
