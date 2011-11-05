@@ -65,7 +65,7 @@ end</code></pre>
 
 <p>Shortly after RSpec 2 was released, we began to get some <a href='http://groups.google.com/group/rspec/browse_thread/thread/eb54642fa0f051d1'>intermittent</a> <a href='https://github.com/rspec/rspec-expectations/issues/63'>reports</a> that users were occasionally getting a <code>SystemStackError</code> from RSpec, indicating infinite recursion was occurring. I myself saw this error when working on the rspec-core specs at one point.</p>
 
-<p>The recursion always happened in rspec-expecations&#8217; <a href='https://github.com/rspec/rspec-expectations/blob/v2.7.0/lib/rspec/matchers/method_missing.rb#L6-10'>method_missing hook</a>. In particular, the call to <code>super</code> triggered infinite recursion.</p>
+<p>The recursion always happened in rspec-expectations&#8217; <a href='https://github.com/rspec/rspec-expectations/blob/v2.7.0/lib/rspec/matchers/method_missing.rb#L6-10'>method_missing hook</a>. In particular, the call to <code>super</code> triggered infinite recursion.</p>
 
 <p>I found this very, very puzzling, and spent many hours troubleshooting trying to figure out why <code>super</code> would infinitely recurse on itself.</p>
 

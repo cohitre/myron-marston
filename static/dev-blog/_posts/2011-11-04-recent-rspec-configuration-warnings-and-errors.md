@@ -61,7 +61,7 @@ that users were occasionally getting a `SystemStackError` from
 RSpec, indicating infinite recursion was occurring.  I myself saw this
 error when working on the rspec-core specs at one point.
 
-The recursion always happened in rspec-expecations' [method\_missing
+The recursion always happened in rspec-expectations' [method\_missing
 hook](https://github.com/rspec/rspec-expectations/blob/v2.7.0/lib/rspec/matchers/method_missing.rb#L6-10).
 In particular, the call to `super` triggered infinite recursion.
 
