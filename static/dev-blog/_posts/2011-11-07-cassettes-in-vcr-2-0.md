@@ -3,7 +3,7 @@ layout: dev_post
 title: Cassettes in VCR 2.0
 section: dev-blog
 contents_class: medium-wide
-published: false
+published: true
 ---
 
 The first beta release of VCR 2.0 was focused on [improving how the
