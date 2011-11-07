@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-11-07T07:47:15-08:00</updated>
+  <updated>2011-11-07T11:41:00-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -624,7 +624,7 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;/noscript&gt;
 &lt;h2 id='cassettes_are_more_portable'&gt;Cassettes are More Portable&lt;/h2&gt;
 
-&lt;p&gt;VCR 1.x serialized some structs directly to YAML. This caused the classes (&lt;code&gt;VCR::HTTPInteraction&lt;/code&gt;, &lt;code&gt;VCR::Request&lt;/code&gt; and &lt;code&gt;VCR::Response&lt;/code&gt;) to be named directly in the cassette. In 2.0, VCR passes a simple hash to the serializer, so these class names no longer show up in the cassette file. Besides making it possible to use different serializers, this also makes the VCR cassette format much more portable. You can use read and use a VCR cassette without loading VCR now! It opens up the possibility to use a VCR cassette from other languages as well.&lt;/p&gt;
+&lt;p&gt;VCR 1.x serialized some structs directly to YAML. This caused the classes (&lt;code&gt;VCR::HTTPInteraction&lt;/code&gt;, &lt;code&gt;VCR::Request&lt;/code&gt; and &lt;code&gt;VCR::Response&lt;/code&gt;) to be named directly in the cassette. In 2.0, VCR passes a simple hash to the serializer, so these class names no longer show up in the cassette file. Besides making it possible to use different serializers, this also makes the VCR cassette format much more portable. You can read and use a VCR cassette without loading VCR now! It opens up the possibility to use a VCR cassette from other languages as well.&lt;/p&gt;
 
 &lt;h2 id='now_with_less_normalization'&gt;Now With Less Normalization&lt;/h2&gt;
 

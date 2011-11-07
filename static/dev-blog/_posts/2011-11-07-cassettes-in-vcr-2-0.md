@@ -87,7 +87,7 @@ the classes (`VCR::HTTPInteraction`, `VCR::Request` and `VCR::Response`)
 to be named directly in the cassette. In 2.0, VCR passes a simple
 hash to the serializer, so these class names no longer show up in the
 cassette file. Besides making it possible to use different serializers,
-this also makes the VCR cassette format much more portable. You can use
+this also makes the VCR cassette format much more portable. You can
 read and use a VCR cassette without loading VCR now!  It opens up the
 possibility to use a VCR cassette from other languages as well.
 
