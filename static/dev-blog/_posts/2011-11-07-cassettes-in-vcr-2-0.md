@@ -89,11 +89,11 @@ hash to the serializer, so these class names no longer show up in the
 cassette file. Besides making it possible to use different serializers,
 this also makes the VCR cassette format much more portable. You can use
 read and use a VCR cassette without loading VCR now!  It opens up the
-possibility to use a VCR cassette from another language as well.
+possibility to use a VCR cassette from other languages as well.
 
 ## Now With Less Normalization
 
-VCR 1.x extensively normalized each HTTPInteraction. VCR
+VCR 1.x extensively normalized each HTTP Interaction. VCR
 originally only worked with FakeWeb and Net::HTTP. As I
 expanded VCR to work with many other libraries, I tried to
 ensure that the cassette that resulted from a particular
