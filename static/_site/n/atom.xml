@@ -3,13 +3,225 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-11-07T11:41:00-08:00</updated>
+  <updated>2011-12-08T22:59:32-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>VCR 2.0.0 RC Released!</title>
+    <link href="http://myronmars.to/n/dev-blog/2011/12/vcr-2-0-0-rc-released"/>
+    <updated>2011-12-08T00:00:00-08:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2011/12/vcr-2-0-0-rc-released</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve just released the release candidate for VCR 2.0.0. There&amp;#8217;s lots of new goodness. This blog post is a bit of an &amp;#8220;extended&amp;#8221; change log detailing most of the interesting changes from VCR 1.x.&lt;/p&gt;
+
+&lt;h2 id='whats_been_removed'&gt;What&amp;#8217;s been removed&lt;/h2&gt;
+
+&lt;p&gt;Support for Ruby 1.8.6 and 1.9.1 has been dropped. It doesn&amp;#8217;t make sense to keep supporting these versions, especially since I use &lt;a href='http://travis-ci.org/#!/myronmarston/vcr'&gt;travis-ci&lt;/a&gt; for my CI builds and it no longer supports 1.8.6 and 1.9.1.&lt;/p&gt;
+
+&lt;p&gt;There are several old deprecated APIs that have been removed. This is unlikely to affect anyone since I believe they have all been deprecated for over a year. I won&amp;#8217;t detail them here. If you&amp;#8217;re running a fairly recent 1.x release without any warnings then this shouldn&amp;#8217;t affect you at all.&lt;/p&gt;
+
+&lt;p&gt;VCR 1.x supported regexes that were manually inserted in a cassette in place of a URI. This support has been dropped. VCR 2.0 supports &lt;a href='http://localhost:9292/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20'&gt;custom request matchers&lt;/a&gt; which are much more flexible then the regex support in VCR 1.x. You could even re-implement the regex support using a custom request matcher in a few lines of code if it is important for your test suite.&lt;/p&gt;
+
+&lt;h2 id='whats_been_changed'&gt;What&amp;#8217;s been changed&lt;/h2&gt;
+
+&lt;p&gt;The configuration API has changed slightly:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1441616.js?file=configuration.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# configuration.rb
+
+# VCR 1.x
+VCR.config do |c|
+  c.cassette_library_dir = 'cassettes'
+  c.stub_with :fakeweb, :typhoeus
+end
+
+# VCR 2.0
+VCR.configure do |c|
+  c.cassette_library_dir = 'cassettes'
+  c.hook_into :fakeweb, :typhoeus
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;Your existing configuration will continue to work with a deprecation warning.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href='/n/dev-blog/2011/11/cassettes-in-vcr-2-0'&gt;cassette format has changed significantly&lt;/a&gt;. VCR 1.x cassettes are not compatible with VCR 2.0. You&amp;#8217;ll need to either re-record them or &lt;a href='https://github.com/myronmarston/vcr/blob/master/Upgrade.md'&gt;migrate them to the new format&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Individual HTTP interactions are no longer replayed multiple times during the use of a single cassette. The new &lt;a href='https://www.relishapp.com/myronmarston/vcr/docs/request-matching/playback-repeats'&gt;&lt;code&gt;:allow_playback_repeats&lt;/code&gt; cassette option&lt;/a&gt; can be used to restore the VCR 1.x behavior.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href='https://github.com/technoweenie/faraday'&gt;Faraday&lt;/a&gt; integration has been rewritten. The Faraday integration in VCR 1.x was more than a little confusing; besides configuring &lt;code&gt;config.stub_with :faraday&lt;/code&gt;, you also had to insert &lt;code&gt;VCR::Middleware::Faraday&lt;/code&gt; in the Faraday middleware stack and provide a cassette configuration block. In VCR 2.0, you simply configure &lt;code&gt;config.hook_into :faraday&lt;/code&gt;, just like for FakeWeb, WebMock, Typhoeus or Excon. Under the covers, it takes care of inserting the middleware in the Faraday stack. Alternately, if you want control over where the VCR middleware goes in the stack, you can opt to insert it yourself.&lt;/p&gt;
+
+&lt;h2 id='custom_request_matchers'&gt;Custom Request Matchers&lt;/h2&gt;
+
+&lt;p&gt;This is one of the best new features of VCR 2.0. I &lt;a href='http://localhost:9292/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20'&gt;blogged about this previously&lt;/a&gt;, so I won&amp;#8217;t belabor it here.&lt;/p&gt;
+
+&lt;h2 id='swappable_and_custom_serializers'&gt;Swappable (and Custom) Serializers&lt;/h2&gt;
+
+&lt;p&gt;This is one of the other big new features of VCR 2.0. My &lt;a href='http://localhost:9292/n/dev-blog/2011/11/cassettes-in-vcr-2-0#new_serializers'&gt;recent blog post&lt;/a&gt; contains the pertinent details.&lt;/p&gt;
+
+&lt;h2 id='request_hooks'&gt;Request Hooks&lt;/h2&gt;
+
+&lt;p&gt;VCR now provides &lt;code&gt;before_http_request&lt;/code&gt;, &lt;code&gt;after_http_request&lt;/code&gt; and &lt;code&gt;around_http_request&lt;/code&gt; hooks. These can be used in many ways. Here&amp;#8217;s how you could use an &lt;code&gt;after_http_request&lt;/code&gt; hook to log all HTTP requests:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1446269.js?file=log_request.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# log_request.rb
+
+VCR.configure do |c|
+  c.after_http_request do |request, response|
+    Logger.log_http_request(request, response)
+  end
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;You can also use a request hook to globally handle all requests made to a specific API:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1446288.js?file=handle_geocoding_requests.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# handle_geocoding_requests.rb
+
+VCR.configure do |c|
+  c.around_http_request do |request|
+    uri = URI(request.uri)
+    if uri.host == 'api.geocoder.com'
+      # extract an address like &amp;quot;1700 E Pine St, Seattle, WA&amp;quot;
+      # from a query like &amp;quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&amp;quot;
+      address = CGI.unescape(uri.query.split('=').last)
+      VCR.use_cassette(&amp;quot;geocoding/#{address}&amp;quot;, &amp;amp;request)
+    else
+      request.proceed
+    end
+  end
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;In an &lt;code&gt;around_http_request&lt;/code&gt;, you can either treat the request as a proc (and pass it on to a method that expects a block as &lt;code&gt;&amp;amp;request&lt;/code&gt;), or use &lt;code&gt;request.proceed&lt;/code&gt; to allow the request to continue.&lt;/p&gt;
+
+&lt;p&gt;I certainly wouldn&amp;#8217;t recommend doing this for all requests&amp;#8211;you&amp;#8217;ll often want to test the same requests getting different responses in different tests&amp;#8211;but for truly stateless APIs that always return the same response for a given request (such as a geocoder) this can be very handy.&lt;/p&gt;
+
+&lt;p&gt;On ruby 1.8 you won&amp;#8217;t be able to use an &lt;code&gt;around_http_request&lt;/code&gt; hook because it uses a fiber; instead you can use separate &lt;code&gt;before_http_request&lt;/code&gt; and &lt;code&gt;after_http_request&lt;/code&gt; to achieve the same behavior.&lt;/p&gt;
+
+&lt;h2 id='ignore_a_request_based_on_anything'&gt;Ignore a Request Based on Anything&lt;/h2&gt;
+
+&lt;p&gt;VCR 1.x made it simple to ignore a request based on the host:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1430657.js?file=vcr_setup.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_setup.rb
+
+VCR.configure do |c|
+  c.ignore_localhost = true # to ignore 127.0.0.1 and localhost requests
+
+  # or...
+
+  c.ignore_hosts 'foo.com', 'bar.com'
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;This worked great for most people, but some wanted to &lt;a href='https://github.com/myronmarston/vcr/issues/42'&gt;selectively ignore localhost requests based on port&lt;/a&gt;. VCR 2.0 now lets you ignore a request based on &lt;em&gt;anything&lt;/em&gt;, by providing a block that returns a truthy value if the given request should be ignored. Here&amp;#8217;s how you can ignore only localhost requests to port 7500:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1430672.js?file=ignore_request.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# ignore_request.rb
+
+VCR.configure do |c|
+  c.ignore_request do |request|
+    uri = URI(request.uri)
+    uri.host == 'localhost' &amp;amp;&amp;amp; uri.port == 7500
+  end
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;h2 id='improved_unhandled_request_error_messages'&gt;Improved Unhandled Request Error Messages&lt;/h2&gt;
+
+&lt;p&gt;If you&amp;#8217;ve used VCR 1.x, you&amp;#8217;ve undoubtedly gotten an error like this:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1432329.js?file=vcr_1_x_error.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_1_x_error.txt
+
+Real HTTP connections are disabled. Unregistered request: GET
+http://api.somehost.com/widgets.  You can use VCR to automatically
+record this request and replay it later.  For more details, visit
+the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/1-11-3
+(FakeWeb::NetConnectNotAllowedError)&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;You get this kind of error when a request is made that VCR does not know how to handle. There are a lot of different ways you can fix the error, but the message doesn&amp;#8217;t give you much help.&lt;/p&gt;
+
+&lt;p&gt;In VCR 2.0, you&amp;#8217;ll get a more helpful error message:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1432316.js?file=example_error.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# example_error.txt
+
+================================================================================
+An HTTP request has been made that VCR does not know how to handle:
+  GET http://api.somehost.com/widgets
+
+VCR is currently using the following cassette:
+  - cassettes/widgets.yml
+  - :record =&amp;gt; :once
+  - :match_requests_on =&amp;gt; [:method, :uri]
+
+Under the current configuration VCR can not find a suitable HTTP interaction
+to replay and is prevented from recording new requests. There are a few ways
+you can deal with this:
+
+  * You can use the :new_episodes record mode to allow VCR to
+    record this new request to the existing cassette [1].
+  * If you want VCR to ignore this request (and others like it), you can
+    set an `ignore_request` callback [2].
+  * The current record mode (:once) does not allow new requests to be recorded
+    to a previously recorded cassette. You can delete the cassette file and re-run
+    your tests to allow the cassette to be recorded with this request [3].
+  * The cassette contains 1 HTTP interaction that has not been
+    played back. If your request is non-deterministic, you may need to
+    change your :match_requests_on cassette option to be more lenient
+    or use a custom request matcher to allow it to match [4].
+
+[1] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/new-episodes
+[2] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/configuration/ignore-request
+[3] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/once
+[4] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/request-matching
+================================================================================&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;h2 id='integration_with_rspec_2_metadata'&gt;Integration with RSpec 2 Metadata&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href='http://twitter.com/rbates'&gt;Ryan Bates&lt;/a&gt; had this &lt;a href='https://gist.github.com/1212530'&gt;great idea&lt;/a&gt; to integrate VCR with RSpec 2 using metadata. VCR 2.0 now provides direct support for this:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1441746.js?file=vcr_rspec_metadata.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_rspec_metadata.rb
+
+VCR.configure do |c|
+  c.configure_rspec_metadata!
+end
+
+RSpec.configure do |c|
+  # so we can use `:vcr` rather than `:vcr =&amp;gt; true`;
+  # in RSpec 3 this will no longer be necessary.
+  c.treat_symbols_as_metadata_keys_with_true_values = true
+end
+
+# apply it to an example group
+describe MyAPIWrapper, :vcr do
+end
+
+describe MyAPIWrapper do
+  # apply it to an individual example
+  it &amp;quot;does something&amp;quot;, :vcr do
+  end
+
+  # set some cassette options
+  it &amp;quot;does something&amp;quot;, :vcr =&amp;gt; { :record =&amp;gt; :new_episodes } do
+  end
+
+  # override the cassette name
+  it &amp;quot;does something&amp;quot;, :vcr =&amp;gt; { :cassette_name =&amp;gt; &amp;quot;something&amp;quot; } do
+  end
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;p&gt;The old &lt;a href='https://www.relishapp.com/myronmarston/vcr/docs/test-frameworks/usage-with-rspec-macro'&gt;&lt;code&gt;use_vcr_cassette&lt;/code&gt; macro&lt;/a&gt; still works. The primary difference is that the macro uses the same cassette for each example in an example group, while the metadata uses a different cassette for each individual example.&lt;/p&gt;
+
+&lt;h2 id='exclusive_cassettes'&gt;Exclusive cassettes&lt;/h2&gt;
+
+&lt;p&gt;VCR has always allowed you to &amp;#8220;nest&amp;#8221; cassettes; for example, you may use a cassette for an entire cucumber scenario and then also use a cassette in an individual step definition. When you do this, requests may be handled by an HTTP interaction from the outer cassette if there is not an HTTP interaction from the inner cassette that matches.&lt;/p&gt;
+
+&lt;p&gt;If you do not want to allow the matching to &amp;#8220;fall through&amp;#8221; to the outer cassette you can use the new &lt;code&gt;:exclusive&lt;/code&gt; option:&lt;/p&gt;
+&lt;script src='https://gist.github.com/1446331.js?file=exclusive_cassette.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# exclusive_cassette.rb
+
+VCR.use_cassette('my_cassette', :exclusive =&amp;gt; true) do
+  # ...
+end&lt;/code&gt;&lt;/pre&gt;
+&lt;/noscript&gt;
+&lt;h2 id='vcr_200_final'&gt;VCR 2.0.0 Final&lt;/h2&gt;
+
+&lt;p&gt;I plan to release VCR 2.0.0 final in a couple of weeks. Please give the RC a try and give me feedback!&lt;/p&gt;</content>
+  </entry>
   
   <entry>
     <title>Cassettes in VCR 2.0</title>
@@ -46,545 +258,18 @@
 &lt;p&gt;YAML is still the default, and uses the standard library &lt;code&gt;YAML&lt;/code&gt; after requiring &amp;#8220;yaml&amp;#8221;. This could wind up using either syck or psych, depending upon your ruby interpreter. The Syck and Psych serializers are useful as a way to force those libraries to be used. Syck is particularly useful when you have a project that needs to run on 1.8 and 1.9, so that the same YAML library gets used regardless of the ruby interpreter version. The JSON serializer uses &lt;a href='https://github.com/intridea/multi_json'&gt;multi_json&lt;/a&gt; so that it supports a variety of JSON backends.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;#8217;s how to pick a serializer:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1342232.js?file=with_json_serializer.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# with_json_serializer.rb
+&lt;script src='https://gist.github.com/1342232.js?file=serialize_with_json.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
+  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# serialize_with_json.rb
 
-&amp;lt;!DOCTYPE html&amp;gt;
-&amp;lt;html&amp;gt;
-  &amp;lt;head&amp;gt;
-    &amp;lt;meta charset='utf-8'&amp;gt;
-    &amp;lt;meta http-equiv=&amp;quot;X-UA-Compatible&amp;quot; content=&amp;quot;chrome=1&amp;quot;&amp;gt;
-        &amp;lt;title&amp;gt;404 - GitHub&amp;lt;/title&amp;gt;
-    &amp;lt;link rel=&amp;quot;search&amp;quot; type=&amp;quot;application/opensearchdescription+xml&amp;quot; href=&amp;quot;/opensearch.xml&amp;quot; title=&amp;quot;GitHub&amp;quot; /&amp;gt;
-    &amp;lt;link rel=&amp;quot;fluid-icon&amp;quot; href=&amp;quot;https://github.com/fluidicon.png&amp;quot; title=&amp;quot;GitHub&amp;quot; /&amp;gt;
+# use the JSON serializer for a particular cassette...
+VCR.use_cassette(&amp;quot;example&amp;quot;, :serialize_with =&amp;gt; :json) do
+  # make an HTTP request
+end
 
-    
-    
-
-    &amp;lt;meta content=&amp;quot;authenticity_token&amp;quot; name=&amp;quot;csrf-param&amp;quot; /&amp;gt;
-&amp;lt;meta name=&amp;quot;csrf-token&amp;quot; /&amp;gt;
-
-    &amp;lt;link href=&amp;quot;https://a248.e.akamai.net/assets.github.com/stylesheets/bundle_github.css?a5bcffab45c442622b8cec11fd14a9df3334f766&amp;quot; media=&amp;quot;screen&amp;quot; rel=&amp;quot;stylesheet&amp;quot; type=&amp;quot;text/css&amp;quot; /&amp;gt;
-    
-
-    &amp;lt;script src=&amp;quot;https://a248.e.akamai.net/assets.github.com/javascripts/bundle_jquery.js?7882abd39e9d12ad0242cb71f1709c2d9107e5b6&amp;quot; type=&amp;quot;text/javascript&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
-    &amp;lt;script src=&amp;quot;https://a248.e.akamai.net/assets.github.com/javascripts/bundle_github.js?088580da0df4f745d0358f6e1fc5bf781c164c17&amp;quot; type=&amp;quot;text/javascript&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
-    
-
-    
-  &amp;lt;/head&amp;gt;
-
-
-  &amp;lt;body class=&amp;quot;logged_out   env-production &amp;quot;&amp;gt;
-    
-
-
-    
-
-    &amp;lt;div id=&amp;quot;main&amp;quot;&amp;gt;
-      &amp;lt;div id=&amp;quot;header&amp;quot; class=&amp;quot;true&amp;quot;&amp;gt;
-          &amp;lt;a class=&amp;quot;logo&amp;quot; href=&amp;quot;https://github.com&amp;quot;&amp;gt;
-            &amp;lt;img alt=&amp;quot;github&amp;quot; class=&amp;quot;default svg&amp;quot; height=&amp;quot;45&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/header/logov6.svg&amp;quot; /&amp;gt;
-            &amp;lt;img alt=&amp;quot;github&amp;quot; class=&amp;quot;default png&amp;quot; height=&amp;quot;45&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/header/logov6.png&amp;quot; /&amp;gt;
-            &amp;lt;!--[if (gt IE 8)|!(IE)]&amp;gt;&amp;lt;!--&amp;gt;
-            &amp;lt;img alt=&amp;quot;github&amp;quot; class=&amp;quot;hover svg&amp;quot; height=&amp;quot;45&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/header/logov6-hover.svg&amp;quot; /&amp;gt;
-            &amp;lt;img alt=&amp;quot;github&amp;quot; class=&amp;quot;hover png&amp;quot; height=&amp;quot;45&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/header/logov6-hover.png&amp;quot; /&amp;gt;
-            &amp;lt;!--&amp;lt;![endif]--&amp;gt;
-          &amp;lt;/a&amp;gt;
-
-        &amp;lt;div class=&amp;quot;topsearch&amp;quot;&amp;gt;
-    &amp;lt;!--
-      make sure to use fully qualified URLs here since this nav
-      is used on error pages on other domains
-    --&amp;gt;
-    &amp;lt;ul class=&amp;quot;nav logged_out&amp;quot;&amp;gt;
-        &amp;lt;li class=&amp;quot;pricing&amp;quot;&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/plans&amp;quot;&amp;gt;Signup and Pricing&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-        &amp;lt;li class=&amp;quot;explore&amp;quot;&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/explore&amp;quot;&amp;gt;Explore GitHub&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-      &amp;lt;li class=&amp;quot;features&amp;quot;&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/features&amp;quot;&amp;gt;Features&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-        &amp;lt;li class=&amp;quot;blog&amp;quot;&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/blog&amp;quot;&amp;gt;Blog&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-      &amp;lt;li class=&amp;quot;login&amp;quot;&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/login?return_to=%2Fgist%2F1342232%2Fwith_json_serializer.rb&amp;quot;&amp;gt;Login&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-    &amp;lt;/ul&amp;gt;
-&amp;lt;/div&amp;gt;
-
-      &amp;lt;/div&amp;gt;
-
-      
-        &amp;lt;div class=&amp;quot;site&amp;quot;&amp;gt;
-          
-
-&amp;lt;style type=&amp;quot;text/css&amp;quot;&amp;gt;
-    * {
-        margin: 0px;
-        padding: 0px;
-    }
-    #parallax_illustration {
-        display:block;
-        width: 940px;
-        height: 375px;
-        margin: 20px 0 0 20px;
-        position: relative;
-        overflow: hidden;
-    }
-    #parallax_illustration #parallax_error_text {
-        position: absolute;
-        top: 72px;
-        left: 72px;
-        z-index: 10;
-    }
-    #parallax_illustration #parallax_octocat {
-        position: absolute;
-        top: 94px;
-        left: 356px;
-        z-index: 9;
-    }
-    #parallax_illustration #parallax_speeder {
-        position: absolute;
-        top: 150px;
-        left: 432px;
-        z-index: 8;
-    }
-    #parallax_illustration #parallax_octocatshadow {
-        position: absolute;
-        top: 297px;
-        left: 371px;
-        z-index: 7;
-    }
-    #parallax_illustration #parallax_speedershadow {
-        position: absolute;
-        top: 263px;
-        left: 442px;
-        z-index: 6;
-    }
-    #parallax_illustration #parallax_building_1 {
-        position: absolute;
-        top: 73px;
-        left: 467px;
-        z-index: 5;
-    }
-    #parallax_illustration #parallax_building_2 {
-        position: absolute;
-        top: 113px;
-        left: 762px;
-        z-index: 4;
-    }
-    #parallax_illustration #parallax_bg {
-        position: absolute;
-        top: -20px;
-        left: -20px;
-        z-index: 1;
-    }
-&amp;lt;/style&amp;gt;
-
-
-
-&amp;lt;div id=&amp;quot;parallax_illustration&amp;quot;&amp;gt;
-  &amp;lt;img alt=&amp;quot;404 | &amp;amp;ldquo;This is not the web page you are looking for&amp;amp;rdquo;&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-xrange=&amp;quot;20&amp;quot; data-yrange=&amp;quot;10&amp;quot; height=&amp;quot;249&amp;quot; id=&amp;quot;parallax_error_text&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_errortext.png&amp;quot; width=&amp;quot;271&amp;quot; /&amp;gt;
-  &amp;lt;img alt=&amp;quot;Octobi Wan Catnobi&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-xrange=&amp;quot;10&amp;quot; data-yrange=&amp;quot;10&amp;quot; height=&amp;quot;230&amp;quot; id=&amp;quot;parallax_octocat&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_octocat.png&amp;quot; width=&amp;quot;188&amp;quot; /&amp;gt;
-  &amp;lt;img alt=&amp;quot;land speeder&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-xrange=&amp;quot;10&amp;quot; data-yrange=&amp;quot;10&amp;quot; height=&amp;quot;156&amp;quot; id=&amp;quot;parallax_speeder&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_speeder.png&amp;quot; width=&amp;quot;440&amp;quot; /&amp;gt;
-  &amp;lt;img alt=&amp;quot;Octobi Wan Catnobi's shadow&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-xrange=&amp;quot;10&amp;quot; data-yrange=&amp;quot;10&amp;quot; height=&amp;quot;49&amp;quot; id=&amp;quot;parallax_octocatshadow&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_octocatshadow.png&amp;quot; width=&amp;quot;166&amp;quot; /&amp;gt;
-  &amp;lt;img alt=&amp;quot;land speeder's shadow&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-xrange=&amp;quot;10&amp;quot; data-yrange=&amp;quot;10&amp;quot; height=&amp;quot;75&amp;quot; id=&amp;quot;parallax_speedershadow&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_speedershadow.png&amp;quot; width=&amp;quot;430&amp;quot; /&amp;gt;
-  &amp;lt;img alt=&amp;quot;building&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-invert=&amp;quot;true&amp;quot; data-xrange=&amp;quot;50&amp;quot; data-yrange=&amp;quot;20&amp;quot; height=&amp;quot;123&amp;quot; id=&amp;quot;parallax_building_1&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_building_1.png&amp;quot; width=&amp;quot;304&amp;quot; /&amp;gt;
-  &amp;lt;img alt=&amp;quot;building&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-invert=&amp;quot;true&amp;quot; data-xrange=&amp;quot;75&amp;quot; data-yrange=&amp;quot;30&amp;quot; height=&amp;quot;50&amp;quot; id=&amp;quot;parallax_building_2&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_building_2.png&amp;quot; width=&amp;quot;116&amp;quot; /&amp;gt;
-  &amp;lt;img alt=&amp;quot;building&amp;quot; class=&amp;quot;js-plaxify&amp;quot; data-invert=&amp;quot;true&amp;quot; data-xrange=&amp;quot;0&amp;quot; data-yrange=&amp;quot;40&amp;quot; height=&amp;quot;415&amp;quot; id=&amp;quot;parallax_bg&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/404/parallax_bg.jpg&amp;quot; width=&amp;quot;940&amp;quot; /&amp;gt;
-&amp;lt;/div&amp;gt;
-
-&amp;lt;/script&amp;gt;
-
-        &amp;lt;/div&amp;gt;
-    &amp;lt;/div&amp;gt;
-
-    &amp;lt;!-- footer --&amp;gt;
-    &amp;lt;div id=&amp;quot;footer&amp;quot; &amp;gt;
-      
-  &amp;lt;div class=&amp;quot;upper_footer&amp;quot;&amp;gt;
-     &amp;lt;div class=&amp;quot;site&amp;quot; class=&amp;quot;clearfix&amp;quot;&amp;gt;
-
-       &amp;lt;!--[if IE]&amp;gt;&amp;lt;h4 id=&amp;quot;blacktocat_ie&amp;quot;&amp;gt;GitHub Links&amp;lt;/h4&amp;gt;&amp;lt;![endif]--&amp;gt;
-       &amp;lt;![if !IE]&amp;gt;&amp;lt;h4 id=&amp;quot;blacktocat&amp;quot;&amp;gt;GitHub Links&amp;lt;/h4&amp;gt;&amp;lt;![endif]&amp;gt;
-
-       &amp;lt;ul class=&amp;quot;footer_nav&amp;quot;&amp;gt;
-         &amp;lt;h4&amp;gt;GitHub&amp;lt;/h4&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/about&amp;quot;&amp;gt;About&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/blog&amp;quot;&amp;gt;Blog&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/features&amp;quot;&amp;gt;Features&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/contact&amp;quot;&amp;gt;Contact &amp;amp;amp; Support&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/training&amp;quot;&amp;gt;Training&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://status.github.com/&amp;quot;&amp;gt;Site Status&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-       &amp;lt;/ul&amp;gt;
-
-       &amp;lt;ul class=&amp;quot;footer_nav&amp;quot;&amp;gt;
-         &amp;lt;h4&amp;gt;Tools&amp;lt;/h4&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://mac.github.com/&amp;quot;&amp;gt;GitHub for Mac&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://mobile.github.com/&amp;quot;&amp;gt;Issues for iPhone&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://gist.github.com&amp;quot;&amp;gt;Gist: Code Snippets&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://enterprise.github.com/&amp;quot;&amp;gt;GitHub Enterprise&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://jobs.github.com/&amp;quot;&amp;gt;Job Board&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-       &amp;lt;/ul&amp;gt;
-
-       &amp;lt;ul class=&amp;quot;footer_nav&amp;quot;&amp;gt;
-         &amp;lt;h4&amp;gt;Extras&amp;lt;/h4&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://shop.github.com/&amp;quot;&amp;gt;GitHub Shop&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://octodex.github.com/&amp;quot;&amp;gt;The Octodex&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-       &amp;lt;/ul&amp;gt;
-
-       &amp;lt;ul class=&amp;quot;footer_nav&amp;quot;&amp;gt;
-         &amp;lt;h4&amp;gt;Documentation&amp;lt;/h4&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://help.github.com/&amp;quot;&amp;gt;GitHub Help&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://developer.github.com/&amp;quot;&amp;gt;Developer API&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://github.github.com/github-flavored-markdown/&amp;quot;&amp;gt;GitHub Flavored Markdown&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-         &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;http://pages.github.com/&amp;quot;&amp;gt;GitHub Pages&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-       &amp;lt;/ul&amp;gt;
-
-     &amp;lt;/div&amp;gt;&amp;lt;!-- /.site --&amp;gt;
-  &amp;lt;/div&amp;gt;&amp;lt;!-- /.upper_footer --&amp;gt;
-
-&amp;lt;div class=&amp;quot;lower_footer&amp;quot;&amp;gt;
-  &amp;lt;div class=&amp;quot;site&amp;quot; class=&amp;quot;clearfix&amp;quot;&amp;gt;
-    &amp;lt;!--[if IE]&amp;gt;&amp;lt;div id=&amp;quot;legal_ie&amp;quot;&amp;gt;&amp;lt;![endif]--&amp;gt;
-    &amp;lt;![if !IE]&amp;gt;&amp;lt;div id=&amp;quot;legal&amp;quot;&amp;gt;&amp;lt;![endif]&amp;gt;
-      &amp;lt;ul&amp;gt;
-          &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/site/terms&amp;quot;&amp;gt;Terms of Service&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-          &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/site/privacy&amp;quot;&amp;gt;Privacy&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-          &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;https://github.com/security&amp;quot;&amp;gt;Security&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-      &amp;lt;/ul&amp;gt;
-
-      &amp;lt;p&amp;gt;&amp;amp;copy; 2011 &amp;lt;span id=&amp;quot;_rrt&amp;quot; title=&amp;quot;0.01916s from fe6.rs.github.com&amp;quot;&amp;gt;GitHub&amp;lt;/span&amp;gt; Inc. All rights reserved.&amp;lt;/p&amp;gt;
-    &amp;lt;/div&amp;gt;&amp;lt;!-- /#legal or /#legal_ie--&amp;gt;
-
-      &amp;lt;div class=&amp;quot;sponsor&amp;quot;&amp;gt;
-        &amp;lt;a href=&amp;quot;http://www.rackspace.com&amp;quot; class=&amp;quot;logo&amp;quot;&amp;gt;
-          &amp;lt;img alt=&amp;quot;Dedicated Server&amp;quot; height=&amp;quot;36&amp;quot; src=&amp;quot;https://a248.e.akamai.net/assets.github.com/images/modules/footer/rackspace_logo.png?v2&amp;quot; width=&amp;quot;38&amp;quot; /&amp;gt;
-        &amp;lt;/a&amp;gt;
-        Powered by the &amp;lt;a href=&amp;quot;http://www.rackspace.com &amp;quot;&amp;gt;Dedicated
-        Servers&amp;lt;/a&amp;gt; and&amp;lt;br/&amp;gt; &amp;lt;a href=&amp;quot;http://www.rackspacecloud.com&amp;quot;&amp;gt;Cloud
-        Computing&amp;lt;/a&amp;gt; of Rackspace Hosting&amp;lt;span&amp;gt;&amp;amp;reg;&amp;lt;/span&amp;gt;
-      &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;&amp;lt;!-- /.site --&amp;gt;
-&amp;lt;/div&amp;gt;&amp;lt;!-- /.lower_footer --&amp;gt;
-
-    &amp;lt;/div&amp;gt;&amp;lt;!-- /#footer --&amp;gt;
-
-    
-
-&amp;lt;div id=&amp;quot;keyboard_shortcuts_pane&amp;quot; class=&amp;quot;instapaper_ignore readability-extra&amp;quot; style=&amp;quot;display:none&amp;quot;&amp;gt;
-  &amp;lt;h2&amp;gt;Keyboard Shortcuts &amp;lt;small&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot; class=&amp;quot;js-see-all-keyboard-shortcuts&amp;quot;&amp;gt;(see all)&amp;lt;/a&amp;gt;&amp;lt;/small&amp;gt;&amp;lt;/h2&amp;gt;
-
-  &amp;lt;div class=&amp;quot;columns threecols&amp;quot;&amp;gt;
-    &amp;lt;div class=&amp;quot;column first&amp;quot;&amp;gt;
-      &amp;lt;h3&amp;gt;Site wide shortcuts&amp;lt;/h3&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;s&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Focus site search&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;?&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Bring up this help dialog&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-    &amp;lt;/div&amp;gt;&amp;lt;!-- /.column.first --&amp;gt;
-
-    &amp;lt;div class=&amp;quot;column middle&amp;quot; style=&amp;amp;#39;display:none&amp;amp;#39;&amp;gt;
-      &amp;lt;h3&amp;gt;Commit list&amp;lt;/h3&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;j&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Move selection down&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;k&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Move selection up&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;c &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; o &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; enter&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Open commit&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;y&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Expand URL to its canonical form&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-    &amp;lt;/div&amp;gt;&amp;lt;!-- /.column.first --&amp;gt;
-
-    &amp;lt;div class=&amp;quot;column last&amp;quot; style=&amp;amp;#39;display:none&amp;amp;#39;&amp;gt;
-      &amp;lt;h3&amp;gt;Pull request list&amp;lt;/h3&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;j&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Move selection down&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;k&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Move selection up&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-      &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-        &amp;lt;dt&amp;gt;o &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; enter&amp;lt;/dt&amp;gt;
-        &amp;lt;dd&amp;gt;Open issue&amp;lt;/dd&amp;gt;
-      &amp;lt;/dl&amp;gt;
-    &amp;lt;/div&amp;gt;&amp;lt;!-- /.columns.last --&amp;gt;
-
-  &amp;lt;/div&amp;gt;&amp;lt;!-- /.columns.equacols --&amp;gt;
-
-  &amp;lt;div style=&amp;amp;#39;display:none&amp;amp;#39;&amp;gt;
-    &amp;lt;div class=&amp;quot;rule&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
-
-    &amp;lt;h3&amp;gt;Issues&amp;lt;/h3&amp;gt;
-
-    &amp;lt;div class=&amp;quot;columns threecols&amp;quot;&amp;gt;
-      &amp;lt;div class=&amp;quot;column first&amp;quot;&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;j&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Move selection down&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;k&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Move selection up&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;x&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Toggle selection&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;o &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; enter&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Open issue&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-      &amp;lt;/div&amp;gt;&amp;lt;!-- /.column.first --&amp;gt;
-      &amp;lt;div class=&amp;quot;column middle&amp;quot;&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;I&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Mark selection as read&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;U&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Mark selection as unread&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;e&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Close selection&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;y&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Remove selection from view&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-      &amp;lt;/div&amp;gt;&amp;lt;!-- /.column.middle --&amp;gt;
-      &amp;lt;div class=&amp;quot;column last&amp;quot;&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;c&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Create issue&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;l&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Create label&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;i&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Back to inbox&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;u&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Back to issues&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;/&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Focus issues search&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-      &amp;lt;/div&amp;gt;
-    &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;
-
-  &amp;lt;div style=&amp;amp;#39;display:none&amp;amp;#39;&amp;gt;
-    &amp;lt;div class=&amp;quot;rule&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
-
-    &amp;lt;h3&amp;gt;Issues Dashboard&amp;lt;/h3&amp;gt;
-
-    &amp;lt;div class=&amp;quot;columns threecols&amp;quot;&amp;gt;
-      &amp;lt;div class=&amp;quot;column first&amp;quot;&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;j&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Move selection down&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;k&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Move selection up&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;o &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; enter&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Open issue&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-      &amp;lt;/div&amp;gt;&amp;lt;!-- /.column.first --&amp;gt;
-    &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;
-
-  &amp;lt;div style=&amp;amp;#39;display:none&amp;amp;#39;&amp;gt;
-    &amp;lt;div class=&amp;quot;rule&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
-
-    &amp;lt;h3&amp;gt;Network Graph&amp;lt;/h3&amp;gt;
-    &amp;lt;div class=&amp;quot;columns equacols&amp;quot;&amp;gt;
-      &amp;lt;div class=&amp;quot;column first&amp;quot;&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;&amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;←&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; h&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll left&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;&amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;→&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; l&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll right&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;&amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;↑&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; k&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll up&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;&amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;↓&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; j&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll down&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;t&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Toggle visibility of head labels&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-      &amp;lt;/div&amp;gt;&amp;lt;!-- /.column.first --&amp;gt;
-      &amp;lt;div class=&amp;quot;column last&amp;quot;&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;shift &amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;←&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; shift h&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll all the way left&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;shift &amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;→&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; shift l&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll all the way right&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;shift &amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;↑&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; shift k&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll all the way up&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;shift &amp;lt;span class=&amp;quot;badmono&amp;quot;&amp;gt;↓&amp;lt;/span&amp;gt; &amp;lt;em&amp;gt;or&amp;lt;/em&amp;gt; shift j&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Scroll all the way down&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-      &amp;lt;/div&amp;gt;&amp;lt;!-- /.column.last --&amp;gt;
-    &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;
-
-  &amp;lt;div style=&amp;amp;#39;display:none&amp;amp;#39;&amp;gt;
-    &amp;lt;div class=&amp;quot;rule&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
-    &amp;lt;div class=&amp;quot;columns threecols&amp;quot;&amp;gt;
-      &amp;lt;div class=&amp;quot;column first&amp;quot; style=&amp;amp;#39;display:none&amp;amp;#39;&amp;gt;
-        &amp;lt;h3&amp;gt;Source Code Browsing&amp;lt;/h3&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;t&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Activates the file finder&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;l&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Jump to line&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;w&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Switch branch/tag&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-        &amp;lt;dl class=&amp;quot;keyboard-mappings&amp;quot;&amp;gt;
-          &amp;lt;dt&amp;gt;y&amp;lt;/dt&amp;gt;
-          &amp;lt;dd&amp;gt;Expand URL to its canonical form&amp;lt;/dd&amp;gt;
-        &amp;lt;/dl&amp;gt;
-      &amp;lt;/div&amp;gt;
-    &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;
-&amp;lt;/div&amp;gt;
-
-    &amp;lt;div id=&amp;quot;markdown-help&amp;quot; class=&amp;quot;instapaper_ignore readability-extra&amp;quot;&amp;gt;
-  &amp;lt;h2&amp;gt;Markdown Cheat Sheet&amp;lt;/h2&amp;gt;
-
-  &amp;lt;div class=&amp;quot;cheatsheet-content&amp;quot;&amp;gt;
-
-  &amp;lt;div class=&amp;quot;mod&amp;quot;&amp;gt;
-    &amp;lt;div class=&amp;quot;col&amp;quot;&amp;gt;
-      &amp;lt;h3&amp;gt;Format Text&amp;lt;/h3&amp;gt;
-      &amp;lt;p&amp;gt;Headers&amp;lt;/p&amp;gt;
-      &amp;lt;pre&amp;gt;
-# This is an &amp;amp;lt;h1&amp;amp;gt; tag
-## This is an &amp;amp;lt;h2&amp;amp;gt; tag
-###### This is an &amp;amp;lt;h6&amp;amp;gt; tag&amp;lt;/pre&amp;gt;
-     &amp;lt;p&amp;gt;Text styles&amp;lt;/p&amp;gt;
-     &amp;lt;pre&amp;gt;
-*This text will be italic*
-_This will also be italic_
-**This text will be bold**
-__This will also be bold__
-
-*You **can** combine them*
-&amp;lt;/pre&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;div class=&amp;quot;col&amp;quot;&amp;gt;
-      &amp;lt;h3&amp;gt;Lists&amp;lt;/h3&amp;gt;
-      &amp;lt;p&amp;gt;Unordered&amp;lt;/p&amp;gt;
-      &amp;lt;pre&amp;gt;
-* Item 1
-* Item 2
-  * Item 2a
-  * Item 2b&amp;lt;/pre&amp;gt;
-     &amp;lt;p&amp;gt;Ordered&amp;lt;/p&amp;gt;
-     &amp;lt;pre&amp;gt;
-1. Item 1
-2. Item 2
-3. Item 3
-   * Item 3a
-   * Item 3b&amp;lt;/pre&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;div class=&amp;quot;col&amp;quot;&amp;gt;
-      &amp;lt;h3&amp;gt;Miscellaneous&amp;lt;/h3&amp;gt;
-      &amp;lt;p&amp;gt;Images&amp;lt;/p&amp;gt;
-      &amp;lt;pre&amp;gt;
-![GitHub Logo](/images/logo.png)
-Format: ![Alt Text](url)
-&amp;lt;/pre&amp;gt;
-     &amp;lt;p&amp;gt;Links&amp;lt;/p&amp;gt;
-     &amp;lt;pre&amp;gt;
-http://github.com - automatic!
-[GitHub](http://github.com)&amp;lt;/pre&amp;gt;
-&amp;lt;p&amp;gt;Blockquotes&amp;lt;/p&amp;gt;
-     &amp;lt;pre&amp;gt;
-As Kanye West said:
-&amp;gt; We're living the future so
-&amp;gt; the present is our past.
-&amp;lt;/pre&amp;gt;
-    &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;
-  &amp;lt;div class=&amp;quot;rule&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
-
-  &amp;lt;h3&amp;gt;Code Examples in Markdown&amp;lt;/h3&amp;gt;
-  &amp;lt;div class=&amp;quot;col&amp;quot;&amp;gt;
-      &amp;lt;p&amp;gt;Syntax highlighting with &amp;lt;a href=&amp;quot;http://github.github.com/github-flavored-markdown/&amp;quot; title=&amp;quot;GitHub Flavored Markdown&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;GFM&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
-      &amp;lt;pre&amp;gt;
-```javascript
-function fancyAlert(arg) {
-  if(arg) {
-    $.facebox({div:'#foo'})
-  }
-}
-```&amp;lt;/pre&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;div class=&amp;quot;col&amp;quot;&amp;gt;
-      &amp;lt;p&amp;gt;Or, indent your code 4 spaces&amp;lt;/p&amp;gt;
-      &amp;lt;pre&amp;gt;
-Here is a Python code example
-without syntax highlighting:
-
-    def foo:
-      if not bar:
-        return true&amp;lt;/pre&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;div class=&amp;quot;col&amp;quot;&amp;gt;
-      &amp;lt;p&amp;gt;Inline code for comments&amp;lt;/p&amp;gt;
-      &amp;lt;pre&amp;gt;
-I think you should use an
-`&amp;amp;lt;addr&amp;amp;gt;` element here instead.&amp;lt;/pre&amp;gt;
-    &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;
-
-  &amp;lt;/div&amp;gt;
-&amp;lt;/div&amp;gt;
-
-    &amp;lt;div class=&amp;quot;context-overlay&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
-
-    
-    
-    
-  &amp;lt;/body&amp;gt;
-&amp;lt;/html&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+# ...or use the JSON serializer for all cassettes
+VCR.configure do |config|
+  config.default_cassette_options = { :serialize_with =&amp;gt; :json }
+end&lt;/code&gt;&lt;/pre&gt;
 &lt;/noscript&gt;
 &lt;h2 id='providing_your_own_custom_serializer'&gt;Providing Your Own Custom Serializer&lt;/h2&gt;
 

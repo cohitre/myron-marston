@@ -65,7 +65,7 @@ so that it supports a variety of JSON backends.
 
 Here's how to pick a serializer:
 
-{% gist 1342232 with_json_serializer.rb %}
+{% gist 1342232 serialize_with_json.rb %}
 
 ## Providing Your Own Custom Serializer
 

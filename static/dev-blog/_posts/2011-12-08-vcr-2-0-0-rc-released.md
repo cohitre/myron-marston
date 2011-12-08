@@ -1,9 +1,8 @@
 ---
 layout: dev_post
-title: VCR 2.0 RC Released!
+title: VCR 2.0.0 RC Released!
 section: dev-blog
 contents_class: medium-wide
-published: false
 ---
 
 I've just released the release candidate for VCR 2.0.0. There's lots of
@@ -23,8 +22,9 @@ recent 1.x release without any warnings then this shouldn't affect you
 at all.
 
 VCR 1.x supported regexes that were manually inserted in a cassette in
-place of a URI. This support has been dropped. VCR 2.0 supports custom
-request matchers (explained below) which are much more flexible then
+place of a URI. This support has been dropped. VCR 2.0 supports [custom request
+matchers](http://localhost:9292/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20)
+which are much more flexible then
 the regex support in VCR 1.x. You could even re-implement the regex
 support using a custom request matcher in a few lines of code if it
 is important for your test suite.
@@ -33,7 +33,7 @@ is important for your test suite.
 
 The configuration API has changed slightly:
 
-{% gist 1441616 configure.rb %}
+{% gist 1441616 configuration.rb %}
 
 Your existing configuration will continue to work with a deprecation
 warning.
@@ -45,7 +45,7 @@ re-record them or [migrate them to the new
 format](https://github.com/myronmarston/vcr/blob/master/Upgrade.md).
 
 Individual HTTP interactions are no longer replayed multiple times
-during a single cassette use. The new [`:allow_playback_repeats` cassette
+during the use of a single cassette. The new [`:allow_playback_repeats` cassette
 option](https://www.relishapp.com/myronmarston/vcr/docs/request-matching/playback-repeats)
 can be used to restore the VCR 1.x behavior.
 
@@ -71,6 +71,34 @@ so I won't belabor it here.
 This is one of the other big new features of VCR 2.0. My [recent blog
 post](http://localhost:9292/n/dev-blog/2011/11/cassettes-in-vcr-2-0#new_serializers)
 contains the pertinent details.
+
+## Request Hooks
+
+VCR now provides `before_http_request`, `after_http_request`
+and `around_http_request` hooks. These can be used in many ways.
+Here's how you could use an `after_http_request` hook to log all
+HTTP requests:
+
+{% gist 1446269 log_request.rb %}
+
+You can also use a request hook to globally handle all requests
+made to a specific API:
+
+{% gist 1446288 handle_geocoding_requests.rb %}
+
+In an `around_http_request`, you can either treat the request as
+a proc (and pass it on to a method that expects a block as `&request`),
+or use `request.proceed` to allow the request to continue.
+
+I certainly wouldn't recommend doing this for all requests--you'll often
+want to test the same requests getting different responses in different
+tests--but for truly stateless APIs that always return the same response
+for a given request (such as a geocoder) this can be very handy.
+
+On ruby 1.8 you won't be able to use an `around_http_request` hook
+because it uses a fiber; instead you can use separate
+`before_http_request` and `after_http_request` to achieve the same
+behavior.
 
 ## Ignore a Request Based on Anything
 
@@ -102,8 +130,6 @@ In VCR 2.0, you'll get a more helpful error message:
 
 {% gist 1432316 example_error.txt %}
 
-## Request Hooks
-
 ## Integration with RSpec 2 Metadata
 
 [Ryan Bates](http://twitter.com/rbates) had this [great
@@ -115,11 +141,24 @@ provides direct support for this:
 
 The old [`use_vcr_cassette`
 macro](https://www.relishapp.com/myronmarston/vcr/docs/test-frameworks/usage-with-rspec-macro)
-still works. The primary difference is that the macro uses a single
-cassette for all examples in an example group, while the metadata uses
-a single cassette for each individual example.
-
-## `define_cassette_placeholder`
+still works. The primary difference is that the macro uses the same
+cassette for each example in an example group, while the metadata uses
+a different cassette for each individual example.
 
 ## Exclusive cassettes
 
+VCR has always allowed you to "nest" cassettes; for example, you may use
+a cassette for an entire cucumber scenario and then also use a cassette
+in an individual step definition. When you do this, requests may be
+handled by an HTTP interaction from the outer cassette if there
+is not an HTTP interaction from the inner cassette that matches.
+
+If you do not want to allow the matching to "fall through" to the outer
+cassette you can use the new `:exclusive` option:
+
+{% gist 1446331 exclusive_cassette.rb %}
+
+## VCR 2.0.0 Final
+
+I plan to release VCR 2.0.0 final in a couple of weeks. Please give
+the RC a try and give me feedback!
