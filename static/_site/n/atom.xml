@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-12-08T22:59:32-08:00</updated>
+  <updated>2011-12-09T10:10:58-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -24,7 +24,7 @@
 
 &lt;p&gt;There are several old deprecated APIs that have been removed. This is unlikely to affect anyone since I believe they have all been deprecated for over a year. I won&amp;#8217;t detail them here. If you&amp;#8217;re running a fairly recent 1.x release without any warnings then this shouldn&amp;#8217;t affect you at all.&lt;/p&gt;
 
-&lt;p&gt;VCR 1.x supported regexes that were manually inserted in a cassette in place of a URI. This support has been dropped. VCR 2.0 supports &lt;a href='http://localhost:9292/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20'&gt;custom request matchers&lt;/a&gt; which are much more flexible then the regex support in VCR 1.x. You could even re-implement the regex support using a custom request matcher in a few lines of code if it is important for your test suite.&lt;/p&gt;
+&lt;p&gt;VCR 1.x supported regexes that were manually inserted in a cassette in place of a URI. This support has been dropped. VCR 2.0 supports &lt;a href='/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20'&gt;custom request matchers&lt;/a&gt; which are much more flexible then the regex support in VCR 1.x. You could even re-implement the regex support using a custom request matcher in a few lines of code if it is important for your test suite.&lt;/p&gt;
 
 &lt;h2 id='whats_been_changed'&gt;What&amp;#8217;s been changed&lt;/h2&gt;
 
@@ -54,11 +54,11 @@ end&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h2 id='custom_request_matchers'&gt;Custom Request Matchers&lt;/h2&gt;
 
-&lt;p&gt;This is one of the best new features of VCR 2.0. I &lt;a href='http://localhost:9292/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20'&gt;blogged about this previously&lt;/a&gt;, so I won&amp;#8217;t belabor it here.&lt;/p&gt;
+&lt;p&gt;This is one of the best new features of VCR 2.0. I &lt;a href='/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20'&gt;blogged about this previously&lt;/a&gt;, so I won&amp;#8217;t belabor it here.&lt;/p&gt;
 
 &lt;h2 id='swappable_and_custom_serializers'&gt;Swappable (and Custom) Serializers&lt;/h2&gt;
 
-&lt;p&gt;This is one of the other big new features of VCR 2.0. My &lt;a href='http://localhost:9292/n/dev-blog/2011/11/cassettes-in-vcr-2-0#new_serializers'&gt;recent blog post&lt;/a&gt; contains the pertinent details.&lt;/p&gt;
+&lt;p&gt;This is one of the other big new features of VCR 2.0. My &lt;a href='/n/dev-blog/2011/11/cassettes-in-vcr-2-0#new_serializers'&gt;recent blog post&lt;/a&gt; contains the pertinent details.&lt;/p&gt;
 
 &lt;h2 id='request_hooks'&gt;Request Hooks&lt;/h2&gt;
 

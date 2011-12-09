@@ -23,7 +23,7 @@ at all.
 
 VCR 1.x supported regexes that were manually inserted in a cassette in
 place of a URI. This support has been dropped. VCR 2.0 supports [custom request
-matchers](http://localhost:9292/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20)
+matchers](/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20)
 which are much more flexible then
 the regex support in VCR 1.x. You could even re-implement the regex
 support using a custom request matcher in a few lines of code if it
@@ -63,13 +63,13 @@ yourself.
 ## Custom Request Matchers
 
 This is one of the best new features of VCR 2.0. I [blogged about this
-previously](http://localhost:9292/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20),
+previously](/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0#request_matching_in_vcr_20),
 so I won't belabor it here.
 
 ## Swappable (and Custom) Serializers
 
 This is one of the other big new features of VCR 2.0. My [recent blog
-post](http://localhost:9292/n/dev-blog/2011/11/cassettes-in-vcr-2-0#new_serializers)
+post](/n/dev-blog/2011/11/cassettes-in-vcr-2-0#new_serializers)
 contains the pertinent details.
 
 ## Request Hooks
