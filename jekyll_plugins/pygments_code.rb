@@ -2,6 +2,13 @@ require 'pygments'
 require 'fileutils'
 require 'digest/md5'
 
+# For some reason, rubypython (loaded by Pygments) kills the ruby
+# interpreter w/ no error message if it is first started up down below
+# (i.e. when jekyll is generating the site). I have no idea why, but it
+# solves the problem if we pre-start rubypython at this poing. Having
+# pygments highlight a code snippet is the easiest way to do that.
+Pygments.highlight('class Foo; end', :lexer => 'ruby', :formatter => 'html', :options => {:encoding => 'utf-8'})
+
 PYGMENTS_CACHE_DIR = File.expand_path('../../.pygments-cache', __FILE__)
 FileUtils.mkdir_p(PYGMENTS_CACHE_DIR)
 
