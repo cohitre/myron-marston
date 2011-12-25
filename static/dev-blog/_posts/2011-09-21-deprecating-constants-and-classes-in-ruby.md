@@ -11,7 +11,12 @@ constants, and, by extension, classes and modules.
 
 Consider this code:
 
-{% gist 1225953 my_gem_config.rb %}
+{% codeblock my_gem/config.rb %}
+module MyGem
+  class Config
+  end
+end
+{% endcodeblock %}
 
 At a later time, you decide you would rather name this class
 `MyGem::Configuration`.  It's easy enough to change the name,
@@ -20,7 +25,18 @@ references to `MyGem::Config` in their code.
 
 `const_missing` really comes in handy here:
 
-{% gist 1225953 my_gem_configuration.rb %}
+{% codeblock my_gem/configuration.rb %}
+module MyGem
+  class Configuration
+  end
+
+  def self.const_missing(const_name)
+    super unless const_name == :Config
+    warn "`MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead."
+    Configuration
+  end
+end
+{% endcodeblock %}
 
 This allows existing code that references `MyGem::Config` to
 continue to work, and warns the user about their use of the

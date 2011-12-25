@@ -33,7 +33,19 @@ is important for your test suite.
 
 The configuration API has changed slightly:
 
-{% gist 1441616 configuration.rb %}
+{% codeblock configuration.rb %}
+# VCR 1.x
+VCR.config do |c|
+  c.cassette_library_dir = 'cassettes'
+  c.stub_with :fakeweb, :typhoeus
+end
+
+# VCR 2.0
+VCR.configure do |c|
+  c.cassette_library_dir = 'cassettes'
+  c.hook_into :fakeweb, :typhoeus
+end
+{% endcodeblock %}
 
 Your existing configuration will continue to work with a deprecation
 warning.
@@ -79,12 +91,32 @@ and `around_http_request` hooks. These can be used in many ways.
 Here's how you could use an `after_http_request` hook to log all
 HTTP requests:
 
-{% gist 1446269 log_request.rb %}
+{% codeblock log_request.rb %}
+VCR.configure do |c|
+  c.after_http_request do |request, response|
+    Logger.log_http_request(request, response)
+  end
+end
+{% endcodeblock %}
 
 You can also use a request hook to globally handle all requests
 made to a specific API:
 
-{% gist 1446288 handle_geocoding_requests.rb %}
+{% codeblock handle_geocoding_requests.rb %}
+VCR.configure do |c|
+  c.around_http_request do |request|
+    uri = URI(request.uri)
+    if uri.host == 'api.geocoder.com'
+      # extract an address like "1700 E Pine St, Seattle, WA"
+      # from a query like "address=1700+E+Pine+St%2C+Seattle%2C+WA"
+      address = CGI.unescape(uri.query.split('=').last)
+      VCR.use_cassette("geocoding/#{address}", &request)
+    else
+      request.proceed
+    end
+  end
+end
+{% endcodeblock %}
 
 In an `around_http_request`, you can either treat the request as
 a proc (and pass it on to a method that expects a block as `&request`),
@@ -104,7 +136,15 @@ behavior.
 
 VCR 1.x made it simple to ignore a request based on the host:
 
-{% gist 1430657 vcr_setup.rb %}
+{% codeblock vcr_setup.rb %}
+VCR.configure do |c|
+  c.ignore_localhost = true # to ignore 127.0.0.1 and localhost requests
+
+  # or...
+
+  c.ignore_hosts 'foo.com', 'bar.com'
+end
+{% endcodeblock %}
 
 This worked great for most people, but some wanted
 to [selectively ignore localhost requests based on
@@ -114,13 +154,26 @@ a block that returns a truthy value if the given request
 should be ignored. Here's how you can ignore only localhost requests
 to port 7500:
 
-{% gist 1430672 ignore_request.rb %}
+{% codeblock ignore_request.rb %}
+VCR.configure do |c|
+  c.ignore_request do |request|
+    uri = URI(request.uri)
+    uri.host == 'localhost' && uri.port == 7500
+  end
+end
+{% endcodeblock %}
 
 ## Improved Unhandled Request Error Messages
 
 If you've used VCR 1.x, you've undoubtedly gotten an error like this:
 
-{% gist 1432329 vcr_1_x_error.txt %}
+{% codeblock vcr_1_x_error.txt %}
+Real HTTP connections are disabled. Unregistered request: GET
+http://api.somehost.com/widgets.  You can use VCR to automatically
+record this request and replay it later.  For more details, visit
+the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/1-11-3
+(FakeWeb::NetConnectNotAllowedError)
+{% endcodeblock %}
 
 You get this kind of error when a request is made that VCR does not
 know how to handle. There are a lot of different ways you can fix the
@@ -128,7 +181,38 @@ error, but the message doesn't give you much help.
 
 In VCR 2.0, you'll get a more helpful error message:
 
-{% gist 1432316 example_error.txt %}
+{% codeblock example_error.txt %}
+================================================================================
+An HTTP request has been made that VCR does not know how to handle:
+  GET http://api.somehost.com/widgets
+
+VCR is currently using the following cassette:
+  - cassettes/widgets.yml
+  - :record => :once
+  - :match_requests_on => [:method, :uri]
+
+Under the current configuration VCR can not find a suitable HTTP interaction
+to replay and is prevented from recording new requests. There are a few ways
+you can deal with this:
+
+  * You can use the :new_episodes record mode to allow VCR to
+    record this new request to the existing cassette [1].
+  * If you want VCR to ignore this request (and others like it), you can
+    set an `ignore_request` callback [2].
+  * The current record mode (:once) does not allow new requests to be recorded
+    to a previously recorded cassette. You can delete the cassette file and re-run
+    your tests to allow the cassette to be recorded with this request [3].
+  * The cassette contains 1 HTTP interaction that has not been
+    played back. If your request is non-deterministic, you may need to
+    change your :match_requests_on cassette option to be more lenient
+    or use a custom request matcher to allow it to match [4].
+
+[1] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/new-episodes
+[2] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/configuration/ignore-request
+[3] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/once
+[4] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/request-matching
+================================================================================
+{% endcodeblock %}
 
 ## Integration with RSpec 2 Metadata
 
@@ -137,7 +221,35 @@ idea](https://gist.github.com/1212530) to
 integrate VCR with RSpec 2 using metadata. VCR 2.0 now
 provides direct support for this:
 
-{% gist 1441746 vcr_rspec_metadata.rb %}
+{% codeblock vcr_rspec_metadata.rb %}
+VCR.configure do |c|
+  c.configure_rspec_metadata!
+end
+
+RSpec.configure do |c|
+  # so we can use `:vcr` rather than `:vcr => true`;
+  # in RSpec 3 this will no longer be necessary.
+  c.treat_symbols_as_metadata_keys_with_true_values = true
+end
+
+# apply it to an example group
+describe MyAPIWrapper, :vcr do
+end
+
+describe MyAPIWrapper do
+  # apply it to an individual example
+  it "does something", :vcr do
+  end
+
+  # set some cassette options
+  it "does something", :vcr => { :record => :new_episodes } do
+  end
+
+  # override the cassette name
+  it "does something", :vcr => { :cassette_name => "something" } do
+  end
+end
+{% endcodeblock %}
 
 The old [`use_vcr_cassette`
 macro](https://www.relishapp.com/myronmarston/vcr/docs/test-frameworks/usage-with-rspec-macro)
@@ -156,7 +268,11 @@ is not an HTTP interaction from the inner cassette that matches.
 If you do not want to allow the matching to "fall through" to the outer
 cassette you can use the new `:exclusive` option:
 
-{% gist 1446331 exclusive_cassette.rb %}
+{% codeblock exclusive_cassette.rb %}
+VCR.use_cassette('my_cassette', :exclusive => true) do
+  # ...
+end
+{% endcodeblock %}
 
 ## VCR 2.0.0 Final
 

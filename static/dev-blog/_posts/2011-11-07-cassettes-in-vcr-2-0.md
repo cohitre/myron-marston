@@ -65,7 +65,17 @@ so that it supports a variety of JSON backends.
 
 Here's how to pick a serializer:
 
-{% gist 1342232 serialize_with_json.rb %}
+{% codeblock serialize_with_json.rb %}
+# use the JSON serializer for a particular cassette...
+VCR.use_cassette("example", :serialize_with => :json) do
+  # make an HTTP request
+end
+
+# ...or use the JSON serializer for all cassettes
+VCR.configure do |config|
+  config.default_cassette_options = { :serialize_with => :json }
+end
+{% endcodeblock %}
 
 ## Providing Your Own Custom Serializer
 
@@ -78,7 +88,27 @@ an object that implements three methods:
 
 Here's an example using ruby's marshal library:
 
-{% gist 1342244 marshal_serializer.rb %}
+{% codeblock marshal_serializer.rb %}
+serializer = Object.new
+serializer.instance_eval do
+  def file_extension
+    "rb_marshal"
+  end
+
+  def serialize(hash)
+    Marshal.dump(hash)
+  end
+
+  def deserialize(string)
+    Marshal.load(string)
+  end
+end
+
+VCR.configure do |config|
+  config.cassette_serializers[:marshal] = serializer
+  config.default_cassette_options = { :serialize_with => :marshal }
+end
+{% endcodeblock %}
 
 ## Cassettes are More Portable
 

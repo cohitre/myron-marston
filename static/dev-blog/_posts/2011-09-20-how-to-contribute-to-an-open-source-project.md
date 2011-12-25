@@ -47,11 +47,18 @@ No contribution is too small. I once spent over an hour trying to figure out
 why [bundler](http://gembundler.com/) wasn't working on a project. I had
 a simple Gemfile like this:
 
-{% gist 1217354 Gemfile %}
+{% codeblock Gemfile lang:ruby %}
+source :rubygems
+gem :rspec
+{% endcodeblock %}
 
 The bundler output confounded me:
 
-{% gist 1217354 Output.sh %}
+{% codeblock Output.sh %}
+$ bundle install
+Fetching source index for http://rubygems.org/
+Could not find gem 'rspec (>= 0, runtime)' in any of the gem sources.
+{% endcodeblock %}
 
 I _knew_ [rubygems.org](http://rubygems.org) had RSpec in its source
 index...and yet bundler was telling me otherwise. After troubleshooting

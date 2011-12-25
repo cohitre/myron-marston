@@ -21,7 +21,12 @@ that it was time to make it warning free.
 The rake task included with RSpec provides all the configuration
 options we need:
 
-{% gist 1176143 Rakefile %}
+{% codeblock Rakefile lang:ruby %}
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.ruby_opts = "-w"
+  t.skip_bundler = true
+end
+{% endcodeblock %}
 
 You'll notice I set `skip_bundler = true`; when the specs were run with `bundle exec`, I discovered
 that the warnings were silenced.  I'm not sure why, but there's an
@@ -35,7 +40,16 @@ specs without `bundle exec` works fine since I setup bundler in my
 After making this change, when I run my specs, I'm greeted
 with over 6500 lines of warnings like these:
 
-{% gist 1176301 warnings.txt %}
+{% codeblock warnings.txt lang:sh %}
+/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+/Users/myron/code/vcr/spec/support/sinatra_app.rb:36: warning: instance variable @_boot_failed not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
+/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/typhoeus-0.2.4/lib/typhoeus/hydra.rb:124: warning: instance variable @cache_getter not initialized
+{% endcodeblock %}
 
 ...not exactly the most useful output. It's a bit overwhelming, and
 beyond that, many of the warnings are coming from other libraries.
@@ -45,8 +59,47 @@ beyond that, many of the warnings are coming from other libraries.
 What I really wanted is a list of unique warnings coming from VCR.
 To that end, I came up with a way to filter and format the warnings:
 
-{% gist 1176316 capture_warnings.rb %}
-{% gist 1176316 Rakefile %}
+{% codeblock capture_warnings.rb %}
+require 'tempfile'
+stderr_file = Tempfile.new("vcr.stderr")
+$stderr.reopen(stderr_file.path)
+current_dir = Dir.pwd
+
+at_exit do
+  stderr_file.rewind
+  lines = stderr_file.read.split("\n").uniq
+  stderr_file.close!
+
+  vcr_warnings, other_warnings = lines.partition { |line| line.include?(current_dir) }
+
+  if vcr_warnings.any?
+    puts
+    puts "-" * 30 + " VCR Warnings: " + "-" * 30
+    puts
+    puts vcr_warnings.join("\n")
+    puts
+    puts "-" * 75
+    puts
+  end
+
+  if other_warnings.any?
+    File.open('tmp/warnings.txt', 'w') { |f| f.write(other_warnings.join("\n")) }
+    puts
+    puts "Non-VCR warnings written to tmp/warnings.txt"
+    puts
+  end
+
+  # fail the build...
+  exit(1) if vcr_warnings.any?
+end
+{% endcodeblock %}
+
+{% codeblock Rakefile %}
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.ruby_opts = "-w -r./capture_warnings"
+  t.skip_bundler = true
+end
+{% endcodeblock %}
 
 In a nutshell, here's how it works:
 
@@ -63,7 +116,29 @@ In a nutshell, here's how it works:
 
 This made the output much more useful:
 
-{% gist 1176335 warnings_output.txt %}
+{% codeblock warnings_output.txt lang:diff %}
+------------------------------ VCR Warnings: ------------------------------
+
+/Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:24: warning: useless use of == in void context
+/Users/myron/code/vcr/spec/support/shared_example_groups/ignore_localhost_deprecation.rb:15: warning: `*' interpreted as argument prefix
+/Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1: warning: loading in progress, circular require considered harmful - /Users/myron/code/vcr/spec/spec_helper.rb
+	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `<top (required)>'
+	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `require'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `<top (required)>'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `each'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `block in <top (required)>'
+	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `require'
+	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `<top (required)>'
+	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `require'
+/Users/myron/code/vcr/lib/vcr/config.rb:47: warning: `*' interpreted as argument prefix
+/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+/Users/myron/code/vcr/lib/vcr/http_stubbing_adapters/fakeweb.rb:70: warning: instance variable @http_connections_allowed not initialized
+
+---------------------------------------------------------------------------
+
+
+Non-VCR warnings written to tmp/warnings.txt
+{% endcodeblock %}
 
 ## My solution may not be your solution
 

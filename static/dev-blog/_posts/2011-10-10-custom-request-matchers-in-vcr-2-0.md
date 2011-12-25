@@ -60,7 +60,17 @@ it uses declaritive APIs provided by FakeWeb, WebMock and Typhoeus.
 When you insert a cassette, VCR makes calls to these libraries that
 are a bit like this:
 
-{% gist 1275914 vcr_stubs.rb %}
+{% codeblock vcr_stubs.rb %}
+FakeWeb.register_uri(request.method, request.uri, response.to_fakeweb_hash)
+
+WebMock.stub_request(
+  request.method, request.uri
+).to_return(response.to_webmock_hash)
+
+Typhoeus::Hydra.stub(
+  request.method, request.uri
+).and_return(response.to_typhoeus_response)
+{% endcodeblock %}
 
 These libraries all allow you to register a stub using a regex rather
 than a full URI, and this is in fact what VCR 1.x did to support
@@ -103,12 +113,30 @@ considered identical.
 
 The simplest request matcher is probably a lambda:
 
-{% gist 1272818 lambda_matcher.rb %}
+{% codeblock lambda_matcher.rb %}
+port_matcher = lambda do |request_1, request_2|
+  URI(request_1.uri).port == URI(request_2.uri).port
+end
+
+VCR.use_cassette('example', :match_requests_on => [:method, port_matcher]) do
+  # make an HTTP request
+end
+{% endcodeblock %}
 
 You can also register it as a named matcher and use the name
 in your `:match_requests_on` option:
 
-{% gist 1275909 register_matcher.rb %}
+{% codeblock register_matcher.rb %}
+VCR.configure do |c|
+  c.register_request_matcher :port do |request_1, request_2|
+    URI(request_1.uri).port == URI(request_2.uri).port
+  end
+end
+
+VCR.use_cassette('example', :match_requests_on => [:method, :port]) do
+  # make an HTTP request
+end
+{% endcodeblock %}
 
 In fact, this is exactly how the [built-in request
 matchers](https://github.com/myronmarston/vcr/blob/v2.0.0.beta1/lib/vcr/request_matcher_registry.rb#L64-71)
@@ -119,7 +147,13 @@ Finally, for the specific case of URIs with non-deterministic
 query parameters, VCR provides a simple way to create a request
 matcher:
 
-{% gist 1275911 uri_without_timestamp.rb %}
+{% codeblock uri_without_timestamp.rb %}
+uri_without_timestamp = VCR.request_matchers.uri_without_param(:timestamp)
+VCR.use_cassette('example', :match_requests_on => [:method, uri_without_timestamp]) do
+  # make an HTTP request with a URI that has a non-determinstic
+  # timestamp query parameter
+end
+{% endcodeblock %}
 
 This is only the tip of the iceberg. You can match requests on
 specific portions of the request body or headers. I can imagine

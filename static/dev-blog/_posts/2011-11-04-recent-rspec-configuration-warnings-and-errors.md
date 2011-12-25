@@ -40,7 +40,18 @@ but love the runner.
 
 RSpec 2 allows you to configure which you want to use:
 
-{% gist 1339217 spec_helper.rb %}
+{% codeblock spec_helper.rb %}
+RSpec.configure do |config|
+  config.expect_with :stdlib
+end
+
+# or
+
+RSpec.configure do |config|
+  # not strictly necessary; this is the default config anyway
+  config.expect_with :rspec
+end
+{% endcodeblock %}
 
 Both rspec-expectations and the standard library assertions are
 available as modules--`RSpec::Matchers` and `Test::Unit::Assertions`,
@@ -72,7 +83,24 @@ trying to figure out why `super` would infinitely recurse on itself.
 
 I eventually managed to boil the problem down to a simple rspec-less example:
 
-{% gist 845896 example.rb %}
+{% codeblock example.rb %}
+module MyModule
+  def some_method; super; end
+end
+
+class MyBaseClass; end
+
+class MySubClass < MyBaseClass;
+  include MyModule
+end
+
+# To trigger this bug, we must include the module in the base class after
+# the module has already been included in the subclass.  If we move this line
+# above the subclass declaration, this bug will not occur.
+MyBaseClass.send(:include, MyModule)
+
+MySubClass.new.some_method
+{% endcodeblock %}
 
 If you run this on ruby 1.8, you will (correctly) get a `NoMethodError`.
 On ruby 1.9, you get infinite recursion and a `SystemStackError`. Here's
@@ -224,7 +252,37 @@ need to create a secondary helper file for your isolated, fast specs.
 
 Here's one way to do it:
 
-{% gist 1339377 %}
+{% codeblock spec/fast_spec_helper.rb %}
+require 'rspec'
+
+RSpec.configure do |c|
+  c.mock_with :mocha
+end
+{% endcodeblock %}
+
+{% codeblock spec/spec_helper.rb %}
+require 'fast_spec_helper'
+
+# load rails or whatever to get your full app environment booted
+
+RSpec.configure do |c|
+  # other RSpec configuration
+end
+{% endcodeblock %}
+
+{% codeblock spec/lib/my_class_spec.rb %}
+require 'fast_spec_helper'
+
+describe MyClass do
+end
+{% endcodeblock %}
+
+{% codeblock spec/controllers/my_controller_spec.rb %}
+require 'spec_helper'
+
+describe MyController do
+end
+{% endcodeblock %}
 
 I know this goes against the "don't load spec\_helper" approach a bit,
 but the important thing is that the rails/sinatra/whatever environment
