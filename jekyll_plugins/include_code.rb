@@ -20,8 +20,8 @@
 # will output a figcaption with the title: Example 2 (test.js)
 #
 
-require './plugins/pygments_code'
-require './plugins/raw'
+require './jekyll_plugins/pygments_code'
+require './jekyll_plugins/raw'
 require 'pathname'
 
 module Jekyll
