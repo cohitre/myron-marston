@@ -12,6 +12,7 @@ group :development do
   gem 'amatch'
   gem 'nokogiri'
   gem 'compass', '~> 0.11.beta.2'
+  gem 'pygments.rb'
   gem 'terminitor'
 
   platform :mri_19 do
