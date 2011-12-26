@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 module CacheBustFilter
   def self.source_dir
     @source_dir ||= Jekyll.configuration({})['source']
@@ -5,8 +7,8 @@ module CacheBustFilter
 
   def cache_bust(input)
     file = File.join(CacheBustFilter.source_dir, input)
-    asset_id = File.mtime(file).to_i.to_s
-    "#{input}?#{asset_id}"
+    md5 = Digest::MD5.hexdigest(File.read(file))
+    "#{input}?#{md5}"
   end
 end
 
