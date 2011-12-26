@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Myron Marston &raquo; Recent RSpec Configuration Warnings and Errors</title>
-    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link href="/n/stylesheets/screen.css?7eef26cd531fab12fd4e4b9674852aca" rel="stylesheet" type="text/css" />
     <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
@@ -43,20 +43,28 @@
 <p>In particular, it allows people to use rspec-core to define and run their tests using RSpec&#8217;s example definition DSL (<code>describe</code>, <code>it</code>, <code>before</code>, <code>let</code>, etc) while sticking with the <code>assert_foo</code> assertion methods from Test::Unit or minitest, rather than using RSpec&#8217;s <code>object.should whatever</code> syntax. For better or worse, some people really dislike rspec-expectations but love the runner.</p>
 
 <p>RSpec 2 allows you to configure which you want to use:</p>
-<script src='https://gist.github.com/1339217.js?file=spec_helper.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># spec_helper.rb
-
-RSpec.configure do |config|
-  config.expect_with :stdlib
-end
-
-# or
-
-RSpec.configure do |config|
-  # not strictly necessary; this is the default config anyway
-  config.expect_with :rspec
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>spec_helper.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>RSpec</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>config</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>config</span><span class='o'>.</span><span class='n'>expect_with</span> <span class='ss'>:stdlib</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='c1'># or</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>RSpec</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>config</span><span class='o'>|</span>
+</span><span class='line'>  <span class='c1'># not strictly necessary; this is the default config anyway</span>
+</span><span class='line'>  <span class='n'>config</span><span class='o'>.</span><span class='n'>expect_with</span> <span class='ss'>:rspec</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>Both rspec-expectations and the standard library assertions are available as modules&#8211;<code>RSpec::Matchers</code> and <code>Test::Unit::Assertions</code>, respectively. RSpec 2.0 to 2.5 included the appropriate module into <code>RSpec::Core::ExampleGroup</code> just prior to running the examples (that is, after all of them have been defined) to allow people to configure this whenever they want.</p>
 
 <p>Unfortunately, this triggered an unfortunate bug in ruby 1.9&#8230;which I&#8217;ll get to below.</p>
@@ -72,26 +80,40 @@ end</code></pre>
 <h2 id='its_a_bug_in_ruby_19'>It&#8217;s a Bug in Ruby 1.9</h2>
 
 <p>I eventually managed to boil the problem down to a simple rspec-less example:</p>
-<script src='https://gist.github.com/845896.js?file=example.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># example.rb
-
-module MyModule
-  def some_method; super; end
-end
-
-class MyBaseClass; end
-
-class MySubClass &lt; MyBaseClass;
-  include MyModule
-end
-
-# To trigger this bug, we must include the module in the base class after
-# the module has already been included in the subclass.  If we move this line
-# above the subclass declaration, this bug will not occur.
-MyBaseClass.send(:include, MyModule)
-
-MySubClass.new.some_method</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>example.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>module</span> <span class='nn'>MyModule</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>some_method</span><span class='p'>;</span> <span class='k'>super</span><span class='p'>;</span> <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='k'>class</span> <span class='nc'>MyBaseClass</span><span class='p'>;</span> <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='k'>class</span> <span class='nc'>MySubClass</span> <span class='o'>&lt;</span> <span class='no'>MyBaseClass</span><span class='p'>;</span>
+</span><span class='line'>  <span class='kp'>include</span> <span class='no'>MyModule</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='c1'># To trigger this bug, we must include the module in the base class after</span>
+</span><span class='line'><span class='c1'># the module has already been included in the subclass.  If we move this line</span>
+</span><span class='line'><span class='c1'># above the subclass declaration, this bug will not occur.</span>
+</span><span class='line'><span class='no'>MyBaseClass</span><span class='o'>.</span><span class='n'>send</span><span class='p'>(</span><span class='ss'>:include</span><span class='p'>,</span> <span class='no'>MyModule</span><span class='p'>)</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>MySubClass</span><span class='o'>.</span><span class='n'>new</span><span class='o'>.</span><span class='n'>some_method</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>If you run this on ruby 1.8, you will (correctly) get a <code>NoMethodError</code>. On ruby 1.9, you get infinite recursion and a <code>SystemStackError</code>. Here&#8217;s my short explanation of the conditions that trigger this bug:</p>
 
 <ul>
@@ -162,15 +184,51 @@ MySubClass.new.some_method</code></pre>
 <p>Second, if you follow the &#8220;don&#8217;t load spec_helper&#8221; approach, and you need to configure either <code>expect_with</code> or <code>mock_with</code>, you&#8217;ll need to create a secondary helper file for your isolated, fast specs.</p>
 
 <p>Here&#8217;s one way to do it:</p>
-<script src='https://gist.github.com/1339377.js?file='> </script><noscript>
-  <pre class='gist-no-script'><code># 
-
-require 'rspec'
-
-RSpec.configure do |c|
-  c.mock_with :mocha
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>spec/fast_spec_helper.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='nb'>require</span> <span class='s1'>&#39;rspec&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>RSpec</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>mock_with</span> <span class='ss'>:mocha</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div><div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>spec/spec_helper.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='nb'>require</span> <span class='s1'>&#39;fast_spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class='c1'># load rails or whatever to get your full app environment booted</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>RSpec</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='c1'># other RSpec configuration</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div><div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>spec/lib/my_class_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='nb'>require</span> <span class='s1'>&#39;fast_spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class='n'>describe</span> <span class='no'>MyClass</span> <span class='k'>do</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div><div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>spec/controllers/my_controller_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='nb'>require</span> <span class='s1'>&#39;spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class='n'>describe</span> <span class='no'>MyController</span> <span class='k'>do</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>I know this goes against the &#8220;don&#8217;t load spec_helper&#8221; approach a bit, but the important thing is that the rails/sinatra/whatever environment is not fully loaded in the isolated specs. We&#8217;re using fast_spec_helper.rb to only configure the bare minimum&#8211;the specific <code>expect_with</code> or <code>mock_with</code> settings that must be set before an example group is defined. The one extra require isn&#8217;t going to make a noticeable difference in the speed of your isolated tests.</p>
 
 <p>Of course, if you are just setting <code>mock_with</code> or <code>expect_with</code> to the default (<code>:rspec</code>) then you should just remove that configuration entirely and the error should go away&#8211;no need for a separate <code>fast_spec_helper.rb</code> file.</p>

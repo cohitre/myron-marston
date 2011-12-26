@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Myron Marston &raquo; Deprecating Constants (and Classes) in Ruby</title>
-    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link href="/n/stylesheets/screen.css?7eef26cd531fab12fd4e4b9674852aca" rel="stylesheet" type="text/css" />
     <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
@@ -32,31 +32,41 @@
     <p>Ruby has great tools for deprecating obselete code. One of my favorite techniques is one I rarely see: using <code>const_missing</code> to deprecate constants, and, by extension, classes and modules.</p>
 
 <p>Consider this code:</p>
-<script src='https://gist.github.com/1225953.js?file=my_gem_config.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># my_gem_config.rb
-
-module MyGem
-  class Config
-  end
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>my_gem/config.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>module</span> <span class='nn'>MyGem</span>
+</span><span class='line'>  <span class='k'>class</span> <span class='nc'>Config</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>At a later time, you decide you would rather name this class <code>MyGem::Configuration</code>. It&#8217;s easy enough to change the name, but you may break backwards compatiblity with people who have references to <code>MyGem::Config</code> in their code.</p>
 
 <p><code>const_missing</code> really comes in handy here:</p>
-<script src='https://gist.github.com/1225953.js?file=my_gem_configuration.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># my_gem_configuration.rb
-
-module MyGem
-  class Configuration
-  end
-
-  def self.const_missing(const_name)
-    super unless const_name == :Config
-    warn &quot;`MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead.&quot;
-    Configuration
-  end
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>my_gem/configuration.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>module</span> <span class='nn'>MyGem</span>
+</span><span class='line'>  <span class='k'>class</span> <span class='nc'>Configuration</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nc'>self</span><span class='o'>.</span><span class='nf'>const_missing</span><span class='p'>(</span><span class='n'>const_name</span><span class='p'>)</span>
+</span><span class='line'>    <span class='k'>super</span> <span class='k'>unless</span> <span class='n'>const_name</span> <span class='o'>==</span> <span class='ss'>:Config</span>
+</span><span class='line'>    <span class='nb'>warn</span> <span class='s2'>&quot;`MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead.&quot;</span>
+</span><span class='line'>    <span class='no'>Configuration</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>This allows existing code that references <code>MyGem::Config</code> to continue to work, and warns the user about their use of the deprecated constant.</p>
   </div>
 </div>

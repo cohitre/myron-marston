@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Myron Marston &raquo; How to Contribute to an Open Source Project</title>
-    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link href="/n/stylesheets/screen.css?7eef26cd531fab12fd4e4b9674852aca" rel="stylesheet" type="text/css" />
     <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
@@ -44,20 +44,21 @@
 <p>In general, the best open source contributions come from people who are <em>solving their own problems</em>. If you&#8217;re not the one who is having the problem, you&#8217;ll have difficulty adequately solving it.</p>
 
 <p>No contribution is too small. I once spent over an hour trying to figure out why <a href='http://gembundler.com/'>bundler</a> wasn&#8217;t working on a project. I had a simple Gemfile like this:</p>
-<script src='https://gist.github.com/1217354.js?file=Gemfile'> </script><noscript>
-  <pre class='gist-no-script'><code># Gemfile
-
-source :rubygems
-gem :rspec</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>Gemfile  </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class='n'>source</span> <span class='ss'>:rubygems</span>
+</span><span class='line'><span class='n'>gem</span> <span class='ss'>:rspec</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>The bundler output confounded me:</p>
-<script src='https://gist.github.com/1217354.js?file=Output.sh'> </script><noscript>
-  <pre class='gist-no-script'><code># Output.sh
-
-$ bundle install
-Fetching source index for http://rubygems.org/
-Could not find gem 'rspec (&gt;= 0, runtime)' in any of the gem sources.</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>Output.sh </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class='nv'>$ </span>bundle install
+</span><span class='line'>Fetching <span class='nb'>source </span>index <span class='k'>for </span>http://rubygems.org/
+</span><span class='line'>Could not find gem <span class='s1'>&#39;rspec (&gt;= 0, runtime)&#39;</span> in any of the gem sources.
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>I <em>knew</em> <a href='http://rubygems.org'>rubygems.org</a> had RSpec in its source index&#8230;and yet bundler was telling me otherwise. After troubleshooting this for an hour, I realized I had specified the gem name using a ruby symbol (i.e. <code>:rspec</code>) rather than a string (i.e. <code>&quot;rspec&quot;</code>). Sure enough, when I changed it to a string, it worked.</p>
 
 <p>My first contribution to bundler was <a href='https://github.com/carlhuda/bundler/commit/5e6b09469afd16719cdc9a0856c6f0da0489f55f'>a simple patch</a> to provide a more useful error message when gems are specified using symbols. As I said, no contribution is too small.</p>

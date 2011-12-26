@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Myron Marston &raquo; Cassettes in VCR 2.0</title>
-    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link href="/n/stylesheets/screen.css?7eef26cd531fab12fd4e4b9674852aca" rel="stylesheet" type="text/css" />
     <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
@@ -59,19 +59,26 @@
 <p>YAML is still the default, and uses the standard library <code>YAML</code> after requiring &#8220;yaml&#8221;. This could wind up using either syck or psych, depending upon your ruby interpreter. The Syck and Psych serializers are useful as a way to force those libraries to be used. Syck is particularly useful when you have a project that needs to run on 1.8 and 1.9, so that the same YAML library gets used regardless of the ruby interpreter version. The JSON serializer uses <a href='https://github.com/intridea/multi_json'>multi_json</a> so that it supports a variety of JSON backends.</p>
 
 <p>Here&#8217;s how to pick a serializer:</p>
-<script src='https://gist.github.com/1342232.js?file=serialize_with_json.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># serialize_with_json.rb
-
-# use the JSON serializer for a particular cassette...
-VCR.use_cassette(&quot;example&quot;, :serialize_with =&gt; :json) do
-  # make an HTTP request
-end
-
-# ...or use the JSON serializer for all cassettes
-VCR.configure do |config|
-  config.default_cassette_options = { :serialize_with =&gt; :json }
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>serialize_with_json.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='c1'># use the JSON serializer for a particular cassette...</span>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s2'>&quot;example&quot;</span><span class='p'>,</span> <span class='ss'>:serialize_with</span> <span class='o'>=&gt;</span> <span class='ss'>:json</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># make an HTTP request</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='c1'># ...or use the JSON serializer for all cassettes</span>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>config</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>config</span><span class='o'>.</span><span class='n'>default_cassette_options</span> <span class='o'>=</span> <span class='p'>{</span> <span class='ss'>:serialize_with</span> <span class='o'>=&gt;</span> <span class='ss'>:json</span> <span class='p'>}</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <h2 id='providing_your_own_custom_serializer'>Providing Your Own Custom Serializer</h2>
 
 <p>It&#8217;s fairly trivial to provide your own serializer. You need to provide an object that implements three methods:</p>
@@ -85,29 +92,46 @@ end</code></pre>
 </ul>
 
 <p>Here&#8217;s an example using ruby&#8217;s marshal library:</p>
-<script src='https://gist.github.com/1342244.js?file=marshal_serializer.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># marshal_serializer.rb
-
-serializer = Object.new
-serializer.instance_eval do
-  def file_extension
-    &quot;rb_marshal&quot;
-  end
-
-  def serialize(hash)
-    Marshal.dump(hash)
-  end
-
-  def deserialize(string)
-    Marshal.load(string)
-  end
-end
-
-VCR.configure do |config|
-  config.cassette_serializers[:marshal] = serializer
-  config.default_cassette_options = { :serialize_with =&gt; :marshal }
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>marshal_serializer.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>serializer</span> <span class='o'>=</span> <span class='no'>Object</span><span class='o'>.</span><span class='n'>new</span>
+</span><span class='line'><span class='n'>serializer</span><span class='o'>.</span><span class='n'>instance_eval</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>file_extension</span>
+</span><span class='line'>    <span class='s2'>&quot;rb_marshal&quot;</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>serialize</span><span class='p'>(</span><span class='nb'>hash</span><span class='p'>)</span>
+</span><span class='line'>    <span class='no'>Marshal</span><span class='o'>.</span><span class='n'>dump</span><span class='p'>(</span><span class='nb'>hash</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>deserialize</span><span class='p'>(</span><span class='n'>string</span><span class='p'>)</span>
+</span><span class='line'>    <span class='no'>Marshal</span><span class='o'>.</span><span class='n'>load</span><span class='p'>(</span><span class='n'>string</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>config</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>config</span><span class='o'>.</span><span class='n'>cassette_serializers</span><span class='o'>[</span><span class='ss'>:marshal</span><span class='o'>]</span> <span class='o'>=</span> <span class='n'>serializer</span>
+</span><span class='line'>  <span class='n'>config</span><span class='o'>.</span><span class='n'>default_cassette_options</span> <span class='o'>=</span> <span class='p'>{</span> <span class='ss'>:serialize_with</span> <span class='o'>=&gt;</span> <span class='ss'>:marshal</span> <span class='p'>}</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <h2 id='cassettes_are_more_portable'>Cassettes are More Portable</h2>
 
 <p>VCR 1.x serialized some structs directly to YAML. This caused the classes (<code>VCR::HTTPInteraction</code>, <code>VCR::Request</code> and <code>VCR::Response</code>) to be named directly in the cassette. In 2.0, VCR passes a simple hash to the serializer, so these class names no longer show up in the cassette file. Besides making it possible to use different serializers, this also makes the VCR cassette format much more portable. You can read and use a VCR cassette without loading VCR now! It opens up the possibility to use a VCR cassette from other languages as well.</p>

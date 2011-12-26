@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Myron Marston &raquo; VCR 2.0.0 RC Released!</title>
-    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link href="/n/stylesheets/screen.css?7eef26cd531fab12fd4e4b9674852aca" rel="stylesheet" type="text/css" />
     <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
@@ -42,21 +42,30 @@
 <h2 id='whats_been_changed'>What&#8217;s been changed</h2>
 
 <p>The configuration API has changed slightly:</p>
-<script src='https://gist.github.com/1441616.js?file=configuration.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># configuration.rb
-
-# VCR 1.x
-VCR.config do |c|
-  c.cassette_library_dir = 'cassettes'
-  c.stub_with :fakeweb, :typhoeus
-end
-
-# VCR 2.0
-VCR.configure do |c|
-  c.cassette_library_dir = 'cassettes'
-  c.hook_into :fakeweb, :typhoeus
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>configuration.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='c1'># VCR 1.x</span>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>config</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>cassette_library_dir</span> <span class='o'>=</span> <span class='s1'>&#39;cassettes&#39;</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>stub_with</span> <span class='ss'>:fakeweb</span><span class='p'>,</span> <span class='ss'>:typhoeus</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='c1'># VCR 2.0</span>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>cassette_library_dir</span> <span class='o'>=</span> <span class='s1'>&#39;cassettes&#39;</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>hook_into</span> <span class='ss'>:fakeweb</span><span class='p'>,</span> <span class='ss'>:typhoeus</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>Your existing configuration will continue to work with a deprecation warning.</p>
 
 <p>The <a href='/n/dev-blog/2011/11/cassettes-in-vcr-2-0'>cassette format has changed significantly</a>. VCR 1.x cassettes are not compatible with VCR 2.0. You&#8217;ll need to either re-record them or <a href='https://github.com/myronmarston/vcr/blob/master/Upgrade.md'>migrate them to the new format</a>.</p>
@@ -76,33 +85,47 @@ end</code></pre>
 <h2 id='request_hooks'>Request Hooks</h2>
 
 <p>VCR now provides <code>before_http_request</code>, <code>after_http_request</code> and <code>around_http_request</code> hooks. These can be used in many ways. Here&#8217;s how you could use an <code>after_http_request</code> hook to log all HTTP requests:</p>
-<script src='https://gist.github.com/1446269.js?file=log_request.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># log_request.rb
-
-VCR.configure do |c|
-  c.after_http_request do |request, response|
-    Logger.log_http_request(request, response)
-  end
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>log_request.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>after_http_request</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request</span><span class='p'>,</span> <span class='n'>response</span><span class='o'>|</span>
+</span><span class='line'>    <span class='no'>Logger</span><span class='o'>.</span><span class='n'>log_http_request</span><span class='p'>(</span><span class='n'>request</span><span class='p'>,</span> <span class='n'>response</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>You can also use a request hook to globally handle all requests made to a specific API:</p>
-<script src='https://gist.github.com/1446288.js?file=handle_geocoding_requests.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># handle_geocoding_requests.rb
-
-VCR.configure do |c|
-  c.around_http_request do |request|
-    uri = URI(request.uri)
-    if uri.host == 'api.geocoder.com'
-      # extract an address like &quot;1700 E Pine St, Seattle, WA&quot;
-      # from a query like &quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&quot;
-      address = CGI.unescape(uri.query.split('=').last)
-      VCR.use_cassette(&quot;geocoding/#{address}&quot;, &amp;request)
-    else
-      request.proceed
-    end
-  end
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>handle_geocoding_requests.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>around_http_request</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request</span><span class='o'>|</span>
+</span><span class='line'>    <span class='n'>uri</span> <span class='o'>=</span> <span class='no'>URI</span><span class='p'>(</span><span class='n'>request</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span>
+</span><span class='line'>    <span class='k'>if</span> <span class='n'>uri</span><span class='o'>.</span><span class='n'>host</span> <span class='o'>==</span> <span class='s1'>&#39;api.geocoder.com&#39;</span>
+</span><span class='line'>      <span class='c1'># extract an address like &quot;1700 E Pine St, Seattle, WA&quot;</span>
+</span><span class='line'>      <span class='c1'># from a query like &quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&quot;</span>
+</span><span class='line'>      <span class='n'>address</span> <span class='o'>=</span> <span class='no'>CGI</span><span class='o'>.</span><span class='n'>unescape</span><span class='p'>(</span><span class='n'>uri</span><span class='o'>.</span><span class='n'>query</span><span class='o'>.</span><span class='n'>split</span><span class='p'>(</span><span class='s1'>&#39;=&#39;</span><span class='p'>)</span><span class='o'>.</span><span class='n'>last</span><span class='p'>)</span>
+</span><span class='line'>      <span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s2'>&quot;geocoding/</span><span class='si'>#{</span><span class='n'>address</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span> <span class='o'>&amp;</span><span class='n'>request</span><span class='p'>)</span>
+</span><span class='line'>    <span class='k'>else</span>
+</span><span class='line'>      <span class='n'>request</span><span class='o'>.</span><span class='n'>proceed</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>In an <code>around_http_request</code>, you can either treat the request as a proc (and pass it on to a method that expects a block as <code>&amp;request</code>), or use <code>request.proceed</code> to allow the request to continue.</p>
 
 <p>I certainly wouldn&#8217;t recommend doing this for all requests&#8211;you&#8217;ll often want to test the same requests getting different responses in different tests&#8211;but for truly stateless APIs that always return the same response for a given request (such as a geocoder) this can be very handy.</p>
@@ -112,111 +135,108 @@ end</code></pre>
 <h2 id='ignore_a_request_based_on_anything'>Ignore a Request Based on Anything</h2>
 
 <p>VCR 1.x made it simple to ignore a request based on the host:</p>
-<script src='https://gist.github.com/1430657.js?file=vcr_setup.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># vcr_setup.rb
-
-VCR.configure do |c|
-  c.ignore_localhost = true # to ignore 127.0.0.1 and localhost requests
-
-  # or...
-
-  c.ignore_hosts 'foo.com', 'bar.com'
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>vcr_setup.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>ignore_localhost</span> <span class='o'>=</span> <span class='kp'>true</span> <span class='c1'># to ignore 127.0.0.1 and localhost requests</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='c1'># or...</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>ignore_hosts</span> <span class='s1'>&#39;foo.com&#39;</span><span class='p'>,</span> <span class='s1'>&#39;bar.com&#39;</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>This worked great for most people, but some wanted to <a href='https://github.com/myronmarston/vcr/issues/42'>selectively ignore localhost requests based on port</a>. VCR 2.0 now lets you ignore a request based on <em>anything</em>, by providing a block that returns a truthy value if the given request should be ignored. Here&#8217;s how you can ignore only localhost requests to port 7500:</p>
-<script src='https://gist.github.com/1430672.js?file=ignore_request.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># ignore_request.rb
-
-VCR.configure do |c|
-  c.ignore_request do |request|
-    uri = URI(request.uri)
-    uri.host == 'localhost' &amp;&amp; uri.port == 7500
-  end
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>ignore_request.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>ignore_request</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request</span><span class='o'>|</span>
+</span><span class='line'>    <span class='n'>uri</span> <span class='o'>=</span> <span class='no'>URI</span><span class='p'>(</span><span class='n'>request</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span>
+</span><span class='line'>    <span class='n'>uri</span><span class='o'>.</span><span class='n'>host</span> <span class='o'>==</span> <span class='s1'>&#39;localhost&#39;</span> <span class='o'>&amp;&amp;</span> <span class='n'>uri</span><span class='o'>.</span><span class='n'>port</span> <span class='o'>==</span> <span class='mi'>7500</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <h2 id='improved_unhandled_request_error_messages'>Improved Unhandled Request Error Messages</h2>
 
 <p>If you&#8217;ve used VCR 1.x, you&#8217;ve undoubtedly gotten an error like this:</p>
-<script src='https://gist.github.com/1432329.js?file=vcr_1_x_error.txt'> </script><noscript>
-  <pre class='gist-no-script'><code># vcr_1_x_error.txt
 
-Real HTTP connections are disabled. Unregistered request: GET
-http://api.somehost.com/widgets.  You can use VCR to automatically
-record this request and replay it later.  For more details, visit
-the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/1-11-3
-(FakeWeb::NetConnectNotAllowedError)</code></pre>
-</noscript>
+<p>Liquid error: ClassNotFound: no lexer for alias &#8216;txt&#8217; found</p>
+
 <p>You get this kind of error when a request is made that VCR does not know how to handle. There are a lot of different ways you can fix the error, but the message doesn&#8217;t give you much help.</p>
 
 <p>In VCR 2.0, you&#8217;ll get a more helpful error message:</p>
-<script src='https://gist.github.com/1432316.js?file=example_error.txt'> </script><noscript>
-  <pre class='gist-no-script'><code># example_error.txt
 
-================================================================================
-An HTTP request has been made that VCR does not know how to handle:
-  GET http://api.somehost.com/widgets
+<p>Liquid error: ClassNotFound: no lexer for alias &#8216;txt&#8217; found</p>
 
-VCR is currently using the following cassette:
-  - cassettes/widgets.yml
-  - :record =&gt; :once
-  - :match_requests_on =&gt; [:method, :uri]
-
-Under the current configuration VCR can not find a suitable HTTP interaction
-to replay and is prevented from recording new requests. There are a few ways
-you can deal with this:
-
-  * You can use the :new_episodes record mode to allow VCR to
-    record this new request to the existing cassette [1].
-  * If you want VCR to ignore this request (and others like it), you can
-    set an `ignore_request` callback [2].
-  * The current record mode (:once) does not allow new requests to be recorded
-    to a previously recorded cassette. You can delete the cassette file and re-run
-    your tests to allow the cassette to be recorded with this request [3].
-  * The cassette contains 1 HTTP interaction that has not been
-    played back. If your request is non-deterministic, you may need to
-    change your :match_requests_on cassette option to be more lenient
-    or use a custom request matcher to allow it to match [4].
-
-[1] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/new-episodes
-[2] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/configuration/ignore-request
-[3] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/once
-[4] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/request-matching
-================================================================================</code></pre>
-</noscript>
 <h2 id='integration_with_rspec_2_metadata'>Integration with RSpec 2 Metadata</h2>
 
 <p><a href='http://twitter.com/rbates'>Ryan Bates</a> had this <a href='https://gist.github.com/1212530'>great idea</a> to integrate VCR with RSpec 2 using metadata. VCR 2.0 now provides direct support for this:</p>
-<script src='https://gist.github.com/1441746.js?file=vcr_rspec_metadata.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># vcr_rspec_metadata.rb
-
-VCR.configure do |c|
-  c.configure_rspec_metadata!
-end
-
-RSpec.configure do |c|
-  # so we can use `:vcr` rather than `:vcr =&gt; true`;
-  # in RSpec 3 this will no longer be necessary.
-  c.treat_symbols_as_metadata_keys_with_true_values = true
-end
-
-# apply it to an example group
-describe MyAPIWrapper, :vcr do
-end
-
-describe MyAPIWrapper do
-  # apply it to an individual example
-  it &quot;does something&quot;, :vcr do
-  end
-
-  # set some cassette options
-  it &quot;does something&quot;, :vcr =&gt; { :record =&gt; :new_episodes } do
-  end
-
-  # override the cassette name
-  it &quot;does something&quot;, :vcr =&gt; { :cassette_name =&gt; &quot;something&quot; } do
-  end
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>vcr_rspec_metadata.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>configure_rspec_metadata!</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>RSpec</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='c1'># so we can use `:vcr` rather than `:vcr =&gt; true`;</span>
+</span><span class='line'>  <span class='c1'># in RSpec 3 this will no longer be necessary.</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>treat_symbols_as_metadata_keys_with_true_values</span> <span class='o'>=</span> <span class='kp'>true</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='c1'># apply it to an example group</span>
+</span><span class='line'><span class='n'>describe</span> <span class='no'>MyAPIWrapper</span><span class='p'>,</span> <span class='ss'>:vcr</span> <span class='k'>do</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='n'>describe</span> <span class='no'>MyAPIWrapper</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># apply it to an individual example</span>
+</span><span class='line'>  <span class='n'>it</span> <span class='s2'>&quot;does something&quot;</span><span class='p'>,</span> <span class='ss'>:vcr</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='c1'># set some cassette options</span>
+</span><span class='line'>  <span class='n'>it</span> <span class='s2'>&quot;does something&quot;</span><span class='p'>,</span> <span class='ss'>:vcr</span> <span class='o'>=&gt;</span> <span class='p'>{</span> <span class='ss'>:record</span> <span class='o'>=&gt;</span> <span class='ss'>:new_episodes</span> <span class='p'>}</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='c1'># override the cassette name</span>
+</span><span class='line'>  <span class='n'>it</span> <span class='s2'>&quot;does something&quot;</span><span class='p'>,</span> <span class='ss'>:vcr</span> <span class='o'>=&gt;</span> <span class='p'>{</span> <span class='ss'>:cassette_name</span> <span class='o'>=&gt;</span> <span class='s2'>&quot;something&quot;</span> <span class='p'>}</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>The old <a href='https://www.relishapp.com/myronmarston/vcr/docs/test-frameworks/usage-with-rspec-macro'><code>use_vcr_cassette</code> macro</a> still works. The primary difference is that the macro uses the same cassette for each example in an example group, while the metadata uses a different cassette for each individual example.</p>
 
 <h2 id='exclusive_cassettes'>Exclusive cassettes</h2>
@@ -224,13 +244,14 @@ end</code></pre>
 <p>VCR has always allowed you to &#8220;nest&#8221; cassettes; for example, you may use a cassette for an entire cucumber scenario and then also use a cassette in an individual step definition. When you do this, requests may be handled by an HTTP interaction from the outer cassette if there is not an HTTP interaction from the inner cassette that matches.</p>
 
 <p>If you do not want to allow the matching to &#8220;fall through&#8221; to the outer cassette you can use the new <code>:exclusive</code> option:</p>
-<script src='https://gist.github.com/1446331.js?file=exclusive_cassette.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># exclusive_cassette.rb
-
-VCR.use_cassette('my_cassette', :exclusive =&gt; true) do
-  # ...
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>exclusive_cassette.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s1'>&#39;my_cassette&#39;</span><span class='p'>,</span> <span class='ss'>:exclusive</span> <span class='o'>=&gt;</span> <span class='kp'>true</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># ...</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <h2 id='vcr_200_final'>VCR 2.0.0 Final</h2>
 
 <p>I plan to release VCR 2.0.0 final in a couple of weeks. Please give the RC a try and give me feedback!</p>

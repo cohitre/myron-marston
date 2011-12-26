@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-12-09T10:10:58-08:00</updated>
+  <updated>2011-12-25T17:44:12-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -29,21 +29,30 @@
 &lt;h2 id='whats_been_changed'&gt;What&amp;#8217;s been changed&lt;/h2&gt;
 
 &lt;p&gt;The configuration API has changed slightly:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1441616.js?file=configuration.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# configuration.rb
-
-# VCR 1.x
-VCR.config do |c|
-  c.cassette_library_dir = 'cassettes'
-  c.stub_with :fakeweb, :typhoeus
-end
-
-# VCR 2.0
-VCR.configure do |c|
-  c.cassette_library_dir = 'cassettes'
-  c.hook_into :fakeweb, :typhoeus
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;configuration.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# VCR 1.x&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;config&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;cassette_library_dir&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;cassettes&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;stub_with&lt;/span&gt; &lt;span class='ss'&gt;:fakeweb&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:typhoeus&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# VCR 2.0&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;cassette_library_dir&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;cassettes&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;hook_into&lt;/span&gt; &lt;span class='ss'&gt;:fakeweb&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:typhoeus&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;Your existing configuration will continue to work with a deprecation warning.&lt;/p&gt;
 
 &lt;p&gt;The &lt;a href='/n/dev-blog/2011/11/cassettes-in-vcr-2-0'&gt;cassette format has changed significantly&lt;/a&gt;. VCR 1.x cassettes are not compatible with VCR 2.0. You&amp;#8217;ll need to either re-record them or &lt;a href='https://github.com/myronmarston/vcr/blob/master/Upgrade.md'&gt;migrate them to the new format&lt;/a&gt;.&lt;/p&gt;
@@ -63,33 +72,47 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id='request_hooks'&gt;Request Hooks&lt;/h2&gt;
 
 &lt;p&gt;VCR now provides &lt;code&gt;before_http_request&lt;/code&gt;, &lt;code&gt;after_http_request&lt;/code&gt; and &lt;code&gt;around_http_request&lt;/code&gt; hooks. These can be used in many ways. Here&amp;#8217;s how you could use an &lt;code&gt;after_http_request&lt;/code&gt; hook to log all HTTP requests:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1446269.js?file=log_request.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# log_request.rb
-
-VCR.configure do |c|
-  c.after_http_request do |request, response|
-    Logger.log_http_request(request, response)
-  end
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;log_request.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;after_http_request&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;response&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Logger&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;log_http_request&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;response&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;You can also use a request hook to globally handle all requests made to a specific API:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1446288.js?file=handle_geocoding_requests.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# handle_geocoding_requests.rb
-
-VCR.configure do |c|
-  c.around_http_request do |request|
-    uri = URI(request.uri)
-    if uri.host == 'api.geocoder.com'
-      # extract an address like &amp;quot;1700 E Pine St, Seattle, WA&amp;quot;
-      # from a query like &amp;quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&amp;quot;
-      address = CGI.unescape(uri.query.split('=').last)
-      VCR.use_cassette(&amp;quot;geocoding/#{address}&amp;quot;, &amp;amp;request)
-    else
-      request.proceed
-    end
-  end
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;handle_geocoding_requests.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;around_http_request&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;uri&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;host&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;api.geocoder.com&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='c1'&gt;# extract an address like &amp;quot;1700 E Pine St, Seattle, WA&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='c1'&gt;# from a query like &amp;quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;address&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;CGI&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;unescape&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;query&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;split&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;=&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;last&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;geocoding/&lt;/span&gt;&lt;span class='si'&gt;#{&lt;/span&gt;&lt;span class='n'&gt;address&lt;/span&gt;&lt;span class='si'&gt;}&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;proceed&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;In an &lt;code&gt;around_http_request&lt;/code&gt;, you can either treat the request as a proc (and pass it on to a method that expects a block as &lt;code&gt;&amp;amp;request&lt;/code&gt;), or use &lt;code&gt;request.proceed&lt;/code&gt; to allow the request to continue.&lt;/p&gt;
 
 &lt;p&gt;I certainly wouldn&amp;#8217;t recommend doing this for all requests&amp;#8211;you&amp;#8217;ll often want to test the same requests getting different responses in different tests&amp;#8211;but for truly stateless APIs that always return the same response for a given request (such as a geocoder) this can be very handy.&lt;/p&gt;
@@ -99,111 +122,108 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id='ignore_a_request_based_on_anything'&gt;Ignore a Request Based on Anything&lt;/h2&gt;
 
 &lt;p&gt;VCR 1.x made it simple to ignore a request based on the host:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1430657.js?file=vcr_setup.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_setup.rb
-
-VCR.configure do |c|
-  c.ignore_localhost = true # to ignore 127.0.0.1 and localhost requests
-
-  # or...
-
-  c.ignore_hosts 'foo.com', 'bar.com'
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;vcr_setup.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;ignore_localhost&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='kp'&gt;true&lt;/span&gt; &lt;span class='c1'&gt;# to ignore 127.0.0.1 and localhost requests&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# or...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;ignore_hosts&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;foo.com&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;bar.com&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;This worked great for most people, but some wanted to &lt;a href='https://github.com/myronmarston/vcr/issues/42'&gt;selectively ignore localhost requests based on port&lt;/a&gt;. VCR 2.0 now lets you ignore a request based on &lt;em&gt;anything&lt;/em&gt;, by providing a block that returns a truthy value if the given request should be ignored. Here&amp;#8217;s how you can ignore only localhost requests to port 7500:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1430672.js?file=ignore_request.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# ignore_request.rb
-
-VCR.configure do |c|
-  c.ignore_request do |request|
-    uri = URI(request.uri)
-    uri.host == 'localhost' &amp;amp;&amp;amp; uri.port == 7500
-  end
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;ignore_request.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;ignore_request&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;uri&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;host&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;port&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='mi'&gt;7500&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;h2 id='improved_unhandled_request_error_messages'&gt;Improved Unhandled Request Error Messages&lt;/h2&gt;
 
 &lt;p&gt;If you&amp;#8217;ve used VCR 1.x, you&amp;#8217;ve undoubtedly gotten an error like this:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1432329.js?file=vcr_1_x_error.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_1_x_error.txt
 
-Real HTTP connections are disabled. Unregistered request: GET
-http://api.somehost.com/widgets.  You can use VCR to automatically
-record this request and replay it later.  For more details, visit
-the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/1-11-3
-(FakeWeb::NetConnectNotAllowedError)&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;p&gt;Liquid error: ClassNotFound: no lexer for alias &amp;#8216;txt&amp;#8217; found&lt;/p&gt;
+
 &lt;p&gt;You get this kind of error when a request is made that VCR does not know how to handle. There are a lot of different ways you can fix the error, but the message doesn&amp;#8217;t give you much help.&lt;/p&gt;
 
 &lt;p&gt;In VCR 2.0, you&amp;#8217;ll get a more helpful error message:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1432316.js?file=example_error.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# example_error.txt
 
-================================================================================
-An HTTP request has been made that VCR does not know how to handle:
-  GET http://api.somehost.com/widgets
+&lt;p&gt;Liquid error: ClassNotFound: no lexer for alias &amp;#8216;txt&amp;#8217; found&lt;/p&gt;
 
-VCR is currently using the following cassette:
-  - cassettes/widgets.yml
-  - :record =&amp;gt; :once
-  - :match_requests_on =&amp;gt; [:method, :uri]
-
-Under the current configuration VCR can not find a suitable HTTP interaction
-to replay and is prevented from recording new requests. There are a few ways
-you can deal with this:
-
-  * You can use the :new_episodes record mode to allow VCR to
-    record this new request to the existing cassette [1].
-  * If you want VCR to ignore this request (and others like it), you can
-    set an `ignore_request` callback [2].
-  * The current record mode (:once) does not allow new requests to be recorded
-    to a previously recorded cassette. You can delete the cassette file and re-run
-    your tests to allow the cassette to be recorded with this request [3].
-  * The cassette contains 1 HTTP interaction that has not been
-    played back. If your request is non-deterministic, you may need to
-    change your :match_requests_on cassette option to be more lenient
-    or use a custom request matcher to allow it to match [4].
-
-[1] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/new-episodes
-[2] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/configuration/ignore-request
-[3] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/once
-[4] https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/request-matching
-================================================================================&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
 &lt;h2 id='integration_with_rspec_2_metadata'&gt;Integration with RSpec 2 Metadata&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href='http://twitter.com/rbates'&gt;Ryan Bates&lt;/a&gt; had this &lt;a href='https://gist.github.com/1212530'&gt;great idea&lt;/a&gt; to integrate VCR with RSpec 2 using metadata. VCR 2.0 now provides direct support for this:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1441746.js?file=vcr_rspec_metadata.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_rspec_metadata.rb
-
-VCR.configure do |c|
-  c.configure_rspec_metadata!
-end
-
-RSpec.configure do |c|
-  # so we can use `:vcr` rather than `:vcr =&amp;gt; true`;
-  # in RSpec 3 this will no longer be necessary.
-  c.treat_symbols_as_metadata_keys_with_true_values = true
-end
-
-# apply it to an example group
-describe MyAPIWrapper, :vcr do
-end
-
-describe MyAPIWrapper do
-  # apply it to an individual example
-  it &amp;quot;does something&amp;quot;, :vcr do
-  end
-
-  # set some cassette options
-  it &amp;quot;does something&amp;quot;, :vcr =&amp;gt; { :record =&amp;gt; :new_episodes } do
-  end
-
-  # override the cassette name
-  it &amp;quot;does something&amp;quot;, :vcr =&amp;gt; { :cassette_name =&amp;gt; &amp;quot;something&amp;quot; } do
-  end
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;vcr_rspec_metadata.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;span class='line-number'&gt;22&lt;/span&gt;
+&lt;span class='line-number'&gt;23&lt;/span&gt;
+&lt;span class='line-number'&gt;24&lt;/span&gt;
+&lt;span class='line-number'&gt;25&lt;/span&gt;
+&lt;span class='line-number'&gt;26&lt;/span&gt;
+&lt;span class='line-number'&gt;27&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure_rspec_metadata!&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;RSpec&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# so we can use `:vcr` rather than `:vcr =&amp;gt; true`;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# in RSpec 3 this will no longer be necessary.&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;treat_symbols_as_metadata_keys_with_true_values&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='kp'&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# apply it to an example group&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='no'&gt;MyAPIWrapper&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:vcr&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='no'&gt;MyAPIWrapper&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# apply it to an individual example&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;does something&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:vcr&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# set some cassette options&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;does something&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:vcr&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='ss'&gt;:record&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='ss'&gt;:new_episodes&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# override the cassette name&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;does something&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:vcr&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='ss'&gt;:cassette_name&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;something&amp;quot;&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;The old &lt;a href='https://www.relishapp.com/myronmarston/vcr/docs/test-frameworks/usage-with-rspec-macro'&gt;&lt;code&gt;use_vcr_cassette&lt;/code&gt; macro&lt;/a&gt; still works. The primary difference is that the macro uses the same cassette for each example in an example group, while the metadata uses a different cassette for each individual example.&lt;/p&gt;
 
 &lt;h2 id='exclusive_cassettes'&gt;Exclusive cassettes&lt;/h2&gt;
@@ -211,13 +231,14 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;VCR has always allowed you to &amp;#8220;nest&amp;#8221; cassettes; for example, you may use a cassette for an entire cucumber scenario and then also use a cassette in an individual step definition. When you do this, requests may be handled by an HTTP interaction from the outer cassette if there is not an HTTP interaction from the inner cassette that matches.&lt;/p&gt;
 
 &lt;p&gt;If you do not want to allow the matching to &amp;#8220;fall through&amp;#8221; to the outer cassette you can use the new &lt;code&gt;:exclusive&lt;/code&gt; option:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1446331.js?file=exclusive_cassette.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# exclusive_cassette.rb
-
-VCR.use_cassette('my_cassette', :exclusive =&amp;gt; true) do
-  # ...
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;exclusive_cassette.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;my_cassette&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:exclusive&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='kp'&gt;true&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# ...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;h2 id='vcr_200_final'&gt;VCR 2.0.0 Final&lt;/h2&gt;
 
 &lt;p&gt;I plan to release VCR 2.0.0 final in a couple of weeks. Please give the RC a try and give me feedback!&lt;/p&gt;</content>
@@ -258,19 +279,26 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;YAML is still the default, and uses the standard library &lt;code&gt;YAML&lt;/code&gt; after requiring &amp;#8220;yaml&amp;#8221;. This could wind up using either syck or psych, depending upon your ruby interpreter. The Syck and Psych serializers are useful as a way to force those libraries to be used. Syck is particularly useful when you have a project that needs to run on 1.8 and 1.9, so that the same YAML library gets used regardless of the ruby interpreter version. The JSON serializer uses &lt;a href='https://github.com/intridea/multi_json'&gt;multi_json&lt;/a&gt; so that it supports a variety of JSON backends.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;#8217;s how to pick a serializer:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1342232.js?file=serialize_with_json.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# serialize_with_json.rb
-
-# use the JSON serializer for a particular cassette...
-VCR.use_cassette(&amp;quot;example&amp;quot;, :serialize_with =&amp;gt; :json) do
-  # make an HTTP request
-end
-
-# ...or use the JSON serializer for all cassettes
-VCR.configure do |config|
-  config.default_cassette_options = { :serialize_with =&amp;gt; :json }
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;serialize_with_json.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# use the JSON serializer for a particular cassette...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;example&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:serialize_with&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='ss'&gt;:json&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# make an HTTP request&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# ...or use the JSON serializer for all cassettes&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;default_cassette_options&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='ss'&gt;:serialize_with&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='ss'&gt;:json&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;h2 id='providing_your_own_custom_serializer'&gt;Providing Your Own Custom Serializer&lt;/h2&gt;
 
 &lt;p&gt;It&amp;#8217;s fairly trivial to provide your own serializer. You need to provide an object that implements three methods:&lt;/p&gt;
@@ -284,29 +312,46 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Here&amp;#8217;s an example using ruby&amp;#8217;s marshal library:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1342244.js?file=marshal_serializer.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# marshal_serializer.rb
-
-serializer = Object.new
-serializer.instance_eval do
-  def file_extension
-    &amp;quot;rb_marshal&amp;quot;
-  end
-
-  def serialize(hash)
-    Marshal.dump(hash)
-  end
-
-  def deserialize(string)
-    Marshal.load(string)
-  end
-end
-
-VCR.configure do |config|
-  config.cassette_serializers[:marshal] = serializer
-  config.default_cassette_options = { :serialize_with =&amp;gt; :marshal }
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;marshal_serializer.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;serializer&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Object&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;serializer&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;instance_eval&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;file_extension&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='s2'&gt;&amp;quot;rb_marshal&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;serialize&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='nb'&gt;hash&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Marshal&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;dump&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='nb'&gt;hash&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;deserialize&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;string&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Marshal&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;load&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;string&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;cassette_serializers&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:marshal&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;serializer&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;default_cassette_options&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='ss'&gt;:serialize_with&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='ss'&gt;:marshal&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;h2 id='cassettes_are_more_portable'&gt;Cassettes are More Portable&lt;/h2&gt;
 
 &lt;p&gt;VCR 1.x serialized some structs directly to YAML. This caused the classes (&lt;code&gt;VCR::HTTPInteraction&lt;/code&gt;, &lt;code&gt;VCR::Request&lt;/code&gt; and &lt;code&gt;VCR::Response&lt;/code&gt;) to be named directly in the cassette. In 2.0, VCR passes a simple hash to the serializer, so these class names no longer show up in the cassette file. Besides making it possible to use different serializers, this also makes the VCR cassette format much more portable. You can read and use a VCR cassette without loading VCR now! It opens up the possibility to use a VCR cassette from other languages as well.&lt;/p&gt;
@@ -353,20 +398,28 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In particular, it allows people to use rspec-core to define and run their tests using RSpec&amp;#8217;s example definition DSL (&lt;code&gt;describe&lt;/code&gt;, &lt;code&gt;it&lt;/code&gt;, &lt;code&gt;before&lt;/code&gt;, &lt;code&gt;let&lt;/code&gt;, etc) while sticking with the &lt;code&gt;assert_foo&lt;/code&gt; assertion methods from Test::Unit or minitest, rather than using RSpec&amp;#8217;s &lt;code&gt;object.should whatever&lt;/code&gt; syntax. For better or worse, some people really dislike rspec-expectations but love the runner.&lt;/p&gt;
 
 &lt;p&gt;RSpec 2 allows you to configure which you want to use:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1339217.js?file=spec_helper.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# spec_helper.rb
-
-RSpec.configure do |config|
-  config.expect_with :stdlib
-end
-
-# or
-
-RSpec.configure do |config|
-  # not strictly necessary; this is the default config anyway
-  config.expect_with :rspec
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;spec_helper.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;RSpec&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expect_with&lt;/span&gt; &lt;span class='ss'&gt;:stdlib&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# or&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;RSpec&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# not strictly necessary; this is the default config anyway&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expect_with&lt;/span&gt; &lt;span class='ss'&gt;:rspec&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;Both rspec-expectations and the standard library assertions are available as modules&amp;#8211;&lt;code&gt;RSpec::Matchers&lt;/code&gt; and &lt;code&gt;Test::Unit::Assertions&lt;/code&gt;, respectively. RSpec 2.0 to 2.5 included the appropriate module into &lt;code&gt;RSpec::Core::ExampleGroup&lt;/code&gt; just prior to running the examples (that is, after all of them have been defined) to allow people to configure this whenever they want.&lt;/p&gt;
 
 &lt;p&gt;Unfortunately, this triggered an unfortunate bug in ruby 1.9&amp;#8230;which I&amp;#8217;ll get to below.&lt;/p&gt;
@@ -382,26 +435,40 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id='its_a_bug_in_ruby_19'&gt;It&amp;#8217;s a Bug in Ruby 1.9&lt;/h2&gt;
 
 &lt;p&gt;I eventually managed to boil the problem down to a simple rspec-less example:&lt;/p&gt;
-&lt;script src='https://gist.github.com/845896.js?file=example.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# example.rb
-
-module MyModule
-  def some_method; super; end
-end
-
-class MyBaseClass; end
-
-class MySubClass &amp;lt; MyBaseClass;
-  include MyModule
-end
-
-# To trigger this bug, we must include the module in the base class after
-# the module has already been included in the subclass.  If we move this line
-# above the subclass declaration, this bug will not occur.
-MyBaseClass.send(:include, MyModule)
-
-MySubClass.new.some_method&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;example.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;module&lt;/span&gt; &lt;span class='nn'&gt;MyModule&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;some_method&lt;/span&gt;&lt;span class='p'&gt;;&lt;/span&gt; &lt;span class='k'&gt;super&lt;/span&gt;&lt;span class='p'&gt;;&lt;/span&gt; &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;MyBaseClass&lt;/span&gt;&lt;span class='p'&gt;;&lt;/span&gt; &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;MySubClass&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;&lt;/span&gt; &lt;span class='no'&gt;MyBaseClass&lt;/span&gt;&lt;span class='p'&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='kp'&gt;include&lt;/span&gt; &lt;span class='no'&gt;MyModule&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# To trigger this bug, we must include the module in the base class after&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# the module has already been included in the subclass.  If we move this line&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# above the subclass declaration, this bug will not occur.&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;MyBaseClass&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;send&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:include&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='no'&gt;MyModule&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;MySubClass&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;some_method&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;If you run this on ruby 1.8, you will (correctly) get a &lt;code&gt;NoMethodError&lt;/code&gt;. On ruby 1.9, you get infinite recursion and a &lt;code&gt;SystemStackError&lt;/code&gt;. Here&amp;#8217;s my short explanation of the conditions that trigger this bug:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -472,15 +539,51 @@ MySubClass.new.some_method&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Second, if you follow the &amp;#8220;don&amp;#8217;t load spec_helper&amp;#8221; approach, and you need to configure either &lt;code&gt;expect_with&lt;/code&gt; or &lt;code&gt;mock_with&lt;/code&gt;, you&amp;#8217;ll need to create a secondary helper file for your isolated, fast specs.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;#8217;s one way to do it:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1339377.js?file='&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# 
-
-require 'rspec'
-
-RSpec.configure do |c|
-  c.mock_with :mocha
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;spec/fast_spec_helper.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;rspec&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;RSpec&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;mock_with&lt;/span&gt; &lt;span class='ss'&gt;:mocha&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;spec/spec_helper.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;fast_spec_helper&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# load rails or whatever to get your full app environment booted&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;RSpec&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# other RSpec configuration&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;spec/lib/my_class_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;fast_spec_helper&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='no'&gt;MyClass&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;spec/controllers/my_controller_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;spec_helper&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='no'&gt;MyController&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;I know this goes against the &amp;#8220;don&amp;#8217;t load spec_helper&amp;#8221; approach a bit, but the important thing is that the rails/sinatra/whatever environment is not fully loaded in the isolated specs. We&amp;#8217;re using fast_spec_helper.rb to only configure the bare minimum&amp;#8211;the specific &lt;code&gt;expect_with&lt;/code&gt; or &lt;code&gt;mock_with&lt;/code&gt; settings that must be set before an example group is defined. The one extra require isn&amp;#8217;t going to make a noticeable difference in the speed of your isolated tests.&lt;/p&gt;
 
 &lt;p&gt;Of course, if you are just setting &lt;code&gt;mock_with&lt;/code&gt; or &lt;code&gt;expect_with&lt;/code&gt; to the default (&lt;code&gt;:rspec&lt;/code&gt;) then you should just remove that configuration entirely and the error should go away&amp;#8211;no need for a separate &lt;code&gt;fast_spec_helper.rb&lt;/code&gt; file.&lt;/p&gt;
@@ -520,19 +623,26 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id='how_vcr_1x_worked'&gt;How VCR 1.x worked&lt;/h2&gt;
 
 &lt;p&gt;I&amp;#8217;ve wanted to make VCR work well for these sorts of APIs for a long time, but the way VCR 1.x worked prevented a good solution. In VCR 1.x, it uses declaritive APIs provided by FakeWeb, WebMock and Typhoeus. When you insert a cassette, VCR makes calls to these libraries that are a bit like this:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1275914.js?file=vcr_stubs.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# vcr_stubs.rb
-
-FakeWeb.register_uri(request.method, request.uri, response.to_fakeweb_hash)
-
-WebMock.stub_request(
-  request.method, request.uri
-).to_return(response.to_webmock_hash)
-
-Typhoeus::Hydra.stub(
-  request.method, request.uri
-).and_return(response.to_typhoeus_response)&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;vcr_stubs.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;FakeWeb&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;register_uri&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;method&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;response&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_fakeweb_hash&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;WebMock&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;stub_request&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;method&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_return&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;response&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_webmock_hash&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;Typhoeus&lt;/span&gt;&lt;span class='o'&gt;::&lt;/span&gt;&lt;span class='no'&gt;Hydra&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;stub&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;method&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;and_return&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;response&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_typhoeus_response&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;These libraries all allow you to register a stub using a regex rather than a full URI, and this is in fact what VCR 1.x did to support &lt;code&gt;:match_requests_on =&amp;gt; [:host, :path]&lt;/code&gt;. This works OK, but doesn&amp;#8217;t provide an easy way to solve the problem of URIs with non-deterministic query parameters. Building a regex that correctly matches all of a URI except a particular query parameter is not easy, and it would have been even more difficult to put code that does this generically in VCR so that users could easily match on a URI while ignoring particular query parameters.&lt;/p&gt;
 
 &lt;h2 id='the_big_rewrite'&gt;The big rewrite&lt;/h2&gt;
@@ -548,43 +658,58 @@ Typhoeus::Hydra.stub(
 &lt;p&gt;In VCR 2.0, a request matcher is simply an object that responds to &lt;code&gt;#call&lt;/code&gt; with two arguments and returns &lt;code&gt;true&lt;/code&gt; if the given requests should be considered identical, or &lt;code&gt;false&lt;/code&gt; if they should not be considered identical.&lt;/p&gt;
 
 &lt;p&gt;The simplest request matcher is probably a lambda:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1272818.js?file=lambda_matcher.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# lambda_matcher.rb
-
-port_matcher = lambda do |request_1, request_2|
-  URI(request_1.uri).port == URI(request_2.uri).port
-end
-
-VCR.use_cassette('example', :match_requests_on =&amp;gt; [:method, port_matcher]) do
-  # make an HTTP request
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;lambda_matcher.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;port_matcher&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='nb'&gt;lambda&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request_1&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;request_2&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request_1&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;port&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request_2&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;port&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;example&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:match_requests_on&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:method&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;port_matcher&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# make an HTTP request&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;You can also register it as a named matcher and use the name in your &lt;code&gt;:match_requests_on&lt;/code&gt; option:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1275909.js?file=register_matcher.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# register_matcher.rb
-
-VCR.configure do |c|
-  c.register_request_matcher :port do |request_1, request_2|
-    URI(request_1.uri).port == URI(request_2.uri).port
-  end
-end
-
-VCR.use_cassette('example', :match_requests_on =&amp;gt; [:method, :port]) do
-  # make an HTTP request
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;register_matcher.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;register_request_matcher&lt;/span&gt; &lt;span class='ss'&gt;:port&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request_1&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;request_2&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request_1&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;port&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request_2&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;port&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;example&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:match_requests_on&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:method&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:port&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# make an HTTP request&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;In fact, this is exactly how the &lt;a href='https://github.com/myronmarston/vcr/blob/v2.0.0.beta1/lib/vcr/request_matcher_registry.rb#L64-71'&gt;built-in request matchers&lt;/a&gt; (&lt;code&gt;:method&lt;/code&gt;, &lt;code&gt;:uri&lt;/code&gt;, &lt;code&gt;:host&lt;/code&gt;, &lt;code&gt;:path&lt;/code&gt;, &lt;code&gt;:headers&lt;/code&gt; and &lt;code&gt;:body&lt;/code&gt;) work now.&lt;/p&gt;
 
 &lt;p&gt;Finally, for the specific case of URIs with non-deterministic query parameters, VCR provides a simple way to create a request matcher:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1275911.js?file=uri_without_timestamp.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# uri_without_timestamp.rb
-
-uri_without_timestamp = VCR.request_matchers.uri_without_param(:timestamp)
-VCR.use_cassette('example', :match_requests_on =&amp;gt; [:method, uri_without_timestamp]) do
-  # make an HTTP request with a URI that has a non-determinstic
-  # timestamp query parameter
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;uri_without_timestamp.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;uri_without_timestamp&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;request_matchers&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri_without_param&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:timestamp&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;example&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:match_requests_on&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:method&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;uri_without_timestamp&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# make an HTTP request with a URI that has a non-determinstic&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# timestamp query parameter&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;This is only the tip of the iceberg. You can match requests on specific portions of the request body or headers. I can imagine people using this to wrap up the specific set of matchers used for requests to a particular API into a single matcher that simply delegates to the desired matchers&amp;#8211;that way, you can write &lt;code&gt;:match_requests_on =&amp;gt; [:amazon]&lt;/code&gt; rather than &lt;code&gt;:match_requests_on =&amp;gt; [:method, :uri_without_signing, :body]&lt;/code&gt; (or whatever).&lt;/p&gt;
 
 &lt;p&gt;Check out the &lt;a href='https://www.relishapp.com/myronmarston/vcr/v/2-0-0-beta1/docs/request-matching'&gt;relish docs&lt;/a&gt; for fuller examples.&lt;/p&gt;
@@ -603,31 +728,41 @@ end&lt;/code&gt;&lt;/pre&gt;
     <content type="html">&lt;p&gt;Ruby has great tools for deprecating obselete code. One of my favorite techniques is one I rarely see: using &lt;code&gt;const_missing&lt;/code&gt; to deprecate constants, and, by extension, classes and modules.&lt;/p&gt;
 
 &lt;p&gt;Consider this code:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1225953.js?file=my_gem_config.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# my_gem_config.rb
-
-module MyGem
-  class Config
-  end
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;my_gem/config.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;module&lt;/span&gt; &lt;span class='nn'&gt;MyGem&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;Config&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;At a later time, you decide you would rather name this class &lt;code&gt;MyGem::Configuration&lt;/code&gt;. It&amp;#8217;s easy enough to change the name, but you may break backwards compatiblity with people who have references to &lt;code&gt;MyGem::Config&lt;/code&gt; in their code.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;const_missing&lt;/code&gt; really comes in handy here:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1225953.js?file=my_gem_configuration.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# my_gem_configuration.rb
-
-module MyGem
-  class Configuration
-  end
-
-  def self.const_missing(const_name)
-    super unless const_name == :Config
-    warn &amp;quot;`MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead.&amp;quot;
-    Configuration
-  end
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;my_gem/configuration.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;module&lt;/span&gt; &lt;span class='nn'&gt;MyGem&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;Configuration&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nc'&gt;self&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='nf'&gt;const_missing&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;const_name&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;super&lt;/span&gt; &lt;span class='k'&gt;unless&lt;/span&gt; &lt;span class='n'&gt;const_name&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='ss'&gt;:Config&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;warn&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;`MyGem::Config` has been deprecated. Use `MyGem::Configuration` instead.&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Configuration&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;This allows existing code that references &lt;code&gt;MyGem::Config&lt;/code&gt; to continue to work, and warns the user about their use of the deprecated constant.&lt;/p&gt;</content>
   </entry>
   
@@ -651,20 +786,21 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In general, the best open source contributions come from people who are &lt;em&gt;solving their own problems&lt;/em&gt;. If you&amp;#8217;re not the one who is having the problem, you&amp;#8217;ll have difficulty adequately solving it.&lt;/p&gt;
 
 &lt;p&gt;No contribution is too small. I once spent over an hour trying to figure out why &lt;a href='http://gembundler.com/'&gt;bundler&lt;/a&gt; wasn&amp;#8217;t working on a project. I had a simple Gemfile like this:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1217354.js?file=Gemfile'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Gemfile
-
-source :rubygems
-gem :rspec&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;Gemfile  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='ruby'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;source&lt;/span&gt; &lt;span class='ss'&gt;:rubygems&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;gem&lt;/span&gt; &lt;span class='ss'&gt;:rspec&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;The bundler output confounded me:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1217354.js?file=Output.sh'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Output.sh
-
-$ bundle install
-Fetching source index for http://rubygems.org/
-Could not find gem 'rspec (&amp;gt;= 0, runtime)' in any of the gem sources.&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;Output.sh &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='sh'&gt;&lt;span class='line'&gt;&lt;span class='nv'&gt;$ &lt;/span&gt;bundle install
+&lt;/span&gt;&lt;span class='line'&gt;Fetching &lt;span class='nb'&gt;source &lt;/span&gt;index &lt;span class='k'&gt;for &lt;/span&gt;http://rubygems.org/
+&lt;/span&gt;&lt;span class='line'&gt;Could not find gem &lt;span class='s1'&gt;&amp;#39;rspec (&amp;gt;= 0, runtime)&amp;#39;&lt;/span&gt; in any of the gem sources.
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;I &lt;em&gt;knew&lt;/em&gt; &lt;a href='http://rubygems.org'&gt;rubygems.org&lt;/a&gt; had RSpec in its source index&amp;#8230;and yet bundler was telling me otherwise. After troubleshooting this for an hour, I realized I had specified the gem name using a ruby symbol (i.e. &lt;code&gt;:rspec&lt;/code&gt;) rather than a string (i.e. &lt;code&gt;&amp;quot;rspec&amp;quot;&lt;/code&gt;). Sure enough, when I changed it to a string, it worked.&lt;/p&gt;
 
 &lt;p&gt;My first contribution to bundler was &lt;a href='https://github.com/carlhuda/bundler/commit/5e6b09469afd16719cdc9a0856c6f0da0489f55f'&gt;a simple patch&lt;/a&gt; to provide a more useful error message when gems are specified using symbols. As I said, no contribution is too small.&lt;/p&gt;
@@ -710,79 +846,118 @@ Could not find gem 'rspec (&amp;gt;= 0, runtime)' in any of the gem sources.&lt;
 &lt;h2 id='initial_configuration'&gt;Initial configuration&lt;/h2&gt;
 
 &lt;p&gt;The rake task included with RSpec provides all the configuration options we need:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176143.js?file=Rakefile'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Rakefile
-
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.ruby_opts = &amp;quot;-w&amp;quot;
-  t.skip_bundler = true
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;Rakefile  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='ruby'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;RSpec&lt;/span&gt;&lt;span class='o'&gt;::&lt;/span&gt;&lt;span class='no'&gt;Core&lt;/span&gt;&lt;span class='o'&gt;::&lt;/span&gt;&lt;span class='no'&gt;RakeTask&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:spec&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;t&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;t&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;ruby_opts&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;-w&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;t&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;skip_bundler&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='kp'&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;You&amp;#8217;ll notice I set &lt;code&gt;skip_bundler = true&lt;/code&gt;; when the specs were run with &lt;code&gt;bundle exec&lt;/code&gt;, I discovered that the warnings were silenced. I&amp;#8217;m not sure why, but there&amp;#8217;s an &lt;a href='https://github.com/carlhuda/bundler/issues/969'&gt;open issue&lt;/a&gt; for it, so hopefully it&amp;#8217;ll be fixed at some point. In the meantime, running the specs without &lt;code&gt;bundle exec&lt;/code&gt; works fine since I setup bundler in my &lt;code&gt;spec_helper&lt;/code&gt; file and only have one version of RSpec installed.&lt;/p&gt;
 
 &lt;h2 id='too_many_warnings'&gt;Too many warnings&lt;/h2&gt;
 
 &lt;p&gt;After making this change, when I run my specs, I&amp;#8217;m greeted with over 6500 lines of warnings like these:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176301.js?file=warnings.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# warnings.txt
-
-/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
-/Users/myron/code/vcr/spec/support/sinatra_app.rb:36: warning: instance variable @_boot_failed not initialized
-/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
-/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
-/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
-/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
-/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
-/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/typhoeus-0.2.4/lib/typhoeus/hydra.rb:124: warning: instance variable @cache_getter not initialized&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;warnings.txt  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='sh'&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/spec/support/sinatra_app.rb:36: warning: instance variable @_boot_failed not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/excon-0.6.5/lib/excon/connection.rb:46: warning: instance variable @proxy not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/faraday-0.7.4/lib/faraday/connection.rb:142: warning: instance variable @proxy not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/.rvm/gems/ruby-1.9.2-p290@vcr/gems/typhoeus-0.2.4/lib/typhoeus/hydra.rb:124: warning: instance variable @cache_getter not initialized
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;&amp;#8230;not exactly the most useful output. It&amp;#8217;s a bit overwhelming, and beyond that, many of the warnings are coming from other libraries.&lt;/p&gt;
 
 &lt;h2 id='my_solution'&gt;My solution&lt;/h2&gt;
 
 &lt;p&gt;What I really wanted is a list of unique warnings coming from VCR. To that end, I came up with a way to filter and format the warnings:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176316.js?file=capture_warnings.rb'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# capture_warnings.rb
-
-require 'tempfile'
-stderr_file = Tempfile.new(&amp;quot;vcr.stderr&amp;quot;)
-$stderr.reopen(stderr_file.path)
-current_dir = Dir.pwd
-
-at_exit do
-  stderr_file.rewind
-  lines = stderr_file.read.split(&amp;quot;\n&amp;quot;).uniq
-  stderr_file.close!
-
-  vcr_warnings, other_warnings = lines.partition { |line| line.include?(current_dir) }
-
-  if vcr_warnings.any?
-    puts
-    puts &amp;quot;-&amp;quot; * 30 + &amp;quot; VCR Warnings: &amp;quot; + &amp;quot;-&amp;quot; * 30
-    puts
-    puts vcr_warnings.join(&amp;quot;\n&amp;quot;)
-    puts
-    puts &amp;quot;-&amp;quot; * 75
-    puts
-  end
-
-  if other_warnings.any?
-    File.open('tmp/warnings.txt', 'w') { |f| f.write(other_warnings.join(&amp;quot;\n&amp;quot;)) }
-    puts
-    puts &amp;quot;Non-VCR warnings written to tmp/warnings.txt&amp;quot;
-    puts
-  end
-
-  # fail the build...
-  exit(1) if vcr_warnings.any?
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;&lt;script src='https://gist.github.com/1176316.js?file=Rakefile'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# Rakefile
-
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.ruby_opts = &amp;quot;-w -r./capture_warnings&amp;quot;
-  t.skip_bundler = true
-end&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;capture_warnings.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;span class='line-number'&gt;22&lt;/span&gt;
+&lt;span class='line-number'&gt;23&lt;/span&gt;
+&lt;span class='line-number'&gt;24&lt;/span&gt;
+&lt;span class='line-number'&gt;25&lt;/span&gt;
+&lt;span class='line-number'&gt;26&lt;/span&gt;
+&lt;span class='line-number'&gt;27&lt;/span&gt;
+&lt;span class='line-number'&gt;28&lt;/span&gt;
+&lt;span class='line-number'&gt;29&lt;/span&gt;
+&lt;span class='line-number'&gt;30&lt;/span&gt;
+&lt;span class='line-number'&gt;31&lt;/span&gt;
+&lt;span class='line-number'&gt;32&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;tempfile&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;stderr_file&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Tempfile&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;vcr.stderr&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='vg'&gt;$stderr&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;reopen&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;stderr_file&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;path&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;current_dir&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;pwd&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;at_exit&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;stderr_file&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;rewind&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;lines&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;stderr_file&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;read&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;split&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='se'&gt;\n&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uniq&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;stderr_file&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;close!&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;vcr_warnings&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;other_warnings&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;lines&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;partition&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;line&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt; &lt;span class='n'&gt;line&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;include?&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;current_dir&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;vcr_warnings&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;any?&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class='o'&gt;*&lt;/span&gt; &lt;span class='mi'&gt;30&lt;/span&gt; &lt;span class='o'&gt;+&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot; VCR Warnings: &amp;quot;&lt;/span&gt; &lt;span class='o'&gt;+&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class='o'&gt;*&lt;/span&gt; &lt;span class='mi'&gt;30&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt; &lt;span class='n'&gt;vcr_warnings&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;join&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='se'&gt;\n&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class='o'&gt;*&lt;/span&gt; &lt;span class='mi'&gt;75&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;other_warnings&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;any?&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;open&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;tmp/warnings.txt&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;f&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt; &lt;span class='n'&gt;f&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;write&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;other_warnings&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;join&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='se'&gt;\n&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;Non-VCR warnings written to tmp/warnings.txt&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;puts&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# fail the build...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='nb'&gt;exit&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='mi'&gt;1&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;vcr_warnings&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;any?&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;Rakefile &lt;/span&gt;&lt;/figcaption&gt;
+&lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class=''&gt;&lt;span class='line'&gt;RSpec::Core::RakeTask.new(:spec) do |t|
+&lt;/span&gt;&lt;span class='line'&gt;  t.ruby_opts = &quot;-w -r./capture_warnings&quot;
+&lt;/span&gt;&lt;span class='line'&gt;  t.skip_bundler = true
+&lt;/span&gt;&lt;span class='line'&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;In a nutshell, here&amp;#8217;s how it works:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -796,31 +971,50 @@ end&lt;/code&gt;&lt;/pre&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;This made the output much more useful:&lt;/p&gt;
-&lt;script src='https://gist.github.com/1176335.js?file=warnings_output.txt'&gt; &lt;/script&gt;&lt;noscript&gt;
-  &lt;pre class='gist-no-script'&gt;&lt;code&gt;# warnings_output.txt
-
------------------------------- VCR Warnings: ------------------------------
-
-/Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:24: warning: useless use of == in void context
-/Users/myron/code/vcr/spec/support/shared_example_groups/ignore_localhost_deprecation.rb:15: warning: `*' interpreted as argument prefix
-/Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1: warning: loading in progress, circular require considered harmful - /Users/myron/code/vcr/spec/spec_helper.rb
-	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `&amp;lt;top (required)&amp;gt;'
-	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `require'
-	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `&amp;lt;top (required)&amp;gt;'
-	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `each'
-	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `block in &amp;lt;top (required)&amp;gt;'
-	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `require'
-	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `&amp;lt;top (required)&amp;gt;'
-	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `require'
-/Users/myron/code/vcr/lib/vcr/config.rb:47: warning: `*' interpreted as argument prefix
-/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
-/Users/myron/code/vcr/lib/vcr/http_stubbing_adapters/fakeweb.rb:70: warning: instance variable @http_connections_allowed not initialized
-
----------------------------------------------------------------------------
-
-
-Non-VCR warnings written to tmp/warnings.txt&lt;/code&gt;&lt;/pre&gt;
-&lt;/noscript&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;warnings_output.txt  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='diff'&gt;&lt;span class='line'&gt;&lt;span class='gd'&gt;------------------------------ VCR Warnings: ------------------------------&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:24: warning: useless use of == in void context
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/spec/support/shared_example_groups/ignore_localhost_deprecation.rb:15: warning: `*&amp;#39; interpreted as argument prefix
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1: warning: loading in progress, circular require considered harmful - /Users/myron/code/vcr/spec/spec_helper.rb
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `&amp;lt;top (required)&amp;gt;&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/vcr/cassette/reader_spec.rb:1:in `require&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `&amp;lt;top (required)&amp;gt;&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `each&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `block in &amp;lt;top (required)&amp;gt;&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/spec_helper.rb:14:in `require&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `&amp;lt;top (required)&amp;gt;&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;	from /Users/myron/code/vcr/spec/support/shared_example_groups/normalizers.rb:1:in `require&amp;#39;
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/lib/vcr/config.rb:47: warning: `*&amp;#39; interpreted as argument prefix
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/lib/vcr.rb:146: warning: instance variable @turned_off not initialized
+&lt;/span&gt;&lt;span class='line'&gt;/Users/myron/code/vcr/lib/vcr/http_stubbing_adapters/fakeweb.rb:70: warning: instance variable @http_connections_allowed not initialized
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='gd'&gt;---------------------------------------------------------------------------&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;Non-VCR warnings written to tmp/warnings.txt
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;h2 id='my_solution_may_not_be_your_solution'&gt;My solution may not be your solution&lt;/h2&gt;
 
 &lt;p&gt;This is working really well for me, and I just released VCR 1.11.2 yesterday with all warnings fixed. That said, my solution definitely makes a couple assumptions that may not be true of every project:&lt;/p&gt;

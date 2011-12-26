@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Myron Marston &raquo; Custom Request Matchers in VCR 2.0</title>
-    <link href="/n/stylesheets/screen.css?1314684504" rel="stylesheet" type="text/css" />
+    <link href="/n/stylesheets/screen.css?7eef26cd531fab12fd4e4b9674852aca" rel="stylesheet" type="text/css" />
     <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
@@ -48,19 +48,26 @@
 <h2 id='how_vcr_1x_worked'>How VCR 1.x worked</h2>
 
 <p>I&#8217;ve wanted to make VCR work well for these sorts of APIs for a long time, but the way VCR 1.x worked prevented a good solution. In VCR 1.x, it uses declaritive APIs provided by FakeWeb, WebMock and Typhoeus. When you insert a cassette, VCR makes calls to these libraries that are a bit like this:</p>
-<script src='https://gist.github.com/1275914.js?file=vcr_stubs.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># vcr_stubs.rb
-
-FakeWeb.register_uri(request.method, request.uri, response.to_fakeweb_hash)
-
-WebMock.stub_request(
-  request.method, request.uri
-).to_return(response.to_webmock_hash)
-
-Typhoeus::Hydra.stub(
-  request.method, request.uri
-).and_return(response.to_typhoeus_response)</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>vcr_stubs.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>FakeWeb</span><span class='o'>.</span><span class='n'>register_uri</span><span class='p'>(</span><span class='n'>request</span><span class='o'>.</span><span class='n'>method</span><span class='p'>,</span> <span class='n'>request</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>,</span> <span class='n'>response</span><span class='o'>.</span><span class='n'>to_fakeweb_hash</span><span class='p'>)</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>WebMock</span><span class='o'>.</span><span class='n'>stub_request</span><span class='p'>(</span>
+</span><span class='line'>  <span class='n'>request</span><span class='o'>.</span><span class='n'>method</span><span class='p'>,</span> <span class='n'>request</span><span class='o'>.</span><span class='n'>uri</span>
+</span><span class='line'><span class='p'>)</span><span class='o'>.</span><span class='n'>to_return</span><span class='p'>(</span><span class='n'>response</span><span class='o'>.</span><span class='n'>to_webmock_hash</span><span class='p'>)</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>Typhoeus</span><span class='o'>::</span><span class='no'>Hydra</span><span class='o'>.</span><span class='n'>stub</span><span class='p'>(</span>
+</span><span class='line'>  <span class='n'>request</span><span class='o'>.</span><span class='n'>method</span><span class='p'>,</span> <span class='n'>request</span><span class='o'>.</span><span class='n'>uri</span>
+</span><span class='line'><span class='p'>)</span><span class='o'>.</span><span class='n'>and_return</span><span class='p'>(</span><span class='n'>response</span><span class='o'>.</span><span class='n'>to_typhoeus_response</span><span class='p'>)</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>These libraries all allow you to register a stub using a regex rather than a full URI, and this is in fact what VCR 1.x did to support <code>:match_requests_on =&gt; [:host, :path]</code>. This works OK, but doesn&#8217;t provide an easy way to solve the problem of URIs with non-deterministic query parameters. Building a regex that correctly matches all of a URI except a particular query parameter is not easy, and it would have been even more difficult to put code that does this generically in VCR so that users could easily match on a URI while ignoring particular query parameters.</p>
 
 <h2 id='the_big_rewrite'>The big rewrite</h2>
@@ -76,43 +83,58 @@ Typhoeus::Hydra.stub(
 <p>In VCR 2.0, a request matcher is simply an object that responds to <code>#call</code> with two arguments and returns <code>true</code> if the given requests should be considered identical, or <code>false</code> if they should not be considered identical.</p>
 
 <p>The simplest request matcher is probably a lambda:</p>
-<script src='https://gist.github.com/1272818.js?file=lambda_matcher.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># lambda_matcher.rb
-
-port_matcher = lambda do |request_1, request_2|
-  URI(request_1.uri).port == URI(request_2.uri).port
-end
-
-VCR.use_cassette('example', :match_requests_on =&gt; [:method, port_matcher]) do
-  # make an HTTP request
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>lambda_matcher.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>port_matcher</span> <span class='o'>=</span> <span class='nb'>lambda</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request_1</span><span class='p'>,</span> <span class='n'>request_2</span><span class='o'>|</span>
+</span><span class='line'>  <span class='no'>URI</span><span class='p'>(</span><span class='n'>request_1</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span><span class='o'>.</span><span class='n'>port</span> <span class='o'>==</span> <span class='no'>URI</span><span class='p'>(</span><span class='n'>request_2</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span><span class='o'>.</span><span class='n'>port</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s1'>&#39;example&#39;</span><span class='p'>,</span> <span class='ss'>:match_requests_on</span> <span class='o'>=&gt;</span> <span class='o'>[</span><span class='ss'>:method</span><span class='p'>,</span> <span class='n'>port_matcher</span><span class='o'>]</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># make an HTTP request</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>You can also register it as a named matcher and use the name in your <code>:match_requests_on</code> option:</p>
-<script src='https://gist.github.com/1275909.js?file=register_matcher.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># register_matcher.rb
-
-VCR.configure do |c|
-  c.register_request_matcher :port do |request_1, request_2|
-    URI(request_1.uri).port == URI(request_2.uri).port
-  end
-end
-
-VCR.use_cassette('example', :match_requests_on =&gt; [:method, :port]) do
-  # make an HTTP request
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>register_matcher.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>register_request_matcher</span> <span class='ss'>:port</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request_1</span><span class='p'>,</span> <span class='n'>request_2</span><span class='o'>|</span>
+</span><span class='line'>    <span class='no'>URI</span><span class='p'>(</span><span class='n'>request_1</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span><span class='o'>.</span><span class='n'>port</span> <span class='o'>==</span> <span class='no'>URI</span><span class='p'>(</span><span class='n'>request_2</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span><span class='o'>.</span><span class='n'>port</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s1'>&#39;example&#39;</span><span class='p'>,</span> <span class='ss'>:match_requests_on</span> <span class='o'>=&gt;</span> <span class='o'>[</span><span class='ss'>:method</span><span class='p'>,</span> <span class='ss'>:port</span><span class='o'>]</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># make an HTTP request</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>In fact, this is exactly how the <a href='https://github.com/myronmarston/vcr/blob/v2.0.0.beta1/lib/vcr/request_matcher_registry.rb#L64-71'>built-in request matchers</a> (<code>:method</code>, <code>:uri</code>, <code>:host</code>, <code>:path</code>, <code>:headers</code> and <code>:body</code>) work now.</p>
 
 <p>Finally, for the specific case of URIs with non-deterministic query parameters, VCR provides a simple way to create a request matcher:</p>
-<script src='https://gist.github.com/1275911.js?file=uri_without_timestamp.rb'> </script><noscript>
-  <pre class='gist-no-script'><code># uri_without_timestamp.rb
-
-uri_without_timestamp = VCR.request_matchers.uri_without_param(:timestamp)
-VCR.use_cassette('example', :match_requests_on =&gt; [:method, uri_without_timestamp]) do
-  # make an HTTP request with a URI that has a non-determinstic
-  # timestamp query parameter
-end</code></pre>
-</noscript>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>uri_without_timestamp.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>uri_without_timestamp</span> <span class='o'>=</span> <span class='no'>VCR</span><span class='o'>.</span><span class='n'>request_matchers</span><span class='o'>.</span><span class='n'>uri_without_param</span><span class='p'>(</span><span class='ss'>:timestamp</span><span class='p'>)</span>
+</span><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s1'>&#39;example&#39;</span><span class='p'>,</span> <span class='ss'>:match_requests_on</span> <span class='o'>=&gt;</span> <span class='o'>[</span><span class='ss'>:method</span><span class='p'>,</span> <span class='n'>uri_without_timestamp</span><span class='o'>]</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># make an HTTP request with a URI that has a non-determinstic</span>
+</span><span class='line'>  <span class='c1'># timestamp query parameter</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>This is only the tip of the iceberg. You can match requests on specific portions of the request body or headers. I can imagine people using this to wrap up the specific set of matchers used for requests to a particular API into a single matcher that simply delegates to the desired matchers&#8211;that way, you can write <code>:match_requests_on =&gt; [:amazon]</code> rather than <code>:match_requests_on =&gt; [:method, :uri_without_signing, :body]</code> (or whatever).</p>
 
 <p>Check out the <a href='https://www.relishapp.com/myronmarston/vcr/v/2-0-0-beta1/docs/request-matching'>relish docs</a> for fuller examples.</p>
