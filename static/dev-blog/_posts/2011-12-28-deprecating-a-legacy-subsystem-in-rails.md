@@ -3,7 +3,6 @@ layout: dev_post
 title: Deprecating a Legacy Subsystem in Rails
 section: dev-blog
 contents_class: medium-wide
-published: false
 ---
 
 A major part of my job in the past year at [SEOmoz](http://www.seomoz.org/)

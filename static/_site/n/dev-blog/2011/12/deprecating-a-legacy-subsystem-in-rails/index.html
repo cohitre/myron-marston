@@ -1,0 +1,294 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; Deprecating a Legacy Subsystem in Rails</title>
+    <link href="/n/stylesheets/screen.css?7eef26cd531fab12fd4e4b9674852aca" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>Deprecating a Legacy Subsystem in Rails</h1>
+  <p class="post-date">➜ 28 Dec 2011</p>
+
+  <div class="content">
+    <p>A major part of my job in the past year at <a href='http://www.seomoz.org/'>SEOmoz</a> was a re-write of the <a href='http://www.seomoz.org/features'>rank-tracking component</a> of SEOmoz PRO. The existing system had major performance and scalability problems, and <a href='http://bitfluxx.com/'>Jeff Pollard</a> and I were tasked with designing and and building an internal service to solve all these problems.</p>
+
+<p>Jeff previously <a href='http://devblog.seomoz.org/2011/10/using-riak-for-ranking-collection/'>blogged a bit</a> about the design of the system, particularly our choice of Riak as the main data store. One of the other interesting bits to come out of this project was the way we migrated from the old system to the new system. We knew it would take at least a couple weeks (although, in the end it took 3 months!) and it was important that there was ZERO negative customer impact during the migration period. I came up with a technique that made it very easy to keep the existing system around in a deprecated state, and, once all data had been migrated to the new system, remove it entirely.</p>
+
+<h2 id='the_goals'>The Goals</h2>
+
+<p>We had several goals and constraints for the migration:</p>
+
+<ul>
+<li>The volume of data to import (billions of MySQL records) was such that a single atomic switch to the new system seemed impossible (or, at the very least, extremely risky). Thus, we knew we wanted to have a way to run the old and new systems side-by-side, and migrate customers over to the new system one-by-one.</li>
+
+<li>The old ranking system used a tangle of SQL views, ActiveRecord models, and controller and view logic. There was no value in re-using any of this code for the new system. Thus, we wanted to &#8220;quarantine&#8221; this old code to have a clean slate to build out the controller and views for the new system (the new system didn&#8217;t have any ActiveRecord models since it relied upon the HTTP API of the service for its data). Once the migration was complete, we wanted it to be very easy to remove the old system (i.e. by simply deleting the source files from a few directories).</li>
+
+<li>The routes for the existing ranking system were fine, and we wanted to keep using them for the new system.</li>
+
+<li>Previously, we had replaced one of the other subsystems with an internal service. For that project, the rails app had a long-running branch (as in several months) that integrated with the new service. We frequently experienced merge pain for that project. This time, we knew we wanted to use a feature flag, and build out the rails side of the new system directly in the master branch, with no painful merges.</li>
+</ul>
+
+<p>The solution I came up with worked very well, and I think it can apply to similar problems in other systems.</p>
+
+<h2 id='step_1_move_the_models_into_deprecated_directory'>Step 1: Move the models into deprecated directory</h2>
+
+<p>First, I made a new directory at <code>app/models/deprecated</code> and moved all the models for the old ranking system there. This quarantined the legacy code and made it clear that the code was going away soon and no significant investment should go into refactoring it.</p>
+
+<p>We had to configure rails to recognize this new directory for auto-loading:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>config/application.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>module</span> <span class='nn'>Cmoz</span>
+</span><span class='line'>  <span class='k'>class</span> <span class='nc'>Application</span> <span class='o'>&lt;</span> <span class='no'>Rails</span><span class='o'>::</span><span class='no'>Application</span>
+</span><span class='line'>    <span class='c1'># ...</span>
+</span><span class='line'>    <span class='n'>config</span><span class='o'>.</span><span class='n'>autoload_paths</span> <span class='o'>&lt;&lt;</span> <span class='s2'>&quot;</span><span class='si'>#{</span><span class='n'>config</span><span class='o'>.</span><span class='n'>root</span><span class='si'>}</span><span class='s2'>/app/models/deprecated&quot;</span>
+</span><span class='line'>    <span class='c1'># ...</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<h2 id='step_2_add_a_feature_flag_to_the_user_model'>Step 2: Add a feature flag to the user model</h2>
+
+<p>The new service was named &#8220;silo&#8221;, so we added a <code>using_silo</code> flag to the user model that defaulted to false.</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>db/migrate/20110509180019_add_using_silo_to_users.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>class</span> <span class='nc'>AddUsingSiloToUsers</span> <span class='o'>&lt;</span> <span class='no'>ActiveRecord</span><span class='o'>::</span><span class='no'>Migration</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nc'>self</span><span class='o'>.</span><span class='nf'>up</span>
+</span><span class='line'>    <span class='n'>add_column</span> <span class='ss'>:users</span><span class='p'>,</span> <span class='ss'>:using_silo</span><span class='p'>,</span> <span class='ss'>:boolean</span><span class='p'>,</span> <span class='ss'>:null</span> <span class='o'>=&gt;</span> <span class='kp'>false</span><span class='p'>,</span> <span class='ss'>:default</span> <span class='o'>=&gt;</span> <span class='kp'>false</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nc'>self</span><span class='o'>.</span><span class='nf'>down</span>
+</span><span class='line'>    <span class='n'>remove_column</span> <span class='ss'>:users</span><span class='p'>,</span> <span class='ss'>:using_silo</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<h2 id='step_3_turn_the_old_controller_into_a_conditionally_extended_module'>Step 3: Turn the old controller into a conditionally extended module</h2>
+
+<p>The controller and views were a bit more difficult to deprecate cleanly. As I mentioned above, we wanted to preserve the existing routes, and I don&#8217;t know of a way in rails to route identical requests to different controllers based on a feature flag on the current user record. Instead, we kept a single controller, and turned the old controller into a mixin that we conditionally extended onto the controller instance.</p>
+
+<p>We started with a controller that was roughly like this:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>app/controllers/rankings_controller.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>class</span> <span class='nc'>RankingsController</span> <span class='o'>&lt;</span> <span class='no'>ApplicationController</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>index</span>
+</span><span class='line'>    <span class='c1'># fetch rankings from the old database</span>
+</span><span class='line'>    <span class='vi'>@rankings</span> <span class='o'>=</span> <span class='n'>fetch_rankings</span>
+</span><span class='line'>    <span class='c1'># ...and lots more stuff; this was not a skinny controller</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>show</span>
+</span><span class='line'>    <span class='c1'># fetch rankings from the old database for the given keyword</span>
+</span><span class='line'>    <span class='vi'>@rankings</span> <span class='o'>=</span> <span class='n'>fetch_rankings_for_keyword</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:keyword_id</span><span class='o'>]</span><span class='p'>)</span>
+</span><span class='line'>    <span class='c1'># ...and lots more stuff; this was not a skinny controller</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>&#8230;and we changed it like so:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>app/controllers/deprecated/legacy_rankings_controller.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>module</span> <span class='nn'>LegacyRankingsController</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>index</span>
+</span><span class='line'>    <span class='c1'># fetch rankings from the old database</span>
+</span><span class='line'>    <span class='vi'>@rankings</span> <span class='o'>=</span> <span class='n'>fetch_rankings</span>
+</span><span class='line'>    <span class='c1'># ...and lots more stuff; this was not a skinny controller</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>show</span>
+</span><span class='line'>    <span class='c1'># fetch rankings from the old database for the given keyword</span>
+</span><span class='line'>    <span class='vi'>@rankings</span> <span class='o'>=</span> <span class='n'>fetch_rankings_for_keyword</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:keyword_id</span><span class='o'>]</span><span class='p'>)</span>
+</span><span class='line'>    <span class='c1'># ...and lots more stuff; this was not a skinny controller</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div><div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>app/controllers/rankings_controller.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='nb'>require</span> <span class='s1'>&#39;deprecated/legacy_rankings_controller&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class='k'>class</span> <span class='nc'>RankingsController</span> <span class='o'>&lt;</span> <span class='no'>ApplicationController</span>
+</span><span class='line'>  <span class='n'>before_filter</span> <span class='ss'>:conditionally_use_legacy_controller</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>index</span>
+</span><span class='line'>    <span class='k'>raise</span> <span class='no'>NotImplementedError</span><span class='p'>,</span> <span class='s2'>&quot;The new code hasn&#39;t been written yet&quot;</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>show</span>
+</span><span class='line'>    <span class='k'>raise</span> <span class='no'>NotImplementedError</span><span class='p'>,</span> <span class='s2'>&quot;The new code hasn&#39;t been written yet&quot;</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='kp'>private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>conditionally_use_legacy_controller</span>
+</span><span class='line'>    <span class='kp'>extend</span> <span class='no'>LegacyRankingsController</span> <span class='k'>unless</span> <span class='n'>current_user</span><span class='o'>.</span><span class='n'>using_silo?</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Hopefully it&#8217;s clear what&#8217;s going on here, but in case it&#8217;s not:</p>
+
+<ul>
+<li>Rails constructs a new instance of the controller class for every request.</li>
+
+<li><code>extend</code> is standard ruby method that lets you apply a module to a single object instance. The methods in the module, like singleton methods, take precedence over the methods defined in the controller class.</li>
+
+<li>The before filter replaces the controller implementation with the logic in the module for all requests for users who are not yet using silo. The fact that rails uses a new instance of the controller for every request ensures that the module extension is performed (or not) for each request in isolation.</li>
+</ul>
+
+<p>This gives us a very simple, clean way to route the requests to different action implementations based on our feature flag.</p>
+
+<h2 id='step_4_move_the_views_into_a_deprecated_directory'>Step 4: Move the views into a deprecated directory</h2>
+
+<p>As with the models above, we moved the views from <code>app/views/rankings</code> to <code>app/views/deprecated/rankings</code> to quarantine the old code. Of course, this prevents rails from finding the views where it expects them&#8230;but luckily, rails provides <code>prepend_view_paths</code> (both as an <a href='https://github.com/rails/rails/blob/v3.1.3/actionpack/lib/abstract_controller/view_paths.rb#L54-56'>instance method</a> and a <a href='https://github.com/rails/rails/blob/v3.1.3/actionpack/lib/abstract_controller/view_paths.rb#L69-77'>class method</a>), which solves this problem perfectly. We just need to tweak <code>conditionally_use_legacy_controller</code> a bit to use the instance method:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>app/controllers/rankings_controller.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>def</span> <span class='nf'>conditionally_use_legacy_controller</span>
+</span><span class='line'>  <span class='k'>unless</span> <span class='n'>current_user</span><span class='o'>.</span><span class='n'>using_silo?</span>
+</span><span class='line'>    <span class='kp'>extend</span> <span class='no'>LegacyRankingsController</span>
+</span><span class='line'>    <span class='n'>prepend_view_path</span> <span class='s2'>&quot;app/views/deprecated&quot;</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>This forces Rails to render the views in <code>app/views/rankings</code> for users on the new rankings system, and to render the views in <code>app/views/deprecated/rankings</code> for users still on the old system. It only affects this one request because we are using the instance method <code>prepend_view_path</code>, not the class method.</p>
+
+<h2 id='wrapping_up'>Wrapping Up</h2>
+
+<p>From here, I had a clean slate to implement the controller and views for the new rankings system. The <code>using_silo</code> flag made it easy to let admins try-out and test the new system before turning it on for all new users. We migrated existing users over to the new system one-by-one, and it was easy to get rid of the code for the old system once all users were migrated.</p>
+
+<p>I imagine this pattern would be useful in plenty of other situations, too; it&#8217;s a simple, clean way to route requests to different controller and view implementations.</p>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2011/12/deprecating-a-legacy-subsystem-in-rails';
+    var disqus_title      = 'Deprecating a Legacy Subsystem in Rails';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2011/12/deprecating-a-legacy-subsystem-in-rails';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+
