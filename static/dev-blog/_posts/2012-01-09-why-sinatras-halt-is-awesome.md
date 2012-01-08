@@ -71,15 +71,11 @@ some helper methods and `halt`:
 {% codeblock application.rb %}
 helpers do
   def user
-    @user ||= User.find(params[:user_id]).tap do |user|
-      halt 404 unless user
-    end
+    @user ||= User.find(params[:user_id]) || halt 404
   end
 
   def project
-    @project ||= user.projects.find(params[:project_id]).tap do |project|
-      halt 404 unless project
-    end
+    @project ||= user.projects.find(params[:project_id]) || halt 404
   end
 
   def task_date
