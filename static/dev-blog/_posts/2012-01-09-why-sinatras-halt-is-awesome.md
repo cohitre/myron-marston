@@ -5,13 +5,13 @@ section: dev-blog
 contents_class: medium-wide
 ---
 
-Most of Sinatra's well-deserved praise is directed toward its
-simple, elegant routing DSL. I want to talk a bit about another
+Most of [Sinatra's](http://sinatrarb.com/) well-deserved praise is directed toward its
+simple, elegant routing DSL. I want to draw attention to another
 feature that I love that doesn't get much attention: Sinatra's `halt`.
 
 One of the biggest sources of complexity when developing robust
 applications is all of the error-handling code. Generally, code
-is easier to understand and more maintainable when the error handling
+is easier to understand and is more maintainable when the error handling
 is not mixed together with the "happy path" code. This is one reason
 that virtually all modern languages have opted to provide exceptions
 rather than old C-style error return values. `halt` provides similar
@@ -65,7 +65,8 @@ end
 {% endcodeblock %}
 
 This is certainly more robust, but I really, really hate this style of code.
-Let's clean it up a bit with some helper methods:
+It makes my eyes bleed just looking at it. Let's clean it up a bit with
+some helper methods and `halt`:
 
 {% codeblock application.rb %}
 helpers do
@@ -101,7 +102,8 @@ Much, much better. It's more lines of code, but so much simpler.
 The error handling for each piece of data is handled
 directly in the helper method that is responsible for that piece of
 data. This has the added benefit of making it simpler to implement
-other routes that need some of these pieces of data:
+other routes that need some of these pieces of data (and the
+corresponding error handling):
 
 {% codeblock application.rb %}
 helpers do
@@ -124,6 +126,9 @@ and return the response given to `halt`. Some ruby developers have
 throw](http://m.onkey.org/ruby-i-don-t-like-2-catch-wtf-throw-wtf), and
 it can certainly be abused...but Sinatra's `halt` sure is useful and
 is only made possible by `throw`[^foot_2].
+
+The next time you're building a Sinatra application, I encourage you
+to consider using `halt` to simplify your error handling.
 
 [^foot_1]: If you're unfamiliar with `throw`, check out Avdi Grimm's [blog
   post](http://rubylearning.com/blog/2011/07/12/throw-catch-raise-rescue-im-so-confused/)
