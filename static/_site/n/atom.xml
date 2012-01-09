@@ -3,13 +3,176 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2011-12-28T07:59:07-08:00</updated>
+  <updated>2012-01-09T09:23:42-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>Why Sinatra's Halt is Awesome</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/01/why-sinatras-halt-is-awesome"/>
+    <updated>2012-01-09T00:00:00-08:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/01/why-sinatras-halt-is-awesome</id>
+    <content type="html">&lt;p&gt;Most of &lt;a href='http://sinatrarb.com/'&gt;Sinatra&amp;#8217;s&lt;/a&gt; well-deserved praise is directed toward its simple, elegant routing DSL. I want to draw attention to another feature that I love that doesn&amp;#8217;t get much attention: Sinatra&amp;#8217;s &lt;code&gt;halt&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;One of the biggest sources of complexity when developing robust applications is all of the error-handling code. Generally, code is easier to understand and is more maintainable when the error handling is not mixed together with the &amp;#8220;happy path&amp;#8221; code. This is one reason that virtually all modern languages have opted to provide exceptions rather than old C-style error return values. &lt;code&gt;halt&lt;/code&gt; provides similar benefits.&lt;/p&gt;
+
+&lt;p&gt;Consider a simple sinatra route:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;application.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;get&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;user&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:user_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;project&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;projects&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:project_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;tasks&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;project&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;tasks_due_on&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;Date&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;parse&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:task_date&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;tasks&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_json&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;This is all &amp;#8220;happy path&amp;#8221; code, and there are a few potential problems that aren&amp;#8217;t handled at all:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The user record for the given &lt;code&gt;:user_id&lt;/code&gt; may not exist.&lt;/li&gt;
+
+&lt;li&gt;The project record for the given &lt;code&gt;:project_id&lt;/code&gt; may not exist, or may not belong to the given user.&lt;/li&gt;
+
+&lt;li&gt;The &lt;code&gt;:task_date&lt;/code&gt; date string may not be in iso8601 format (i.e. YYYY-MM-DD).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let&amp;#8217;s handle each of these so that our API returns semantic HTTP status codes rather than responding with a 500 error:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;application.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;get&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;user&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:user_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;user&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;project&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;projects&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:project_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;project&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='k'&gt;begin&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;        &lt;span class='n'&gt;tasks&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;project&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;tasks_due_on&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;Date&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;iso8601&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:task_date&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='k'&gt;rescue&lt;/span&gt; &lt;span class='no'&gt;ArgumentError&lt;/span&gt; &lt;span class='c1'&gt;# for an invalid date string&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;        &lt;span class='n'&gt;status&lt;/span&gt; &lt;span class='mi'&gt;400&lt;/span&gt; &lt;span class='c1'&gt;# bad request&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='k'&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;        &lt;span class='n'&gt;tasks&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_json&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;status&lt;/span&gt; &lt;span class='mi'&gt;404&lt;/span&gt; &lt;span class='c1'&gt;# not found&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;status&lt;/span&gt; &lt;span class='mi'&gt;404&lt;/span&gt; &lt;span class='c1'&gt;# not found&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;This is certainly more robust, but I really, really hate this style of code. It makes my eyes bleed just looking at it. Let&amp;#8217;s clean it up a bit with some helper methods and &lt;code&gt;halt&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;application.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;span class='line-number'&gt;22&lt;/span&gt;
+&lt;span class='line-number'&gt;23&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;helpers&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;user&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@user&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:user_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='o'&gt;||&lt;/span&gt; &lt;span class='n'&gt;halt&lt;/span&gt; &lt;span class='mi'&gt;404&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;project&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@project&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;projects&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:project_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='o'&gt;||&lt;/span&gt; &lt;span class='n'&gt;halt&lt;/span&gt; &lt;span class='mi'&gt;404&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;task_date&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@task_date&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='no'&gt;Date&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;iso8601&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:task_date&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;rescue&lt;/span&gt; &lt;span class='no'&gt;ArgumentError&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;halt&lt;/span&gt; &lt;span class='mi'&gt;400&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;tasks&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@tasks&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='n'&gt;project&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;tasks_due_on&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;task_date&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;get&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;tasks&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_json&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Much, much better. It&amp;#8217;s more lines of code, but so much simpler. The error handling for each piece of data is handled directly in the helper method that is responsible for that piece of data. This has the added benefit of making it simpler to implement other routes that need some of these pieces of data (and the corresponding error handling):&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;application.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;helpers&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# all the helpers defined above...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;get&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;/users/:user_id/projects/:project_id&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;project&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_json&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;get&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;tasks&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to_json&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;This is only possible through the magic of &lt;code&gt;halt&lt;/code&gt;. Under the covers, &lt;code&gt;halt&lt;/code&gt; uses &lt;code&gt;throw&lt;/code&gt;&lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt; to immediately stop processing the route and return the response given to &lt;code&gt;halt&lt;/code&gt;. Some ruby developers have &lt;a href='http://m.onkey.org/ruby-i-don-t-like-2-catch-wtf-throw-wtf'&gt;gone on record as hating ruby&amp;#8217;s throw&lt;/a&gt;, and it can certainly be abused&amp;#8230;but Sinatra&amp;#8217;s &lt;code&gt;halt&lt;/code&gt; sure is useful and is only made possible by &lt;code&gt;throw&lt;/code&gt;&lt;sup id='fnref:2'&gt;&lt;a href='#fn:2' rel='footnote'&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;The next time you&amp;#8217;re building a Sinatra application, I encourage you to consider using &lt;code&gt;halt&lt;/code&gt; to simplify your error handling.&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;If you&amp;#8217;re unfamiliar with &lt;code&gt;throw&lt;/code&gt;, check out Avdi Grimm&amp;#8217;s &lt;a href='http://rubylearning.com/blog/2011/07/12/throw-catch-raise-rescue-im-so-confused/'&gt;blog post&lt;/a&gt; on the topic.&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;li id='fn:2'&gt;
+&lt;p&gt;Technically, you could implement &lt;code&gt;halt&lt;/code&gt; using exceptions, but that seems semantically wrong to me. &lt;code&gt;throw&lt;/code&gt; is specifically intended for cases like these.&lt;/p&gt;
+&lt;a href='#fnref:2' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
   
   <entry>
     <title>Deprecating a Legacy Subsystem in Rails</title>

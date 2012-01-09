@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; Why Sinatra's Halt is Awesome</title>
+    <link href="/n/stylesheets/screen.css?b50fa16c695f6c6a869efae6a4772316" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>Why Sinatra's Halt is Awesome</h1>
+  <p class="post-date">➜ 09 Jan 2012</p>
+
+  <div class="content">
+    <p>Most of <a href='http://sinatrarb.com/'>Sinatra&#8217;s</a> well-deserved praise is directed toward its simple, elegant routing DSL. I want to draw attention to another feature that I love that doesn&#8217;t get much attention: Sinatra&#8217;s <code>halt</code>.</p>
+
+<p>One of the biggest sources of complexity when developing robust applications is all of the error-handling code. Generally, code is easier to understand and is more maintainable when the error handling is not mixed together with the &#8220;happy path&#8221; code. This is one reason that virtually all modern languages have opted to provide exceptions rather than old C-style error return values. <code>halt</code> provides similar benefits.</p>
+
+<p>Consider a simple sinatra route:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>application.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>get</span> <span class='s1'>&#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&#39;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>user</span> <span class='o'>=</span> <span class='no'>User</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:user_id</span><span class='o'>]</span><span class='p'>)</span>
+</span><span class='line'>  <span class='n'>project</span> <span class='o'>=</span> <span class='n'>user</span><span class='o'>.</span><span class='n'>projects</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:project_id</span><span class='o'>]</span><span class='p'>)</span>
+</span><span class='line'>  <span class='n'>tasks</span> <span class='o'>=</span> <span class='n'>project</span><span class='o'>.</span><span class='n'>tasks_due_on</span><span class='p'>(</span><span class='no'>Date</span><span class='o'>.</span><span class='n'>parse</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:task_date</span><span class='o'>]</span><span class='p'>))</span>
+</span><span class='line'>  <span class='n'>tasks</span><span class='o'>.</span><span class='n'>to_json</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>This is all &#8220;happy path&#8221; code, and there are a few potential problems that aren&#8217;t handled at all:</p>
+
+<ul>
+<li>The user record for the given <code>:user_id</code> may not exist.</li>
+
+<li>The project record for the given <code>:project_id</code> may not exist, or may not belong to the given user.</li>
+
+<li>The <code>:task_date</code> date string may not be in iso8601 format (i.e. YYYY-MM-DD).</li>
+</ul>
+
+<p>Let&#8217;s handle each of these so that our API returns semantic HTTP status codes rather than responding with a 500 error:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>application.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>get</span> <span class='s1'>&#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&#39;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>user</span> <span class='o'>=</span> <span class='no'>User</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:user_id</span><span class='o'>]</span><span class='p'>)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>if</span> <span class='n'>user</span>
+</span><span class='line'>    <span class='n'>project</span> <span class='o'>=</span> <span class='n'>user</span><span class='o'>.</span><span class='n'>projects</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:project_id</span><span class='o'>]</span><span class='p'>)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class='k'>if</span> <span class='n'>project</span>
+</span><span class='line'>      <span class='k'>begin</span>
+</span><span class='line'>        <span class='n'>tasks</span> <span class='o'>=</span> <span class='n'>project</span><span class='o'>.</span><span class='n'>tasks_due_on</span><span class='p'>(</span><span class='no'>Date</span><span class='o'>.</span><span class='n'>iso8601</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:task_date</span><span class='o'>]</span><span class='p'>))</span>
+</span><span class='line'>      <span class='k'>rescue</span> <span class='no'>ArgumentError</span> <span class='c1'># for an invalid date string</span>
+</span><span class='line'>        <span class='n'>status</span> <span class='mi'>400</span> <span class='c1'># bad request</span>
+</span><span class='line'>      <span class='k'>else</span>
+</span><span class='line'>        <span class='n'>tasks</span><span class='o'>.</span><span class='n'>to_json</span>
+</span><span class='line'>      <span class='k'>end</span>
+</span><span class='line'>    <span class='k'>else</span>
+</span><span class='line'>      <span class='n'>status</span> <span class='mi'>404</span> <span class='c1'># not found</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>else</span>
+</span><span class='line'>    <span class='n'>status</span> <span class='mi'>404</span> <span class='c1'># not found</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>This is certainly more robust, but I really, really hate this style of code. It makes my eyes bleed just looking at it. Let&#8217;s clean it up a bit with some helper methods and <code>halt</code>:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>application.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>helpers</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>user</span>
+</span><span class='line'>    <span class='vi'>@user</span> <span class='o'>||=</span> <span class='no'>User</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:user_id</span><span class='o'>]</span><span class='p'>)</span> <span class='o'>||</span> <span class='n'>halt</span> <span class='mi'>404</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>project</span>
+</span><span class='line'>    <span class='vi'>@project</span> <span class='o'>||=</span> <span class='n'>user</span><span class='o'>.</span><span class='n'>projects</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:project_id</span><span class='o'>]</span><span class='p'>)</span> <span class='o'>||</span> <span class='n'>halt</span> <span class='mi'>404</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>task_date</span>
+</span><span class='line'>    <span class='vi'>@task_date</span> <span class='o'>||=</span> <span class='no'>Date</span><span class='o'>.</span><span class='n'>iso8601</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:task_date</span><span class='o'>]</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>rescue</span> <span class='no'>ArgumentError</span>
+</span><span class='line'>    <span class='n'>halt</span> <span class='mi'>400</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>tasks</span>
+</span><span class='line'>    <span class='vi'>@tasks</span> <span class='o'>||=</span> <span class='n'>project</span><span class='o'>.</span><span class='n'>tasks_due_on</span><span class='p'>(</span><span class='n'>task_date</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='n'>get</span> <span class='s1'>&#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&#39;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>tasks</span><span class='o'>.</span><span class='n'>to_json</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Much, much better. It&#8217;s more lines of code, but so much simpler. The error handling for each piece of data is handled directly in the helper method that is responsible for that piece of data. This has the added benefit of making it simpler to implement other routes that need some of these pieces of data (and the corresponding error handling):</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>application.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>helpers</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># all the helpers defined above...</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='n'>get</span> <span class='s1'>&#39;/users/:user_id/projects/:project_id&#39;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>project</span><span class='o'>.</span><span class='n'>to_json</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='n'>get</span> <span class='s1'>&#39;/users/:user_id/projects/:project_id/tasks-due-on/:task_date&#39;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>tasks</span><span class='o'>.</span><span class='n'>to_json</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>This is only possible through the magic of <code>halt</code>. Under the covers, <code>halt</code> uses <code>throw</code><sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup> to immediately stop processing the route and return the response given to <code>halt</code>. Some ruby developers have <a href='http://m.onkey.org/ruby-i-don-t-like-2-catch-wtf-throw-wtf'>gone on record as hating ruby&#8217;s throw</a>, and it can certainly be abused&#8230;but Sinatra&#8217;s <code>halt</code> sure is useful and is only made possible by <code>throw</code><sup id='fnref:2'><a href='#fn:2' rel='footnote'>2</a></sup>.</p>
+
+<p>The next time you&#8217;re building a Sinatra application, I encourage you to consider using <code>halt</code> to simplify your error handling.</p>
+<div class='footnotes'><hr /><ol><li id='fn:1'>
+<p>If you&#8217;re unfamiliar with <code>throw</code>, check out Avdi Grimm&#8217;s <a href='http://rubylearning.com/blog/2011/07/12/throw-catch-raise-rescue-im-so-confused/'>blog post</a> on the topic.</p>
+<a href='#fnref:1' rev='footnote'>&#8617;</a></li><li id='fn:2'>
+<p>Technically, you could implement <code>halt</code> using exceptions, but that seems semantically wrong to me. <code>throw</code> is specifically intended for cases like these.</p>
+<a href='#fnref:2' rev='footnote'>&#8617;</a></li></ol></div>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2012/01/why-sinatras-halt-is-awesome';
+    var disqus_title      = 'Why Sinatra's Halt is Awesome';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2012/01/why-sinatras-halt-is-awesome';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+
