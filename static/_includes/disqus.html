@@ -2,7 +2,7 @@
 <script type="text/javascript">
     var disqus_shortname  = 'myronmarston-personal-site';
     var disqus_identifier = '{{ page.url }}';
-    var disqus_title      = '{{ page.title }}';
+    var disqus_title      = '{{ page.title | js_escape }}';
     var disqus_url        = 'http://myronmars.to{{ page.url }}';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
