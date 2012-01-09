@@ -23,7 +23,7 @@ Consider a simple sinatra route:
 get '/users/:user_id/projects/:project_id/tasks-due-on/:task_date' do
   user = User.find(params[:user_id])
   project = user.projects.find(params[:project_id])
-  tasks = project.tasks_due_on(Date.parse(params[:task_date]))
+  tasks = project.tasks_due_on(Date.iso8601(params[:task_date]))
   tasks.to_json
 end
 {% endcodeblock %}
