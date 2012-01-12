@@ -167,7 +167,7 @@ end
 
 If you've used VCR 1.x, you've undoubtedly gotten an error like this:
 
-{% codeblock vcr_1_x_error.txt %}
+{% codeblock vcr_1_x_error.txt lang:sh %}
 Real HTTP connections are disabled. Unregistered request: GET
 http://api.somehost.com/widgets.  You can use VCR to automatically
 record this request and replay it later.  For more details, visit
@@ -181,7 +181,7 @@ error, but the message doesn't give you much help.
 
 In VCR 2.0, you'll get a more helpful error message:
 
-{% codeblock example_error.txt %}
+{% codeblock example_error.txt lang:sh %}
 ================================================================================
 An HTTP request has been made that VCR does not know how to handle:
   GET http://api.somehost.com/widgets

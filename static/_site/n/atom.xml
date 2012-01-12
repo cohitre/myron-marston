@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-01-12T07:43:41-08:00</updated>
+  <updated>2012-01-12T07:45:06-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -527,15 +527,83 @@
 &lt;h2 id='improved_unhandled_request_error_messages'&gt;Improved Unhandled Request Error Messages&lt;/h2&gt;
 
 &lt;p&gt;If you&amp;#8217;ve used VCR 1.x, you&amp;#8217;ve undoubtedly gotten an error like this:&lt;/p&gt;
-
-&lt;p&gt;Liquid error: ClassNotFound: no lexer for alias &amp;#8216;txt&amp;#8217; found&lt;/p&gt;
-
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;vcr_1_x_error.txt  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='sh'&gt;&lt;span class='line'&gt;Real HTTP connections are disabled. Unregistered request: GET
+&lt;/span&gt;&lt;span class='line'&gt;http://api.somehost.com/widgets.  You can use VCR to automatically
+&lt;/span&gt;&lt;span class='line'&gt;record this request and replay it later.  For more details, visit
+&lt;/span&gt;&lt;span class='line'&gt;the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/1-11-3
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;(&lt;/span&gt;FakeWeb::NetConnectNotAllowedError&lt;span class='o'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;You get this kind of error when a request is made that VCR does not know how to handle. There are a lot of different ways you can fix the error, but the message doesn&amp;#8217;t give you much help.&lt;/p&gt;
 
 &lt;p&gt;In VCR 2.0, you&amp;#8217;ll get a more helpful error message:&lt;/p&gt;
-
-&lt;p&gt;Liquid error: ClassNotFound: no lexer for alias &amp;#8216;txt&amp;#8217; found&lt;/p&gt;
-
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;example_error.txt  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;span class='line-number'&gt;22&lt;/span&gt;
+&lt;span class='line-number'&gt;23&lt;/span&gt;
+&lt;span class='line-number'&gt;24&lt;/span&gt;
+&lt;span class='line-number'&gt;25&lt;/span&gt;
+&lt;span class='line-number'&gt;26&lt;/span&gt;
+&lt;span class='line-number'&gt;27&lt;/span&gt;
+&lt;span class='line-number'&gt;28&lt;/span&gt;
+&lt;span class='line-number'&gt;29&lt;/span&gt;
+&lt;span class='line-number'&gt;30&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='sh'&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;================================================================================&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;An HTTP request has been made that VCR does not know how to handle:
+&lt;/span&gt;&lt;span class='line'&gt;  GET http://api.somehost.com/widgets
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;VCR is currently using the following cassette:
+&lt;/span&gt;&lt;span class='line'&gt;  - cassettes/widgets.yml
+&lt;/span&gt;&lt;span class='line'&gt;  - :record &lt;span class='o'&gt;=&lt;/span&gt;&amp;gt; :once
+&lt;/span&gt;&lt;span class='line'&gt;  - :match_requests_on &lt;span class='o'&gt;=&lt;/span&gt;&amp;gt; &lt;span class='o'&gt;[&lt;/span&gt;:method, :uri&lt;span class='o'&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;Under the current configuration VCR can not find a suitable HTTP interaction
+&lt;/span&gt;&lt;span class='line'&gt;to replay and is prevented from recording new requests. There are a few ways
+&lt;/span&gt;&lt;span class='line'&gt;you can deal with this:
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  * You can use the :new_episodes record mode to allow VCR to
+&lt;/span&gt;&lt;span class='line'&gt;    record this new request to the existing cassette &lt;span class='o'&gt;[&lt;/span&gt;1&lt;span class='o'&gt;]&lt;/span&gt;.
+&lt;/span&gt;&lt;span class='line'&gt;  * If you want VCR to ignore this request &lt;span class='o'&gt;(&lt;/span&gt;and others like it&lt;span class='o'&gt;)&lt;/span&gt;, you can
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;set &lt;/span&gt;an &lt;span class='sb'&gt;`&lt;/span&gt;ignore_request&lt;span class='sb'&gt;`&lt;/span&gt; callback &lt;span class='o'&gt;[&lt;/span&gt;2&lt;span class='o'&gt;]&lt;/span&gt;.
+&lt;/span&gt;&lt;span class='line'&gt;  * The current record mode &lt;span class='o'&gt;(&lt;/span&gt;:once&lt;span class='o'&gt;)&lt;/span&gt; does not allow new requests to be recorded
+&lt;/span&gt;&lt;span class='line'&gt;    to a previously recorded cassette. You can delete the cassette file and re-run
+&lt;/span&gt;&lt;span class='line'&gt;    your tests to allow the cassette to be recorded with this request &lt;span class='o'&gt;[&lt;/span&gt;3&lt;span class='o'&gt;]&lt;/span&gt;.
+&lt;/span&gt;&lt;span class='line'&gt;  * The cassette contains 1 HTTP interaction that has not been
+&lt;/span&gt;&lt;span class='line'&gt;    played back. If your request is non-deterministic, you may need to
+&lt;/span&gt;&lt;span class='line'&gt;    change your :match_requests_on cassette option to be more lenient
+&lt;/span&gt;&lt;span class='line'&gt;    or use a custom request matcher to allow it to match &lt;span class='o'&gt;[&lt;/span&gt;4&lt;span class='o'&gt;]&lt;/span&gt;.
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;[&lt;/span&gt;1&lt;span class='o'&gt;]&lt;/span&gt; https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/new-episodes
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;[&lt;/span&gt;2&lt;span class='o'&gt;]&lt;/span&gt; https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/configuration/ignore-request
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;[&lt;/span&gt;3&lt;span class='o'&gt;]&lt;/span&gt; https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/once
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;[&lt;/span&gt;4&lt;span class='o'&gt;]&lt;/span&gt; https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/request-matching
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;================================================================================&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;h2 id='integration_with_rspec_2_metadata'&gt;Integration with RSpec 2 Metadata&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href='http://twitter.com/rbates'&gt;Ryan Bates&lt;/a&gt; had this &lt;a href='https://gist.github.com/1212530'&gt;great idea&lt;/a&gt; to integrate VCR with RSpec 2 using metadata. VCR 2.0 now provides direct support for this:&lt;/p&gt;

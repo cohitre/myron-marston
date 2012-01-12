@@ -169,15 +169,83 @@
 <h2 id='improved_unhandled_request_error_messages'>Improved Unhandled Request Error Messages</h2>
 
 <p>If you&#8217;ve used VCR 1.x, you&#8217;ve undoubtedly gotten an error like this:</p>
-
-<p>Liquid error: ClassNotFound: no lexer for alias &#8216;txt&#8217; found</p>
-
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>vcr_1_x_error.txt  </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Real HTTP connections are disabled. Unregistered request: GET
+</span><span class='line'>http://api.somehost.com/widgets.  You can use VCR to automatically
+</span><span class='line'>record this request and replay it later.  For more details, visit
+</span><span class='line'>the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/1-11-3
+</span><span class='line'><span class='o'>(</span>FakeWeb::NetConnectNotAllowedError<span class='o'>)</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>You get this kind of error when a request is made that VCR does not know how to handle. There are a lot of different ways you can fix the error, but the message doesn&#8217;t give you much help.</p>
 
 <p>In VCR 2.0, you&#8217;ll get a more helpful error message:</p>
-
-<p>Liquid error: ClassNotFound: no lexer for alias &#8216;txt&#8217; found</p>
-
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>example_error.txt  </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class='o'>================================================================================</span>
+</span><span class='line'>An HTTP request has been made that VCR does not know how to handle:
+</span><span class='line'>  GET http://api.somehost.com/widgets
+</span><span class='line'>
+</span><span class='line'>VCR is currently using the following cassette:
+</span><span class='line'>  - cassettes/widgets.yml
+</span><span class='line'>  - :record <span class='o'>=</span>&gt; :once
+</span><span class='line'>  - :match_requests_on <span class='o'>=</span>&gt; <span class='o'>[</span>:method, :uri<span class='o'>]</span>
+</span><span class='line'>
+</span><span class='line'>Under the current configuration VCR can not find a suitable HTTP interaction
+</span><span class='line'>to replay and is prevented from recording new requests. There are a few ways
+</span><span class='line'>you can deal with this:
+</span><span class='line'>
+</span><span class='line'>  * You can use the :new_episodes record mode to allow VCR to
+</span><span class='line'>    record this new request to the existing cassette <span class='o'>[</span>1<span class='o'>]</span>.
+</span><span class='line'>  * If you want VCR to ignore this request <span class='o'>(</span>and others like it<span class='o'>)</span>, you can
+</span><span class='line'>    <span class='nb'>set </span>an <span class='sb'>`</span>ignore_request<span class='sb'>`</span> callback <span class='o'>[</span>2<span class='o'>]</span>.
+</span><span class='line'>  * The current record mode <span class='o'>(</span>:once<span class='o'>)</span> does not allow new requests to be recorded
+</span><span class='line'>    to a previously recorded cassette. You can delete the cassette file and re-run
+</span><span class='line'>    your tests to allow the cassette to be recorded with this request <span class='o'>[</span>3<span class='o'>]</span>.
+</span><span class='line'>  * The cassette contains 1 HTTP interaction that has not been
+</span><span class='line'>    played back. If your request is non-deterministic, you may need to
+</span><span class='line'>    change your :match_requests_on cassette option to be more lenient
+</span><span class='line'>    or use a custom request matcher to allow it to match <span class='o'>[</span>4<span class='o'>]</span>.
+</span><span class='line'>
+</span><span class='line'><span class='o'>[</span>1<span class='o'>]</span> https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/new-episodes
+</span><span class='line'><span class='o'>[</span>2<span class='o'>]</span> https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/configuration/ignore-request
+</span><span class='line'><span class='o'>[</span>3<span class='o'>]</span> https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/record-modes/once
+</span><span class='line'><span class='o'>[</span>4<span class='o'>]</span> https://www.relishapp.com/myronmarston/vcr/v/2-0-0-rc1/docs/request-matching
+</span><span class='line'><span class='o'>================================================================================</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <h2 id='integration_with_rspec_2_metadata'>Integration with RSpec 2 Metadata</h2>
 
 <p><a href='http://twitter.com/rbates'>Ryan Bates</a> had this <a href='https://gist.github.com/1212530'>great idea</a> to integrate VCR with RSpec 2 using metadata. VCR 2.0 now provides direct support for this:</p>
