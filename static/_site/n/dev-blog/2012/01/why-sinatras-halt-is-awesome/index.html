@@ -130,11 +130,11 @@
 <span class='line-number'>23</span>
 </pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>helpers</span> <span class='k'>do</span>
 </span><span class='line'>  <span class='k'>def</span> <span class='nf'>user</span>
-</span><span class='line'>    <span class='vi'>@user</span> <span class='o'>||=</span> <span class='no'>User</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:user_id</span><span class='o'>]</span><span class='p'>)</span> <span class='o'>||</span> <span class='n'>halt</span> <span class='mi'>404</span>
+</span><span class='line'>    <span class='vi'>@user</span> <span class='o'>||=</span> <span class='no'>User</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:user_id</span><span class='o'>]</span><span class='p'>)</span> <span class='o'>||</span> <span class='n'>halt</span><span class='p'>(</span><span class='mi'>404</span><span class='p'>)</span>
 </span><span class='line'>  <span class='k'>end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class='k'>def</span> <span class='nf'>project</span>
-</span><span class='line'>    <span class='vi'>@project</span> <span class='o'>||=</span> <span class='n'>user</span><span class='o'>.</span><span class='n'>projects</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:project_id</span><span class='o'>]</span><span class='p'>)</span> <span class='o'>||</span> <span class='n'>halt</span> <span class='mi'>404</span>
+</span><span class='line'>    <span class='vi'>@project</span> <span class='o'>||=</span> <span class='n'>user</span><span class='o'>.</span><span class='n'>projects</span><span class='o'>.</span><span class='n'>find</span><span class='p'>(</span><span class='n'>params</span><span class='o'>[</span><span class='ss'>:project_id</span><span class='o'>]</span><span class='p'>)</span> <span class='o'>||</span> <span class='n'>halt</span><span class='p'>(</span><span class='mi'>404</span><span class='p'>)</span>
 </span><span class='line'>  <span class='k'>end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class='k'>def</span> <span class='nf'>task_date</span>

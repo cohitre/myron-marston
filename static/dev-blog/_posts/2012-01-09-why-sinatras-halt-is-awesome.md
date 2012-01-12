@@ -71,11 +71,11 @@ some helper methods and `halt`:
 {% codeblock application.rb %}
 helpers do
   def user
-    @user ||= User.find(params[:user_id]) || halt 404
+    @user ||= User.find(params[:user_id]) || halt(404)
   end
 
   def project
-    @project ||= user.projects.find(params[:project_id]) || halt 404
+    @project ||= user.projects.find(params[:project_id]) || halt(404)
   end
 
   def task_date

@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-01-09T10:55:13-08:00</updated>
+  <updated>2012-01-12T07:43:41-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -117,11 +117,11 @@
 &lt;span class='line-number'&gt;23&lt;/span&gt;
 &lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;helpers&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;user&lt;/span&gt;
-&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@user&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:user_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='o'&gt;||&lt;/span&gt; &lt;span class='n'&gt;halt&lt;/span&gt; &lt;span class='mi'&gt;404&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@user&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:user_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='o'&gt;||&lt;/span&gt; &lt;span class='n'&gt;halt&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='mi'&gt;404&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;project&lt;/span&gt;
-&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@project&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;projects&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:project_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='o'&gt;||&lt;/span&gt; &lt;span class='n'&gt;halt&lt;/span&gt; &lt;span class='mi'&gt;404&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@project&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;projects&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;find&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;params&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:project_id&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='o'&gt;||&lt;/span&gt; &lt;span class='n'&gt;halt&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='mi'&gt;404&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;task_date&lt;/span&gt;
