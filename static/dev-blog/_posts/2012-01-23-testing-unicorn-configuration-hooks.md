@@ -3,7 +3,7 @@ layout: dev_post
 title: Testing Unicorn Configuration Hooks
 section: dev-blog
 contents_class: medium-wide
-draft: true
+published: false
 ---
 
 This past week I accidentally took down an app I'm responsible for when
