@@ -3,13 +3,168 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-01-12T07:45:06-08:00</updated>
+  <updated>2012-02-23T19:04:14-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>VCR 2.0.0 RC2 Released!</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/02/vcr-2-0-0-rc2-released"/>
+    <updated>2012-02-24T00:00:00-08:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/02/vcr-2-0-0-rc2-released</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve just released VCR 2.0.0.rc2. This is (hopefully) the last stop before the final 2.0.0 relesae. If there are no major issues, I plan to release 2.0.0 next week some time. Please give 2.0.0.rc2 a try with your test suite!&lt;/p&gt;
+
+&lt;p&gt;On to what&amp;#8217;s been changed since RC1&amp;#8230;&lt;/p&gt;
+
+&lt;h2 id='yard_api_docs'&gt;Yard API Docs&lt;/h2&gt;
+
+&lt;p&gt;VCR has used its cucumber suite, hosted on &lt;a href='http://relishapp.com/myronmarston/vcr'&gt;relish&lt;/a&gt;, as documentation for a good year or so. I&amp;#8217;ve received many positive comments about the docs, and how useful all the executable examples are.&lt;/p&gt;
+
+&lt;p&gt;The relish docs are great at demonstrating each high-level feature through an exectuble example, but they&amp;#8217;re not so great at documenting the interface for particular objects. VCR now has many hooks, and it&amp;#8217;s hard to document the full interface of the objects yielded to those hooks on relish.&lt;/p&gt;
+
+&lt;p&gt;So, with the help of &lt;a href='http://www.benjaminoakes.com/'&gt;Benjamin Oakes&lt;/a&gt; (and many patient answers to my questions from &lt;a href='http://gnuu.org/'&gt;Loren Segal&lt;/a&gt;), VCR now has proper &lt;a href='http://rubydoc.info/github/myronmarston/vcr/frames'&gt;YARD API docs&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id='hook_filters'&gt;Hook Filters&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code&gt;before_http_request&lt;/code&gt;, &lt;code&gt;after_http_request&lt;/code&gt;, and &lt;code&gt;around_http_request&lt;/code&gt; hooks all now accept zero or more filters as an argument. &amp;#8220;Filters&amp;#8221; are simply objects that respond to &lt;code&gt;#to_proc&lt;/code&gt;. Before invoking the hook, VCR will call the filter procs, and only continue invoking the hook if all of the filter procs return a truthy value.&lt;/p&gt;
+
+&lt;p&gt;On top of that, the request object has gained some additional predicate methods in the context of these hooks: &lt;code&gt;#real?&lt;/code&gt;, &lt;code&gt;#ignored?&lt;/code&gt;, &lt;code&gt;#stubbed?&lt;/code&gt;, &lt;code&gt;#recordable?&lt;/code&gt; and &lt;code&gt;#unhandled?&lt;/code&gt;. You can use these in a hook to conditionally run logic for only certain types of requests. For example, to do something before all real requests:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;request_hook.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;before_http_request&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;real?&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;do_something_with&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Or, if you prefer (and I certainly do!), using a filter:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;request_hook.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;before_http_request&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:real?&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;do_something_with&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;This feature is also quite useful when used in conjunction with an &lt;code&gt;around_http_request&lt;/code&gt; hook to globally handle requests to a particular host. Here&amp;#8217;s the code example I put in the &lt;a href='/n/dev-blog/2011/12/vcr-2-0-0-rc-released'&gt;2.0.0 RC1 release announcement&lt;/a&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;handle_geocoding_requests.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;around_http_request&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;uri&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;if&lt;/span&gt; &lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;host&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;api.geocoder.com&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='c1'&gt;# extract an address like &amp;quot;1700 E Pine St, Seattle, WA&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='c1'&gt;# from a query like &amp;quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;address&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;CGI&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;unescape&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;query&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;split&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;=&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;last&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;geocoding/&lt;/span&gt;&lt;span class='si'&gt;#{&lt;/span&gt;&lt;span class='n'&gt;address&lt;/span&gt;&lt;span class='si'&gt;}&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;proceed&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Here&amp;#8217;s how you could clean this up a bit with a hook filter:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;handle_geocoding_requests.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;around_http_request&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='nb'&gt;lambda&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;r&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt; &lt;span class='n'&gt;r&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt; &lt;span class='o'&gt;=~&lt;/span&gt; &lt;span class='sr'&gt;/api.geocoder.com/&lt;/span&gt; &lt;span class='p'&gt;})&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='c1'&gt;# extract an address like &amp;quot;1700 E Pine St, Seattle, WA&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='c1'&gt;# from a query like &amp;quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;address&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;CGI&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;unescape&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;URI&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;uri&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;query&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;split&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;=&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;last&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;geocoding/&lt;/span&gt;&lt;span class='si'&gt;#{&lt;/span&gt;&lt;span class='n'&gt;address&lt;/span&gt;&lt;span class='si'&gt;}&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;request&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;h2 id='improved_excon_support'&gt;Improved Excon Support&lt;/h2&gt;
+
+&lt;p&gt;VCR has supported Excon for a while, but the integration has &lt;a href='http://groups.google.com/group/ruby-fog/browse_thread/thread/737295ebb42e67d1/df2effe4cceffc68'&gt;had a few issues&lt;/a&gt;. I myself have experienced some of this pain when I tried to use VCR to help test some code that uses Fog to communicate with S3.&lt;/p&gt;
+
+&lt;p&gt;I finally dug in and worked through the issues. There were a couple bugs on the VCR side and one bug in Excon&amp;#8217;s stubbing support. I believe VCR should work seemlessly with any excon request now, including with Fog.&lt;/p&gt;
+
+&lt;h2 id='debug_logging'&gt;Debug Logging&lt;/h2&gt;
+
+&lt;p&gt;Sometimes VCR doesn&amp;#8217;t work the way you would expect, and prior to now, there hasn&amp;#8217;t been a good built-in way to get insight into what VCR was doing. VCR now has a new &lt;code&gt;debug_logger&lt;/code&gt; option. Set it to any object with a &lt;code&gt;puts&lt;/code&gt; method:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;debug_logging.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;debug_logger&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='vg'&gt;$stdout&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# or&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;debug_logger&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;open&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;log/vcr.log&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;h2 id='new__option'&gt;New &lt;code&gt;preserve_exact_body_bytes&lt;/code&gt; option&lt;/h2&gt;
+
+&lt;p&gt;Some HTTP servers are not well-behaved and respond with invalid data: the response body may not be encoded according to the encoding specified in the HTTP headers, or there may be bytes that are invalid for the given encoding. The YAML and JSON serializers are not generally designed to handle these cases gracefully, and you may get errors when the cassette is serialized or deserialized. Also, the encoding may not be preserved when round-tripped through the serializer.&lt;/p&gt;
+
+&lt;p&gt;VCR now has a a &lt;code&gt;preserve_exact_body_bytes&lt;/code&gt; option to help deal with cases like these. You can set it globally:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;preserve_exact_body_bytes.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;preserve_exact_body_bytes&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;http_message&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;http_message&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;body&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;encoding&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;name&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;ASCII-8BIT&amp;#39;&lt;/span&gt; &lt;span class='o'&gt;||&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='o'&gt;!&lt;/span&gt;&lt;span class='n'&gt;http_message&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;body&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;valid_encoding?&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;&amp;#8230;or you can force the option for a particular cassette:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;preserve_exact_body_bytes.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;VCR&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;use_cassette&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;example&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:preserve_exact_body_bytes&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='kp'&gt;true&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# ...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;When you set this opion, VCR will base64 encode the body of the request or response during serialization, in order to preserve the bytes exactly.&lt;/p&gt;
+
+&lt;h2 id='whats_next'&gt;What&amp;#8217;s next&lt;/h2&gt;
+
+&lt;p&gt;I plan to release VCR 2.0.0 final in the next week or two. Please give VCR 2.0.0.rc2 a try and let me know if you have any issues!&lt;/p&gt;</content>
+  </entry>
   
   <entry>
     <title>Why Sinatra's Halt is Awesome</title>

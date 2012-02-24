@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; VCR 2.0.0 RC2 Released!</title>
+    <link href="/n/stylesheets/screen.css?b50fa16c695f6c6a869efae6a4772316" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script type="text/javascript">var a=new Date,b=a.getUTCHours();if(0==a.getUTCMonth()&&2012==a.getUTCFullYear()&&((18==a.getUTCDate()&&13<=b)||(19==a.getUTCDate()&&0>=b)))window.location="http://sopastrike.com/strike";</script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>VCR 2.0.0 RC2 Released!</h1>
+  <p class="post-date">➜ 24 Feb 2012</p>
+
+  <div class="content">
+    <p>I&#8217;ve just released VCR 2.0.0.rc2. This is (hopefully) the last stop before the final 2.0.0 relesae. If there are no major issues, I plan to release 2.0.0 next week some time. Please give 2.0.0.rc2 a try with your test suite!</p>
+
+<p>On to what&#8217;s been changed since RC1&#8230;</p>
+
+<h2 id='yard_api_docs'>Yard API Docs</h2>
+
+<p>VCR has used its cucumber suite, hosted on <a href='http://relishapp.com/myronmarston/vcr'>relish</a>, as documentation for a good year or so. I&#8217;ve received many positive comments about the docs, and how useful all the executable examples are.</p>
+
+<p>The relish docs are great at demonstrating each high-level feature through an exectuble example, but they&#8217;re not so great at documenting the interface for particular objects. VCR now has many hooks, and it&#8217;s hard to document the full interface of the objects yielded to those hooks on relish.</p>
+
+<p>So, with the help of <a href='http://www.benjaminoakes.com/'>Benjamin Oakes</a> (and many patient answers to my questions from <a href='http://gnuu.org/'>Loren Segal</a>), VCR now has proper <a href='http://rubydoc.info/github/myronmarston/vcr/frames'>YARD API docs</a>.</p>
+
+<h2 id='hook_filters'>Hook Filters</h2>
+
+<p>The <code>before_http_request</code>, <code>after_http_request</code>, and <code>around_http_request</code> hooks all now accept zero or more filters as an argument. &#8220;Filters&#8221; are simply objects that respond to <code>#to_proc</code>. Before invoking the hook, VCR will call the filter procs, and only continue invoking the hook if all of the filter procs return a truthy value.</p>
+
+<p>On top of that, the request object has gained some additional predicate methods in the context of these hooks: <code>#real?</code>, <code>#ignored?</code>, <code>#stubbed?</code>, <code>#recordable?</code> and <code>#unhandled?</code>. You can use these in a hook to conditionally run logic for only certain types of requests. For example, to do something before all real requests:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>request_hook.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>before_http_request</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request</span><span class='o'>|</span>
+</span><span class='line'>    <span class='k'>if</span> <span class='n'>request</span><span class='o'>.</span><span class='n'>real?</span>
+</span><span class='line'>      <span class='n'>do_something_with</span><span class='p'>(</span><span class='n'>request</span><span class='p'>)</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Or, if you prefer (and I certainly do!), using a filter:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>request_hook.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>before_http_request</span><span class='p'>(</span><span class='ss'>:real?</span><span class='p'>)</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request</span><span class='o'>|</span>
+</span><span class='line'>    <span class='n'>do_something_with</span><span class='p'>(</span><span class='n'>request</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>This feature is also quite useful when used in conjunction with an <code>around_http_request</code> hook to globally handle requests to a particular host. Here&#8217;s the code example I put in the <a href='/n/dev-blog/2011/12/vcr-2-0-0-rc-released'>2.0.0 RC1 release announcement</a>:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>handle_geocoding_requests.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>around_http_request</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request</span><span class='o'>|</span>
+</span><span class='line'>    <span class='n'>uri</span> <span class='o'>=</span> <span class='no'>URI</span><span class='p'>(</span><span class='n'>request</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span>
+</span><span class='line'>    <span class='k'>if</span> <span class='n'>uri</span><span class='o'>.</span><span class='n'>host</span> <span class='o'>==</span> <span class='s1'>&#39;api.geocoder.com&#39;</span>
+</span><span class='line'>      <span class='c1'># extract an address like &quot;1700 E Pine St, Seattle, WA&quot;</span>
+</span><span class='line'>      <span class='c1'># from a query like &quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&quot;</span>
+</span><span class='line'>      <span class='n'>address</span> <span class='o'>=</span> <span class='no'>CGI</span><span class='o'>.</span><span class='n'>unescape</span><span class='p'>(</span><span class='n'>uri</span><span class='o'>.</span><span class='n'>query</span><span class='o'>.</span><span class='n'>split</span><span class='p'>(</span><span class='s1'>&#39;=&#39;</span><span class='p'>)</span><span class='o'>.</span><span class='n'>last</span><span class='p'>)</span>
+</span><span class='line'>      <span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s2'>&quot;geocoding/</span><span class='si'>#{</span><span class='n'>address</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span> <span class='o'>&amp;</span><span class='n'>request</span><span class='p'>)</span>
+</span><span class='line'>    <span class='k'>else</span>
+</span><span class='line'>      <span class='n'>request</span><span class='o'>.</span><span class='n'>proceed</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Here&#8217;s how you could clean this up a bit with a hook filter:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>handle_geocoding_requests.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>around_http_request</span><span class='p'>(</span><span class='nb'>lambda</span> <span class='p'>{</span> <span class='o'>|</span><span class='n'>r</span><span class='o'>|</span> <span class='n'>r</span><span class='o'>.</span><span class='n'>uri</span> <span class='o'>=~</span> <span class='sr'>/api.geocoder.com/</span> <span class='p'>})</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>request</span><span class='o'>|</span>
+</span><span class='line'>    <span class='c1'># extract an address like &quot;1700 E Pine St, Seattle, WA&quot;</span>
+</span><span class='line'>    <span class='c1'># from a query like &quot;address=1700+E+Pine+St%2C+Seattle%2C+WA&quot;</span>
+</span><span class='line'>    <span class='n'>address</span> <span class='o'>=</span> <span class='no'>CGI</span><span class='o'>.</span><span class='n'>unescape</span><span class='p'>(</span><span class='no'>URI</span><span class='p'>(</span><span class='n'>request</span><span class='o'>.</span><span class='n'>uri</span><span class='p'>)</span><span class='o'>.</span><span class='n'>query</span><span class='o'>.</span><span class='n'>split</span><span class='p'>(</span><span class='s1'>&#39;=&#39;</span><span class='p'>)</span><span class='o'>.</span><span class='n'>last</span><span class='p'>)</span>
+</span><span class='line'>    <span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s2'>&quot;geocoding/</span><span class='si'>#{</span><span class='n'>address</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span> <span class='o'>&amp;</span><span class='n'>request</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<h2 id='improved_excon_support'>Improved Excon Support</h2>
+
+<p>VCR has supported Excon for a while, but the integration has <a href='http://groups.google.com/group/ruby-fog/browse_thread/thread/737295ebb42e67d1/df2effe4cceffc68'>had a few issues</a>. I myself have experienced some of this pain when I tried to use VCR to help test some code that uses Fog to communicate with S3.</p>
+
+<p>I finally dug in and worked through the issues. There were a couple bugs on the VCR side and one bug in Excon&#8217;s stubbing support. I believe VCR should work seemlessly with any excon request now, including with Fog.</p>
+
+<h2 id='debug_logging'>Debug Logging</h2>
+
+<p>Sometimes VCR doesn&#8217;t work the way you would expect, and prior to now, there hasn&#8217;t been a good built-in way to get insight into what VCR was doing. VCR now has a new <code>debug_logger</code> option. Set it to any object with a <code>puts</code> method:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>debug_logging.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>debug_logger</span> <span class='o'>=</span> <span class='vg'>$stdout</span>
+</span><span class='line'>  <span class='c1'># or</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>debug_logger</span> <span class='o'>=</span> <span class='no'>File</span><span class='o'>.</span><span class='n'>open</span><span class='p'>(</span><span class='s1'>&#39;log/vcr.log&#39;</span><span class='p'>)</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<h2 id='new__option'>New <code>preserve_exact_body_bytes</code> option</h2>
+
+<p>Some HTTP servers are not well-behaved and respond with invalid data: the response body may not be encoded according to the encoding specified in the HTTP headers, or there may be bytes that are invalid for the given encoding. The YAML and JSON serializers are not generally designed to handle these cases gracefully, and you may get errors when the cassette is serialized or deserialized. Also, the encoding may not be preserved when round-tripped through the serializer.</p>
+
+<p>VCR now has a a <code>preserve_exact_body_bytes</code> option to help deal with cases like these. You can set it globally:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>preserve_exact_body_bytes.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>configure</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>c</span><span class='o'>|</span>
+</span><span class='line'>  <span class='n'>c</span><span class='o'>.</span><span class='n'>preserve_exact_body_bytes</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>http_message</span><span class='o'>|</span>
+</span><span class='line'>    <span class='n'>http_message</span><span class='o'>.</span><span class='n'>body</span><span class='o'>.</span><span class='n'>encoding</span><span class='o'>.</span><span class='n'>name</span> <span class='o'>==</span> <span class='s1'>&#39;ASCII-8BIT&#39;</span> <span class='o'>||</span>
+</span><span class='line'>    <span class='o'>!</span><span class='n'>http_message</span><span class='o'>.</span><span class='n'>body</span><span class='o'>.</span><span class='n'>valid_encoding?</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>&#8230;or you can force the option for a particular cassette:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>preserve_exact_body_bytes.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='no'>VCR</span><span class='o'>.</span><span class='n'>use_cassette</span><span class='p'>(</span><span class='s2'>&quot;example&quot;</span><span class='p'>,</span> <span class='ss'>:preserve_exact_body_bytes</span> <span class='o'>=&gt;</span> <span class='kp'>true</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='c1'># ...</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>When you set this opion, VCR will base64 encode the body of the request or response during serialization, in order to preserve the bytes exactly.</p>
+
+<h2 id='whats_next'>What&#8217;s next</h2>
+
+<p>I plan to release VCR 2.0.0 final in the next week or two. Please give VCR 2.0.0.rc2 a try and let me know if you have any issues!</p>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2012/02/vcr-2-0-0-rc2-released';
+    var disqus_title      = 'VCR 2.0.0 RC2 Released!';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2012/02/vcr-2-0-0-rc2-released';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+
