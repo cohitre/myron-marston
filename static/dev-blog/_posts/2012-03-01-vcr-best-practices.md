@@ -73,3 +73,11 @@ With this in place, your cassettes will be recorded with
 just fine after the API has moved and you have updated
 `Acme::Client.api_host`.
 
+## Use 1 Cassette for 1 Sequence of HTTP Interactions
+
+VCR cassettes can contain multiple HTTP interactions, and VCR allows
+you to group HTTP interactions into cassettes however you like. One
+common antipattern I've seen in the wild a few times goes like this:
+
+``` ruby
+```
