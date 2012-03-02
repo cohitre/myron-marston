@@ -3,13 +3,95 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-02-23T19:06:30-08:00</updated>
+  <updated>2012-03-02T08:47:59-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>VCR 2.0.0 Released!</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/03/vcr-2-0-0-released"/>
+    <updated>2012-03-02T00:00:00-08:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/03/vcr-2-0-0-released</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve just released VCR 2.0.0 final. This marks the culmination of 6 months of work, and involved re-writing large portions of VCR.&lt;/p&gt;
+
+&lt;p&gt;VCR 2 is far more flexible than VCR 1.x ever was. The &lt;a href='https://github.com/myronmarston/vcr/blob/v2.0.0/Upgrade.md'&gt;Upgrade&lt;/a&gt; doc has a high-level listing of most of the new features. I&amp;#8217;ve also blogged about the new stuff:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href='/n/dev-blog/2011/10/custom-request-matchers-in-vcr-2-0'&gt;Custom Request Matchers in VCR 2.0&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;a href='/n/dev-blog/2011/11/cassettes-in-vcr-2-0'&gt;Cassettes in VCR 2.0&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;a href='/n/dev-blog/2011/12/vcr-2-0-0-rc-released'&gt;VCR 2.0.0 RC Released!&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;a href='/n/dev-blog/2012/02/vcr-2-0-0-rc2-released'&gt;VCR 2.0.0 RC2 Released!&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id='thanks'&gt;Thanks!&lt;/h2&gt;
+
+&lt;p&gt;I couldn&amp;#8217;t have developed VCR 2 on my own. Thanks to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;David Balatero, for help with Typhoeus integration.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Bartosz Blimke, for help with WebMock integration.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Wesley Beary, for help with Excon integration.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Ryan Bates, for the great idea to improve VCR&amp;#8217;s integration with RSpec using metadata RSpec metadata.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Loren Segal, for patiently answering all my noob YARD questions.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Jeff Pollard, for reviewing code and giving great feedback.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Avdi Grimm, for several ideas for new features.&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Everyone who submitted patches for VCR: 2.0:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Benjamin Oakes&lt;/li&gt;
+
+&lt;li&gt;Flaviu Simihaian&lt;/li&gt;
+
+&lt;li&gt;Michael Lavrisha&lt;/li&gt;
+
+&lt;li&gt;Paco Guzmán&lt;/li&gt;
+
+&lt;li&gt;Ryan Bates&lt;/li&gt;
+
+&lt;li&gt;Sathya Sekaran&lt;/li&gt;
+
+&lt;li&gt;Carlos Kirkconnell&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;The Travis CI crew. Travis has made it so easy to keep VCR&amp;#8217;s tests passing against multiple ruby interpreters!&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li&gt;
+&lt;p&gt;Everyone who tried one of the VCR 2.0 preleases and gave me feedback.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
   
   <entry>
     <title>VCR 2.0.0 RC2 Released!</title>
