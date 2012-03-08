@@ -3,13 +3,242 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-03-02T08:47:59-08:00</updated>
+  <updated>2012-03-08T22:57:50-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>Building an Around Hook Using Fibers</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/03/building-an-around-hook-using-fibers"/>
+    <updated>2012-03-09T00:00:00-08:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/03/building-an-around-hook-using-fibers</id>
+    <content type="html">&lt;p&gt;Ruby 1.9&amp;#8217;s &lt;a href='http://ruby-doc.org/core-1.9.3/Fiber.html'&gt;fibers&lt;/a&gt; have lots of interesting uses. Recently, I realized that they can be used to build an around hook out of separate before and after hooks.&lt;/p&gt;
+
+&lt;p&gt;RSpec provides an &lt;code&gt;around(:each)&lt;/code&gt; hook but has no equivalent &lt;code&gt;around(:all)&lt;/code&gt; hook. Let&amp;#8217;s build one!&lt;/p&gt;
+
+&lt;p&gt;First, we&amp;#8217;ll start with a contrived example. We have some examples in a group that all need to run with a different working directory. Here&amp;#8217;s how we can manage this with the existing &lt;code&gt;before(:all)&lt;/code&gt; and &lt;code&gt;after(:all)&lt;/code&gt; hooks:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;Changing to the tmp/foo directory&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;before&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@orig_dir&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;pwd&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;after&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='vi'&gt;@orig_dir&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;changes the directory for all examples in this group&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;pwd&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expand_path&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;../tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='bp'&gt;__FILE__&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;Dir.chdir&lt;/code&gt; has two forms. The form above changes the directory for all subsequent code. The other form takes a block, and changes the directory for the duration of the block. This makes it an idea candidate for an around hook. Here&amp;#8217;s what we&amp;#8217;d like to do instead:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;Changing to the tmp/foo directory&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;around&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;changes the directory for all examples in this group&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;pwd&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expand_path&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;../tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='bp'&gt;__FILE__&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Conceptually, you can think of a fiber as a thread, but rather than the OS or VM scheduling it, you manually switch back and forth. Unlike with a thread, you don&amp;#8217;t have to worry about race conditions when modifying shared process memory, since all context switches are manul.&lt;/p&gt;
+
+&lt;p&gt;Our around hook needs to have its own sequence of execution that gets interrupted in the middle and then resumed; thus, the entire thing needs to run in its own fiber. Here&amp;#8217;s a first pass at that:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;span class='line-number'&gt;22&lt;/span&gt;
+&lt;span class='line-number'&gt;23&lt;/span&gt;
+&lt;span class='line-number'&gt;24&lt;/span&gt;
+&lt;span class='line-number'&gt;25&lt;/span&gt;
+&lt;span class='line-number'&gt;26&lt;/span&gt;
+&lt;span class='line-number'&gt;27&lt;/span&gt;
+&lt;span class='line-number'&gt;28&lt;/span&gt;
+&lt;span class='line-number'&gt;29&lt;/span&gt;
+&lt;span class='line-number'&gt;30&lt;/span&gt;
+&lt;span class='line-number'&gt;31&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;fiber&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;module&lt;/span&gt; &lt;span class='nn'&gt;AroundAllHook&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;around&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;scope&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;block&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='c1'&gt;# let RSpec handle around(:each) hooks...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;return&lt;/span&gt; &lt;span class='k'&gt;super&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;scope&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;block&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;unless&lt;/span&gt; &lt;span class='n'&gt;scope&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='ss'&gt;:all&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;group&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='nb'&gt;self&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;fiber&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='kp'&gt;nil&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;before&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;fiber&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;block&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;resume&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;after&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;resume&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;Changing to the tmp/foo directory&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='kp'&gt;extend&lt;/span&gt; &lt;span class='no'&gt;AroundAllHook&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;around&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt; &lt;span class='no'&gt;Fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;yield&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;changes the directory for all examples in this group&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;pwd&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expand_path&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;../tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='bp'&gt;__FILE__&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;So how does this work? Taking it line by line:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fiber = nil&lt;/code&gt; creates a local variable. This is important so that the same fiber instance is in scope in both the before hook and the after hook. This is possible because ruby blocks are a kind of &lt;a href='http://en.wikipedia.org/wiki/Closure_(computer_science)'&gt;closure&lt;/a&gt; and thus retain a binding to that variable. It&amp;#8217;s important that we use a local variable here and not an instance variable. The local variable causes the fiber to be shared between just this pair of hooks. If you used an instance variable, it would not work when someone defined multiple &lt;code&gt;around(:all)&lt;/code&gt; hooks in the same group, because the fiber would be shared between multiple before/after pairs. We need one fiber per pair.&lt;/li&gt;
+
+&lt;li&gt;&lt;code&gt;before(:all)&lt;/code&gt; and &lt;code&gt;after(:all)&lt;/code&gt; use the existing RSpec hooks. We can assume they&amp;#8217;ll be available in this context because this module is intended to be extended onto an example group.&lt;/li&gt;
+
+&lt;li&gt;Within the before hook, we create a new fiber: &lt;code&gt;fiber =
+Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that it runs entirely within it.&lt;/li&gt;
+
+&lt;li&gt;&lt;code&gt;fiber.resume(group)&lt;/code&gt; starts the fiber, and passes the example group as an argument. That will cause it to be the yielded argument in the block.&lt;/li&gt;
+
+&lt;li&gt;Within the declared &lt;code&gt;around(:all)&lt;/code&gt; hook, we have &lt;code&gt;Dir.chdir(&amp;quot;tmp/foo&amp;quot;)
+{ |group| Fiber.yield }&lt;/code&gt;. This changes the directory, then uses &lt;code&gt;Fiber.yield&lt;/code&gt; to return control to the root fiber&lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt;. This allows RSpec to do what it normally does immediately after a &lt;code&gt;before(:all)&lt;/code&gt; hook: it runs the examples in the group.&lt;/li&gt;
+
+&lt;li&gt;Once the examples finish, RSpec invokes our &lt;code&gt;after(:all)&lt;/code&gt; hook. In our hook, we simply resume the fiber: &lt;code&gt;fiber.resume&lt;/code&gt;. This returns execution to the point immediately after the &lt;code&gt;Fiber.yield&lt;/code&gt; in the &lt;code&gt;Dir.chdir&lt;/code&gt; block. Thus, it allows the block to complete and &lt;code&gt;Dir.chdir&lt;/code&gt; returns the working directory to its original value when the block completes.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you&amp;#8217;re not following what &lt;code&gt;Fiber#resume&lt;/code&gt; and &lt;code&gt;Fiber.yield&lt;/code&gt; do, check out the &lt;a href='http://ruby-doc.org/core-1.9.3/Fiber.html'&gt;fiber ruby docs&lt;/a&gt;. They have a good explanation and a simpler example.&lt;/p&gt;
+
+&lt;p&gt;At this point, we have a working &lt;code&gt;around(:all)&lt;/code&gt; hook, but it&amp;#8217;s a pretty leaky abstraction. The user of this hook has to know to call &lt;code&gt;Fiber.yield&lt;/code&gt; in the middle of his hook; otherwise they&amp;#8217;ll get a &lt;code&gt;FiberError&lt;/code&gt; (&amp;#8220;dead fiber called&amp;#8221;) when RSpec runs the &lt;code&gt;after(:all)&lt;/code&gt; hook.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#8217;s improve this API. First, we&amp;#8217;ll implement a &lt;code&gt;#run_examples&lt;/code&gt; method that simply delegates to &lt;code&gt;Fiber.yield&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;delegate&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;module&lt;/span&gt; &lt;span class='nn'&gt;AroundAllHook&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;FiberAwareGroup&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;&lt;/span&gt; &lt;span class='no'&gt;SimpleDelegator&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;run_examples&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='no'&gt;Fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;yield&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Now we can pass a &lt;code&gt;FiberAwareGroup&lt;/code&gt; instance to &lt;code&gt;fiber.resume&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;before&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;fiber&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;block&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;resume&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;FiberAwareGroup&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Finally, we can use this in the &lt;code&gt;around(:all)&lt;/code&gt; hook:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;around&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;run_examples&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Note that we could have defined &lt;code&gt;run_examples&lt;/code&gt; as a singleton method on &lt;code&gt;group&lt;/code&gt;, or defined the method in a module that we extend onto &lt;code&gt;group&lt;/code&gt;, but I prefer delegation for cases like these. Both of the other techniques permanently modify the object and thus leak the &lt;code&gt;#run_examples&lt;/code&gt; method into other contexts where it no longer makes sense.&lt;/p&gt;
+
+&lt;p&gt;This is an improvement from requiring users to call &lt;code&gt;Fiber.yield&lt;/code&gt;, but we can take it a step further. We&amp;#8217;d like to be able to treat the yielded group as a proc, like so:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;around&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;We simply need to define an appropriate &lt;code&gt;#to_proc&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;FiberAwareGroup&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;&lt;/span&gt; &lt;span class='no'&gt;SimpleDelegator&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;run_examples&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;yield&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;to_proc&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;proc&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='n'&gt;run_examples&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;To see the final code, check out the little &lt;a href='https://gist.github.com/2005175'&gt;microgem&lt;/a&gt; I put together.&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;I was going use the term &amp;#8220;main fiber&amp;#8221; instead (since &amp;#8220;main thread&amp;#8221; is a standard term), but the &lt;a href='http://ruby-doc.org/core-1.9.3/Fiber.html#method-c-current'&gt;ruby docs&lt;/a&gt; use the term &amp;#8220;root fiber&amp;#8221; so I figured I would too :).&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
   
   <entry>
     <title>VCR 2.0.0 Released!</title>

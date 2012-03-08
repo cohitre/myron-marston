@@ -1,0 +1,315 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; Building an Around Hook Using Fibers</title>
+    <link href="/n/stylesheets/screen.css?b50fa16c695f6c6a869efae6a4772316" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>Building an Around Hook Using Fibers</h1>
+  <p class="post-date">➜ 09 Mar 2012</p>
+
+  <div class="content">
+    <p>Ruby 1.9&#8217;s <a href='http://ruby-doc.org/core-1.9.3/Fiber.html'>fibers</a> have lots of interesting uses. Recently, I realized that they can be used to build an around hook out of separate before and after hooks.</p>
+
+<p>RSpec provides an <code>around(:each)</code> hook but has no equivalent <code>around(:all)</code> hook. Let&#8217;s build one!</p>
+
+<p>First, we&#8217;ll start with a contrived example. We have some examples in a group that all need to run with a different working directory. Here&#8217;s how we can manage this with the existing <code>before(:all)</code> and <code>after(:all)</code> hooks:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>describe</span> <span class='s2'>&quot;Changing to the tmp/foo directory&quot;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>before</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>    <span class='vi'>@orig_dir</span> <span class='o'>=</span> <span class='no'>Dir</span><span class='o'>.</span><span class='n'>pwd</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='s2'>&quot;tmp/foo&quot;</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='n'>after</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='vi'>@orig_dir</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='n'>it</span> <span class='s2'>&quot;changes the directory for all examples in this group&quot;</span> <span class='k'>do</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>pwd</span><span class='o'>.</span><span class='n'>should</span> <span class='n'>eq</span><span class='p'>(</span><span class='no'>File</span><span class='o'>.</span><span class='n'>expand_path</span><span class='p'>(</span><span class='s2'>&quot;../tmp/foo&quot;</span><span class='p'>,</span> <span class='bp'>__FILE__</span><span class='p'>))</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p><code>Dir.chdir</code> has two forms. The form above changes the directory for all subsequent code. The other form takes a block, and changes the directory for the duration of the block. This makes it an idea candidate for an around hook. Here&#8217;s what we&#8217;d like to do instead:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>describe</span> <span class='s2'>&quot;Changing to the tmp/foo directory&quot;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>around</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>group</span><span class='o'>|</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='s2'>&quot;tmp/foo&quot;</span><span class='p'>,</span> <span class='o'>&amp;</span><span class='n'>group</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='n'>it</span> <span class='s2'>&quot;changes the directory for all examples in this group&quot;</span> <span class='k'>do</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>pwd</span><span class='o'>.</span><span class='n'>should</span> <span class='n'>eq</span><span class='p'>(</span><span class='no'>File</span><span class='o'>.</span><span class='n'>expand_path</span><span class='p'>(</span><span class='s2'>&quot;../tmp/foo&quot;</span><span class='p'>,</span> <span class='bp'>__FILE__</span><span class='p'>))</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Conceptually, you can think of a fiber as a thread, but rather than the OS or VM scheduling it, you manually switch back and forth. Unlike with a thread, you don&#8217;t have to worry about race conditions when modifying shared process memory, since all context switches are manul.</p>
+
+<p>Our around hook needs to have its own sequence of execution that gets interrupted in the middle and then resumed; thus, the entire thing needs to run in its own fiber. Here&#8217;s a first pass at that:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='nb'>require</span> <span class='s1'>&#39;fiber&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class='k'>module</span> <span class='nn'>AroundAllHook</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>around</span><span class='p'>(</span><span class='n'>scope</span><span class='p'>,</span> <span class='o'>&amp;</span><span class='n'>block</span><span class='p'>)</span>
+</span><span class='line'>    <span class='c1'># let RSpec handle around(:each) hooks...</span>
+</span><span class='line'>    <span class='k'>return</span> <span class='k'>super</span><span class='p'>(</span><span class='n'>scope</span><span class='p'>,</span> <span class='o'>&amp;</span><span class='n'>block</span><span class='p'>)</span> <span class='k'>unless</span> <span class='n'>scope</span> <span class='o'>==</span> <span class='ss'>:all</span>
+</span><span class='line'>
+</span><span class='line'>    <span class='n'>group</span> <span class='o'>=</span> <span class='nb'>self</span>
+</span><span class='line'>    <span class='n'>fiber</span> <span class='o'>=</span> <span class='kp'>nil</span>
+</span><span class='line'>    <span class='n'>before</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>      <span class='n'>fiber</span> <span class='o'>=</span> <span class='no'>Fiber</span><span class='o'>.</span><span class='n'>new</span><span class='p'>(</span><span class='o'>&amp;</span><span class='n'>block</span><span class='p'>)</span>
+</span><span class='line'>      <span class='n'>fiber</span><span class='o'>.</span><span class='n'>resume</span><span class='p'>(</span><span class='n'>group</span><span class='p'>)</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class='n'>after</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>      <span class='n'>fiber</span><span class='o'>.</span><span class='n'>resume</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='n'>describe</span> <span class='s2'>&quot;Changing to the tmp/foo directory&quot;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='kp'>extend</span> <span class='no'>AroundAllHook</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='n'>around</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>group</span><span class='o'>|</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='s2'>&quot;tmp/foo&quot;</span><span class='p'>)</span> <span class='p'>{</span> <span class='o'>|</span><span class='n'>group</span><span class='o'>|</span> <span class='no'>Fiber</span><span class='o'>.</span><span class='n'>yield</span> <span class='p'>}</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='n'>it</span> <span class='s2'>&quot;changes the directory for all examples in this group&quot;</span> <span class='k'>do</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>pwd</span><span class='o'>.</span><span class='n'>should</span> <span class='n'>eq</span><span class='p'>(</span><span class='no'>File</span><span class='o'>.</span><span class='n'>expand_path</span><span class='p'>(</span><span class='s2'>&quot;../tmp/foo&quot;</span><span class='p'>,</span> <span class='bp'>__FILE__</span><span class='p'>))</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>So how does this work? Taking it line by line:</p>
+
+<ul>
+<li><code>fiber = nil</code> creates a local variable. This is important so that the same fiber instance is in scope in both the before hook and the after hook. This is possible because ruby blocks are a kind of <a href='http://en.wikipedia.org/wiki/Closure_(computer_science)'>closure</a> and thus retain a binding to that variable. It&#8217;s important that we use a local variable here and not an instance variable. The local variable causes the fiber to be shared between just this pair of hooks. If you used an instance variable, it would not work when someone defined multiple <code>around(:all)</code> hooks in the same group, because the fiber would be shared between multiple before/after pairs. We need one fiber per pair.</li>
+
+<li><code>before(:all)</code> and <code>after(:all)</code> use the existing RSpec hooks. We can assume they&#8217;ll be available in this context because this module is intended to be extended onto an example group.</li>
+
+<li>Within the before hook, we create a new fiber: <code>fiber =
+Fiber.new(&amp;block)</code>. The block is passed to the fiber so that it runs entirely within it.</li>
+
+<li><code>fiber.resume(group)</code> starts the fiber, and passes the example group as an argument. That will cause it to be the yielded argument in the block.</li>
+
+<li>Within the declared <code>around(:all)</code> hook, we have <code>Dir.chdir(&quot;tmp/foo&quot;)
+{ |group| Fiber.yield }</code>. This changes the directory, then uses <code>Fiber.yield</code> to return control to the root fiber<sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup>. This allows RSpec to do what it normally does immediately after a <code>before(:all)</code> hook: it runs the examples in the group.</li>
+
+<li>Once the examples finish, RSpec invokes our <code>after(:all)</code> hook. In our hook, we simply resume the fiber: <code>fiber.resume</code>. This returns execution to the point immediately after the <code>Fiber.yield</code> in the <code>Dir.chdir</code> block. Thus, it allows the block to complete and <code>Dir.chdir</code> returns the working directory to its original value when the block completes.</li>
+</ul>
+
+<p>If you&#8217;re not following what <code>Fiber#resume</code> and <code>Fiber.yield</code> do, check out the <a href='http://ruby-doc.org/core-1.9.3/Fiber.html'>fiber ruby docs</a>. They have a good explanation and a simpler example.</p>
+
+<p>At this point, we have a working <code>around(:all)</code> hook, but it&#8217;s a pretty leaky abstraction. The user of this hook has to know to call <code>Fiber.yield</code> in the middle of his hook; otherwise they&#8217;ll get a <code>FiberError</code> (&#8220;dead fiber called&#8221;) when RSpec runs the <code>after(:all)</code> hook.</p>
+
+<p>Let&#8217;s improve this API. First, we&#8217;ll implement a <code>#run_examples</code> method that simply delegates to <code>Fiber.yield</code>:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='nb'>require</span> <span class='s1'>&#39;delegate&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class='k'>module</span> <span class='nn'>AroundAllHook</span>
+</span><span class='line'>  <span class='k'>class</span> <span class='nc'>FiberAwareGroup</span> <span class='o'>&lt;</span> <span class='no'>SimpleDelegator</span>
+</span><span class='line'>    <span class='k'>def</span> <span class='nf'>run_examples</span>
+</span><span class='line'>      <span class='no'>Fiber</span><span class='o'>.</span><span class='n'>yield</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Now we can pass a <code>FiberAwareGroup</code> instance to <code>fiber.resume</code>:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>before</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>fiber</span> <span class='o'>=</span> <span class='no'>Fiber</span><span class='o'>.</span><span class='n'>new</span><span class='p'>(</span><span class='o'>&amp;</span><span class='n'>block</span><span class='p'>)</span>
+</span><span class='line'>  <span class='n'>fiber</span><span class='o'>.</span><span class='n'>resume</span><span class='p'>(</span><span class='no'>FiberAwareGroup</span><span class='o'>.</span><span class='n'>new</span><span class='p'>(</span><span class='n'>group</span><span class='p'>))</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Finally, we can use this in the <code>around(:all)</code> hook:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>around</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>group</span><span class='o'>|</span>
+</span><span class='line'>  <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='s2'>&quot;tmp/foo&quot;</span><span class='p'>)</span> <span class='p'>{</span> <span class='n'>group</span><span class='o'>.</span><span class='n'>run_examples</span> <span class='p'>}</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Note that we could have defined <code>run_examples</code> as a singleton method on <code>group</code>, or defined the method in a module that we extend onto <code>group</code>, but I prefer delegation for cases like these. Both of the other techniques permanently modify the object and thus leak the <code>#run_examples</code> method into other contexts where it no longer makes sense.</p>
+
+<p>This is an improvement from requiring users to call <code>Fiber.yield</code>, but we can take it a step further. We&#8217;d like to be able to treat the yielded group as a proc, like so:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>around</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>group</span><span class='o'>|</span>
+</span><span class='line'>  <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='s2'>&quot;tmp/foo&quot;</span><span class='p'>,</span> <span class='o'>&amp;</span><span class='n'>group</span><span class='p'>)</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>We simply need to define an appropriate <code>#to_proc</code>:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>class</span> <span class='nc'>FiberAwareGroup</span> <span class='o'>&lt;</span> <span class='no'>SimpleDelegator</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>run_examples</span>
+</span><span class='line'>    <span class='no'>Fiber</span><span class='o'>.</span><span class='n'>yield</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>to_proc</span>
+</span><span class='line'>    <span class='nb'>proc</span> <span class='p'>{</span> <span class='n'>run_examples</span> <span class='p'>}</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>To see the final code, check out the little <a href='https://gist.github.com/2005175'>microgem</a> I put together.</p>
+<div class='footnotes'><hr /><ol><li id='fn:1'>
+<p>I was going use the term &#8220;main fiber&#8221; instead (since &#8220;main thread&#8221; is a standard term), but the <a href='http://ruby-doc.org/core-1.9.3/Fiber.html#method-c-current'>ruby docs</a> use the term &#8220;root fiber&#8221; so I figured I would too :).</p>
+<a href='#fnref:1' rev='footnote'>&#8617;</a></li></ol></div>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2012/03/building-an-around-hook-using-fibers';
+    var disqus_title      = 'Building an Around Hook Using Fibers';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2012/03/building-an-around-hook-using-fibers';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+
