@@ -54,7 +54,7 @@ end
 Conceptually, you can think of a fiber as a thread, but rather than the
 OS or VM scheduling it, you manually switch back and forth. Unlike with
 a thread, you don't have to worry about race conditions when modifying
-shared process memory, since all context switches are manul.
+shared process memory, since all context switches are manual.
 
 Our around hook needs to have its own sequence of execution that gets
 interrupted in the middle and then resumed; thus, the entire thing

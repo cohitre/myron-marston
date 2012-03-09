@@ -85,7 +85,7 @@
 </span><span class='line'>  <span class='k'>end</span>
 </span><span class='line'><span class='k'>end</span>
 </span></code></pre></td></tr></table></div></figure></div></notextile></div>
-<p>Conceptually, you can think of a fiber as a thread, but rather than the OS or VM scheduling it, you manually switch back and forth. Unlike with a thread, you don&#8217;t have to worry about race conditions when modifying shared process memory, since all context switches are manul.</p>
+<p>Conceptually, you can think of a fiber as a thread, but rather than the OS or VM scheduling it, you manually switch back and forth. Unlike with a thread, you don&#8217;t have to worry about race conditions when modifying shared process memory, since all context switches are manual.</p>
 
 <p>Our around hook needs to have its own sequence of execution that gets interrupted in the middle and then resumed; thus, the entire thing needs to run in its own fiber. Here&#8217;s a first pass at that:</p>
 <div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
