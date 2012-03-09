@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-03-09T10:20:55-08:00</updated>
+  <updated>2012-03-09T14:32:10-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -152,7 +152,7 @@ Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that
 &lt;li&gt;&lt;code&gt;fiber.resume(group)&lt;/code&gt; starts the fiber, and passes the example group as an argument. That will cause it to be the yielded argument in the block.&lt;/li&gt;
 
 &lt;li&gt;Within the declared &lt;code&gt;around(:all)&lt;/code&gt; hook, we have &lt;code&gt;Dir.chdir(&amp;quot;tmp/foo&amp;quot;)
-{ |group| Fiber.yield }&lt;/code&gt;. This changes the directory, then uses &lt;code&gt;Fiber.yield&lt;/code&gt; to return control to the root fiber&lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt;. This allows RSpec to do what it normally does immediately after a &lt;code&gt;before(:all)&lt;/code&gt; hook: it runs the examples in the group.&lt;/li&gt;
+{ Fiber.yield }&lt;/code&gt;. This changes the directory, then uses &lt;code&gt;Fiber.yield&lt;/code&gt; to return control to the root fiber&lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt;. This allows RSpec to do what it normally does immediately after a &lt;code&gt;before(:all)&lt;/code&gt; hook: it runs the examples in the group.&lt;/li&gt;
 
 &lt;li&gt;Once the examples finish, RSpec invokes our &lt;code&gt;after(:all)&lt;/code&gt; hook. In our hook, we simply resume the fiber: &lt;code&gt;fiber.resume&lt;/code&gt;. This returns execution to the point immediately after the &lt;code&gt;Fiber.yield&lt;/code&gt; in the &lt;code&gt;Dir.chdir&lt;/code&gt; block. Thus, it allows the block to complete and &lt;code&gt;Dir.chdir&lt;/code&gt; returns the working directory to its original value when the block completes.&lt;/li&gt;
 &lt;/ul&gt;

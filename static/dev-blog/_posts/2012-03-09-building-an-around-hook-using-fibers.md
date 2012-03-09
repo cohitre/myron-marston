@@ -115,7 +115,7 @@ So how does this work? Taking it line by line:
 * `fiber.resume(group)` starts the fiber, and passes the example group
   as an argument. That will cause it to be the yielded argument in the block.
 * Within the declared `around(:all)` hook, we have `Dir.chdir("tmp/foo")
-  { |group| Fiber.yield }`. This changes the directory, then uses
+  { Fiber.yield }`. This changes the directory, then uses
   `Fiber.yield` to return control to the root fiber[^foot]. This allows
   RSpec to do what it normally does immediately after a `before(:all)`
   hook: it runs the examples in the group.

@@ -165,7 +165,7 @@ Fiber.new(&amp;block)</code>. The block is passed to the fiber so that it runs e
 <li><code>fiber.resume(group)</code> starts the fiber, and passes the example group as an argument. That will cause it to be the yielded argument in the block.</li>
 
 <li>Within the declared <code>around(:all)</code> hook, we have <code>Dir.chdir(&quot;tmp/foo&quot;)
-{ |group| Fiber.yield }</code>. This changes the directory, then uses <code>Fiber.yield</code> to return control to the root fiber<sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup>. This allows RSpec to do what it normally does immediately after a <code>before(:all)</code> hook: it runs the examples in the group.</li>
+{ Fiber.yield }</code>. This changes the directory, then uses <code>Fiber.yield</code> to return control to the root fiber<sup id='fnref:1'><a href='#fn:1' rel='footnote'>1</a></sup>. This allows RSpec to do what it normally does immediately after a <code>before(:all)</code> hook: it runs the examples in the group.</li>
 
 <li>Once the examples finish, RSpec invokes our <code>after(:all)</code> hook. In our hook, we simply resume the fiber: <code>fiber.resume</code>. This returns execution to the point immediately after the <code>Fiber.yield</code> in the <code>Dir.chdir</code> block. Thus, it allows the block to complete and <code>Dir.chdir</code> returns the working directory to its original value when the block completes.</li>
 </ul>
