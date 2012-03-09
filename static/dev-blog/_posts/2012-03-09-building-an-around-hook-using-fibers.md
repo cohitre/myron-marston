@@ -85,7 +85,7 @@ describe "Changing to the tmp/foo directory" do
   extend AroundAllHook
 
   around(:all) do |group|
-    Dir.chdir("tmp/foo") { |group| Fiber.yield }
+    Dir.chdir("tmp/foo") { Fiber.yield }
   end
 
   it "changes the directory for all examples in this group" do
