@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-03-08T22:57:50-08:00</updated>
+  <updated>2012-03-09T09:44:52-08:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -131,7 +131,7 @@
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='kp'&gt;extend&lt;/span&gt; &lt;span class='no'&gt;AroundAllHook&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;around&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:all&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
-&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;group&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt; &lt;span class='no'&gt;Fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;yield&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='no'&gt;Dir&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;chdir&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;tmp/foo&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='no'&gt;Fiber&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;yield&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;changes the directory for all examples in this group&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;

@@ -144,7 +144,7 @@
 </span><span class='line'>  <span class='kp'>extend</span> <span class='no'>AroundAllHook</span>
 </span><span class='line'>
 </span><span class='line'>  <span class='n'>around</span><span class='p'>(</span><span class='ss'>:all</span><span class='p'>)</span> <span class='k'>do</span> <span class='o'>|</span><span class='n'>group</span><span class='o'>|</span>
-</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='s2'>&quot;tmp/foo&quot;</span><span class='p'>)</span> <span class='p'>{</span> <span class='o'>|</span><span class='n'>group</span><span class='o'>|</span> <span class='no'>Fiber</span><span class='o'>.</span><span class='n'>yield</span> <span class='p'>}</span>
+</span><span class='line'>    <span class='no'>Dir</span><span class='o'>.</span><span class='n'>chdir</span><span class='p'>(</span><span class='s2'>&quot;tmp/foo&quot;</span><span class='p'>)</span> <span class='p'>{</span> <span class='no'>Fiber</span><span class='o'>.</span><span class='n'>yield</span> <span class='p'>}</span>
 </span><span class='line'>  <span class='k'>end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class='n'>it</span> <span class='s2'>&quot;changes the directory for all examples in this group&quot;</span> <span class='k'>do</span>
