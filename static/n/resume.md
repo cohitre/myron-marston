@@ -15,7 +15,7 @@ contents_class: wide resume
 
 ## Summary
 
-* Extensive experience with Ruby/Ruby on Rails (3.5 years), .NET (3 years) and relational databases (9 years).
+* Extensive experience with Ruby/Ruby on Rails (5 years), .NET (3 years) and relational databases (9 years).
 * Self-motivated: Independently learned multiple programming languages and APIs (Ruby, Java, Java 3D,
   Ruby on Rails) while living and travelling abroad.
 * Actively involved in the Ruby and Rails communities, contributing to many open source
@@ -48,27 +48,33 @@ contents_class: wide resume
 I've written and maintain several ruby gems:
 
 * [VCR](http://github.com/myronmarston/vcr): Record your test suite's HTTP interactions
-  and replay them during future test runs for fast, deterministic, accurate tests.  Featured on the
-  [ruby 5 podcast](http://ruby5.envylabs.com/episodes/83-episode-81-june-1-2010/stories/699-vcr-record-rewind-and-playback-web-services).
+  and replay them during future test runs for fast, deterministic, accurate tests.  Has over
+  100,000 downloads and has been featured on
+  [Ruby 5](http://ruby5.envylabs.com/episodes/83-episode-81-june-1-2010/stories/699-vcr-record-rewind-and-playback-web-services),
+  [Ruby Weekly](http://rubyweekly.com/archive/22.html),
+  [the Ruby Show](http://rubyshow.com/episodes/146),
+  [Ruby Inside](http://www.rubyinside.com/vcr-a-recorder-for-all-your-tests-http-interactions-4169.html),
+  [Destroy all Software](https://www.destroyallsoftware.com/screencasts/catalog/acceptance-tests) and
+  [Railscasts](http://railscasts.com/episodes/291-testing-with-vcr).
 * [Mail Safe](http://github.com/myronmarston/mail_safe): Keep your actionmailer emails from escaping into
-  the wild during development.  Featured on the
-  [ruby 5 podcast](http://ruby5.envylabs.com/episodes/27-episode-26-november-10-2009/stories/210-send-mail-safely-with-mail_safe).
-* [Null DB](http://github.com/nulldb/nulldb): An ActiveRecord null database adapter
-  for greater speed and isolation in unit tests.  ([Avdi Grimm](http://avdi.org) originally wrote it;
-  I'm the current maintainer).
+  the wild during development.  Featured on
+  [Ruby 5](http://ruby5.envylabs.com/episodes/27-episode-26-november-10-2009/stories/210-send-mail-safely-with-mail_safe).
 * A few smaller projects, including [Column Timestamps](http://github.com/myronmarston/column_timestamps),
   [Email Blacklist](http://github.com/myronmarston/email_blacklist) and
   [Test Benchmarker](http://github.com/myronmarston/test_benchmarker).
 
+I'm an [RSpec](https://github.com/rspec/rspec-core/commits?author=myronmarston) and
+[Ripple](https://github.com/seancribbs/ripple/commits?author=myronmarston) committer.
+
 I've also contributed to numerous projects, including:
 
-* RSpec 2 [core](http://github.com/rspec/rspec-core/commits/master?author=myronmarston),
-  [expectations](http://github.com/rspec/rspec-expectations/commits/master?author=myronmarston),
-  [mocks](http://github.com/rspec/rspec-mocks/commits/master?author=myronmarston) and
-  [rails](http://github.com/rspec/rspec-rails/commits/master?author=myronmarston)
+* [Rails](https://github.com/rails/rails/commits?author=myronmarston)
+* [Typhoeus](https://github.com/dbalatero/typhoeus/commits?author=myronmarston)
 * [Bundler](http://github.com/carlhuda/bundler/commits/master?author=myronmarston)
 * [WebMock](http://github.com/bblimke/webmock/commits/master?author=myronmarston)
-* [Reportable](http://github.com/saulabs/reportable/commits/master?author=myronmarston)
+* [RSpec-Fire](https://github.com/xaviershay/rspec-fire/commits?author=myronmarston)
+* [Relix](https://github.com/ntalbott/relix/commits?author=myronmarston)
+* [NullDB](https://github.com/nulldb/nulldb/commits?author=myronmarston)
 
 See my [github profile](http://github.com/myronmarston) for a complete and current list.
 
