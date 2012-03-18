@@ -23,6 +23,10 @@ Refraction.configure do |req|
   when %r|^(.*)\.html$|; req.permanent! :path => $1
   when %r|^(.*)/index(\.html)?$|; req.permanent! :path => $1
   when %r|^/n/?$|; req.permanent! :path => '/n/dev-blog'
+  when %r|^/n/atom.xml$|
+    if %w[ FeedBurner FeedValidator ].none? { |u| req.env['HTTP_USER_AGENT'].to_s.include?(u) }
+      req.permanent! "http://feeds.feedburner.com/myronmarsto/n"
+    end
   end
 end
 
