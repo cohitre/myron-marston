@@ -59,7 +59,7 @@ bundle exec rspec spec/unit/models  1.20s user 0.18s system 98% cpu 1.398 total
 That's 0.6 seconds vs. 1.4 seconds--more than twice as slow to run the
 tests through `bundle exec`.
 
-When I noticed this, I immediately tried running other
+When I noticed this, I tried running other
 specs without `bundle exec`...and immediately ran into a problem:
 
 {% codeblock load_error.txt lang:sh %}
@@ -131,6 +131,13 @@ but it does have a few caveats:
   time I run `bundle install`, the generated setup file will not be
   updated with the new load paths--which means the wrong version of
   a gem may be used the next time I run my tests.
+* A full `Bundler.setup` gives you a sandbox guarantee: the only gems
+  that can be loaded are those that included in the locked bundle.
+  There's no such guarantee when using `--standalone`. I can install
+  a gem and immediately require it. I'm not too concerned about this
+  since the normal way I install gems now is via Bundler; plus, our
+  CI server will catch any problems here since it is running
+  `bundle install` (with no `--standalone`).
 
 I'm certainly willing to live with these tradeoffs in exchange for
 faster test environment boot times, but you may not be.

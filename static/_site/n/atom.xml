@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-03-19T22:27:32-07:00</updated>
+  <updated>2012-03-20T08:38:52-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -62,7 +62,7 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
 &lt;p&gt;That&amp;#8217;s 0.6 seconds vs. 1.4 seconds&amp;#8211;more than twice as slow to run the tests through &lt;code&gt;bundle exec&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;When I noticed this, I immediately tried running other specs without &lt;code&gt;bundle exec&lt;/code&gt;&amp;#8230;and immediately ran into a problem:&lt;/p&gt;
+&lt;p&gt;When I noticed this, I tried running other specs without &lt;code&gt;bundle exec&lt;/code&gt;&amp;#8230;and immediately ran into a problem:&lt;/p&gt;
 &lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;load_error.txt  &lt;/span&gt;&lt;/figcaption&gt;
  &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
 &lt;span class='line-number'&gt;2&lt;/span&gt;
@@ -119,6 +119,8 @@
 &lt;li&gt;There&amp;#8217;s no guarantee that the right version of rspec will be used (since it is the binary I invoke from my shell, before the load paths get setup). I&amp;#8217;m using an RVM gemset for this project so it&amp;#8217;s not much of an issue.&lt;/li&gt;
 
 &lt;li&gt;Bundler doesn&amp;#8217;t keep any persistent state about the fact that I&amp;#8217;m using &lt;code&gt;--standalone&lt;/code&gt;. If I forget the &lt;code&gt;--standalone&lt;/code&gt; flag the next time I run &lt;code&gt;bundle install&lt;/code&gt;, the generated setup file will not be updated with the new load paths&amp;#8211;which means the wrong version of a gem may be used the next time I run my tests.&lt;/li&gt;
+
+&lt;li&gt;A full &lt;code&gt;Bundler.setup&lt;/code&gt; gives you a sandbox guarantee: the only gems that can be loaded are those that included in the locked bundle. There&amp;#8217;s no such guarantee when using &lt;code&gt;--standalone&lt;/code&gt;. I can install a gem and immediately require it. I&amp;#8217;m not too concerned about this since the normal way I install gems now is via Bundler; plus, our CI server will catch any problems here since it is running &lt;code&gt;bundle install&lt;/code&gt; (with no &lt;code&gt;--standalone&lt;/code&gt;).&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;I&amp;#8217;m certainly willing to live with these tradeoffs in exchange for faster test environment boot times, but you may not be.&lt;/p&gt;

@@ -75,7 +75,7 @@
 </span></code></pre></td></tr></table></div></figure></div></notextile></div>
 <p>That&#8217;s 0.6 seconds vs. 1.4 seconds&#8211;more than twice as slow to run the tests through <code>bundle exec</code>.</p>
 
-<p>When I noticed this, I immediately tried running other specs without <code>bundle exec</code>&#8230;and immediately ran into a problem:</p>
+<p>When I noticed this, I tried running other specs without <code>bundle exec</code>&#8230;and immediately ran into a problem:</p>
 <div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>load_error.txt  </span></figcaption>
  <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -132,6 +132,8 @@
 <li>There&#8217;s no guarantee that the right version of rspec will be used (since it is the binary I invoke from my shell, before the load paths get setup). I&#8217;m using an RVM gemset for this project so it&#8217;s not much of an issue.</li>
 
 <li>Bundler doesn&#8217;t keep any persistent state about the fact that I&#8217;m using <code>--standalone</code>. If I forget the <code>--standalone</code> flag the next time I run <code>bundle install</code>, the generated setup file will not be updated with the new load paths&#8211;which means the wrong version of a gem may be used the next time I run my tests.</li>
+
+<li>A full <code>Bundler.setup</code> gives you a sandbox guarantee: the only gems that can be loaded are those that included in the locked bundle. There&#8217;s no such guarantee when using <code>--standalone</code>. I can install a gem and immediately require it. I&#8217;m not too concerned about this since the normal way I install gems now is via Bundler; plus, our CI server will catch any problems here since it is running <code>bundle install</code> (with no <code>--standalone</code>).</li>
 </ul>
 
 <p>I&#8217;m certainly willing to live with these tradeoffs in exchange for faster test environment boot times, but you may not be.</p>
