@@ -3,13 +3,129 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-03-17T21:16:43-07:00</updated>
+  <updated>2012-03-19T22:27:32-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>Faster Test Boot Times with Bundler Standalone</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/03/faster-test-boot-times-with-bundler-standalone"/>
+    <updated>2012-03-20T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/03/faster-test-boot-times-with-bundler-standalone</id>
+    <content type="html">&lt;h2 id='tldr'&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;bundle install --standalone&lt;/code&gt; generates a file that allows you to avoid loading bundler at runtime (while still having your load path set up) when booting your test environment. With a fast test suite, this can make a noticeable difference in how long it takes to run.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;I recently started a new project, and inspired by what I&amp;#8217;ve been learning from &lt;a href='https://www.destroyallsoftware.com/'&gt;Destroy All Software&lt;/a&gt;, I want the tests to run as fast as possible. Getting the wall clock times of my test runs down under a second makes me so much more productive!&lt;/p&gt;
+
+&lt;p&gt;One of the keys to achieving this, as people like &lt;a href='http://www.confreaks.com/videos/641-gogaruco2011-fast-rails-tests'&gt;Corey Haines&lt;/a&gt; talk about, is loading as few things as possible. This has an important design benefit&amp;#8211;it forces you to think carefully everytime you couple your code-under-test to a new dependency&amp;#8211;and is essential for achieving fast tests.&lt;/p&gt;
+
+&lt;p&gt;If you use bundler for your project (as you should; it&amp;#8217;s awesome), it&amp;#8217;s an additional thing that you may not have to load when you run your tests. On this project, the tests are fast enough that running the tests through bundler makes a significant, noticeable difference.&lt;/p&gt;
+
+&lt;p&gt;Without &lt;code&gt;bundle exec&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;no_bundler.txt  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='sh'&gt;&lt;span class='line'&gt;➜  &lt;span class='nb'&gt;time &lt;/span&gt;rspec spec/unit/models
+&lt;/span&gt;&lt;span class='line'&gt;................................
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;Finished in 0.05011 seconds
+&lt;/span&gt;&lt;span class='line'&gt;32 examples, 0 failures
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;rspec spec/unit/models  0.52s user 0.06s system 97% cpu 0.595 total
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;With &lt;code&gt;bundle exec&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;bundler.txt  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='sh'&gt;&lt;span class='line'&gt;➜  &lt;span class='nb'&gt;time &lt;/span&gt;bundle &lt;span class='nb'&gt;exec &lt;/span&gt;rspec spec/unit/models
+&lt;/span&gt;&lt;span class='line'&gt;................................
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;Finished in 0.05819 seconds
+&lt;/span&gt;&lt;span class='line'&gt;32 examples, 0 failures
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;bundle &lt;span class='nb'&gt;exec &lt;/span&gt;rspec spec/unit/models  1.20s user 0.18s system 98% cpu 1.398 total
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;That&amp;#8217;s 0.6 seconds vs. 1.4 seconds&amp;#8211;more than twice as slow to run the tests through &lt;code&gt;bundle exec&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;When I noticed this, I immediately tried running other specs without &lt;code&gt;bundle exec&lt;/code&gt;&amp;#8230;and immediately ran into a problem:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;load_error.txt  &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='sh'&gt;&lt;span class='line'&gt;➜  rspec spec/unit/apps
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;.../rubygems/custom_require.rb:36:in &lt;span class='sb'&gt;`&lt;/span&gt;require&lt;span class='err'&gt;&amp;#39;&lt;/span&gt;: cannot load such file -- shardonnay &lt;span class='o'&gt;(&lt;/span&gt;LoadError&lt;span class='o'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;...the full backtrace here...
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Lame. I had forgotten that I had a few &lt;code&gt;:git&lt;/code&gt; gems in my Gemfile (such as shardonnay, a private gem we&amp;#8217;re actively developing internally). As the &lt;a href='http://gembundler.com/v1.1/git.html'&gt;bundler documentation&lt;/a&gt; states, &lt;code&gt;:git&lt;/code&gt; gems are not available to rubygems. You have to use &lt;code&gt;Bundler.setup&lt;/code&gt; to make them available on the load path. But &lt;code&gt;Bundler.setup&lt;/code&gt; is equivalent to &lt;code&gt;bundle exec&lt;/code&gt;&lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt;, and I still wanted to skip it if I could find way.&lt;/p&gt;
+
+&lt;h2 id='the_solution'&gt;The Solution&lt;/h2&gt;
+
+&lt;p&gt;One of my co-workers, Evan Battaglia, suggested there might be a way to make a record of all the load paths that need to be setup (including the paths for &lt;code&gt;:git&lt;/code&gt; gems) and re-use that. I started looking into doing this when I remembered a new bundler 1.1 option I&amp;#8217;ve been meaning to try out: &lt;code&gt;bundle install --standalone&lt;/code&gt;. Running this generates a handy file at &lt;code&gt;bundle/bundler/setup.rb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;bundle/bundler/setup.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;path&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expand_path&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s1'&gt;&amp;#39;..&amp;#39;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='bp'&gt;__FILE__&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='vg'&gt;$:&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;unshift&lt;/span&gt; &lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expand_path&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='si'&gt;#{&lt;/span&gt;&lt;span class='n'&gt;path&lt;/span&gt;&lt;span class='si'&gt;}&lt;/span&gt;&lt;span class='s2'&gt;/../ruby/1.9.1/gems/rake-0.9.2.2/lib&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='vg'&gt;$:&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;unshift&lt;/span&gt; &lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expand_path&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='si'&gt;#{&lt;/span&gt;&lt;span class='n'&gt;path&lt;/span&gt;&lt;span class='si'&gt;}&lt;/span&gt;&lt;span class='s2'&gt;/../ruby/1.9.1/gems/addressable-2.2.7/lib&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='vg'&gt;$:&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;unshift&lt;/span&gt; &lt;span class='no'&gt;File&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expand_path&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='si'&gt;#{&lt;/span&gt;&lt;span class='n'&gt;path&lt;/span&gt;&lt;span class='si'&gt;}&lt;/span&gt;&lt;span class='s2'&gt;/../ruby/1.9.1/bundler/gems/shardonnay-f2cf0d585593/lib&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;The real file in my project is much longer, with many more gems, but that should give you the idea. Notice that it sets up the load path both for installed released gems and &lt;code&gt;:git&lt;/code&gt; gems. This makes it perfect for what I want to do.&lt;/p&gt;
+
+&lt;p&gt;To use this, I&amp;#8217;ve git-ignored the &lt;code&gt;bundle&lt;/code&gt; directory (since it contains artifacts generated by bundler) and I have this bit of code that runs at the start of booting my test environment:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;setup_load_paths.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;begin&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# use `bundle install --standalone&amp;#39; to get this...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;require_relative&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;../bundle/bundler/setup&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;rescue&lt;/span&gt; &lt;span class='no'&gt;LoadError&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='c1'&gt;# fall back to regular bundler if the developer hasn&amp;#39;t bundled standalone&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='nb'&gt;require&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;bundler&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='no'&gt;Bundler&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;setup&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;With this in place, I&amp;#8217;m able to run my specs without &lt;code&gt;bundle exec&lt;/code&gt;, with no slowdown from bundler at runtime (since bundler isn&amp;#8217;t even being loaded at runtime!).&lt;/p&gt;
+
+&lt;h2 id='caveats'&gt;Caveats&lt;/h2&gt;
+
+&lt;p&gt;This is working great for me, and I plan to keep using this strategy, but it does have a few caveats:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;There&amp;#8217;s no guarantee that the right version of rspec will be used (since it is the binary I invoke from my shell, before the load paths get setup). I&amp;#8217;m using an RVM gemset for this project so it&amp;#8217;s not much of an issue.&lt;/li&gt;
+
+&lt;li&gt;Bundler doesn&amp;#8217;t keep any persistent state about the fact that I&amp;#8217;m using &lt;code&gt;--standalone&lt;/code&gt;. If I forget the &lt;code&gt;--standalone&lt;/code&gt; flag the next time I run &lt;code&gt;bundle install&lt;/code&gt;, the generated setup file will not be updated with the new load paths&amp;#8211;which means the wrong version of a gem may be used the next time I run my tests.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I&amp;#8217;m certainly willing to live with these tradeoffs in exchange for faster test environment boot times, but you may not be.&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;Technically, &lt;code&gt;Bundler.setup&lt;/code&gt; and &lt;code&gt;bundle exec&lt;/code&gt; aren&amp;#8217;t quite equivalent. &lt;code&gt;bundle exec&lt;/code&gt; essentially runs &lt;code&gt;Bundler.setup&lt;/code&gt; before the specified binary (rspec, in this case), ensuring that the version of rspec specified in your &lt;code&gt;Gemfile.lock&lt;/code&gt; is used. Putting &lt;code&gt;Bundler.setup&lt;/code&gt; in a file loaded by your tests (say, &lt;code&gt;spec_helper.rb&lt;/code&gt;) will ensure that all gems loaded after that point are the correct versions, but can&amp;#8217;t make any guarantee about gems that have already been loaded (such as rspec itself).&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
   
   <entry>
     <title>Building an Around Hook Using Fibers</title>
@@ -2187,14 +2303,6 @@ Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that
 &lt;li&gt;I'll be attending several different events during the Olympics: soccer (in Qinhuangdao) and rowing, hockey and handball (in Beijing).&lt;/li&gt;
 &lt;li&gt;On August 13th, I fly back to Seattle.&lt;/li&gt;
 &lt;/ul&gt;After that, I really have no idea...&lt;br&gt;&lt;br&gt;One cool bit of news I found out today: the tickets I have for the August 6th soccer game is USA vs. Norway.  I bought the tickets several months ago, so I'm lucky I get to see the USA in the one soccer game I'm going to :).&lt;br&gt;&lt;br&gt;Also, there are a few other trips I took the last two years that I haven't had time to blog about yet, but I still intend to, just for the sake of completeness and so that I don't forget.  So check back here in the future for those updates.&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-5562716077142620979?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
-  </entry>
-  
-  <entry>
-    <title>Winter Travels Wrap-up</title>
-    <link href="http://myronmars.to/n/china/2008/06/winter-travels-wrap-up"/>
-    <updated>2008-06-22T00:00:00-07:00</updated>
-    <id>http://myronmars.to/n/china/2008/06/winter-travels-wrap-up</id>
-    <content type="html">I finally finished blogging about my travels this winter with that last post.  (I know, I know--it shouldn't have taken me until 4 months after the trip ended to finish, but oh well).  I posted this map in an earlier post, but now I've updated it to include a picture and a link to the blog post about each place.  So for anyone who missed a blog posts, here's a good chance to catch up:&lt;br&gt;&lt;br&gt;&lt;iframe marginheight=&quot;0&quot; marginwidth=&quot;0&quot; src=&quot;http://maps.google.com/maps/ms?ie=UTF8&amp;amp;hl=en&amp;amp;s=AARTsJp25XqiOOBiomLczW0hCN8v3RVWWw&amp;amp;msa=0&amp;amp;msid=108185200577556995857.0004471d5143454353005&amp;amp;ll=31.503629,101.601563&amp;amp;spn=51.28853,70.3125&amp;amp;z=3&amp;amp;output=embed&quot; frameborder=&quot;0&quot; height=&quot;350&quot; scrolling=&quot;no&quot; width=&quot;400&quot;&gt;&lt;/iframe&gt;&lt;br&gt;&lt;small&gt;&lt;a href=&quot;http://maps.google.com/maps/ms?ie=UTF8&amp;amp;hl=en&amp;amp;msa=0&amp;amp;msid=108185200577556995857.0004471d5143454353005&amp;amp;ll=31.503629,101.601563&amp;amp;spn=51.28853,70.3125&amp;amp;z=3&amp;amp;source=embed&quot; style=&quot;color: rgb(0, 0, 255); text-align: left;&quot;&gt;View Larger Map&lt;/a&gt;&lt;/small&gt;&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-6442736965376420195?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
   </entry>
   
 </feed>
