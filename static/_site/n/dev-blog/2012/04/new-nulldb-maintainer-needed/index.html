@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; New NullDB Maintainer Needed</title>
+    <link href="/n/stylesheets/screen.css?b50fa16c695f6c6a869efae6a4772316" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>New NullDB Maintainer Needed</h1>
+  <p class="post-date">➜ 19 Apr 2012</p>
+
+  <div class="content">
+    <p><a href='https://github.com/nulldb/nulldb'>NullDB</a> is a handy project that makes it easy to write database-decoupled unit tests for your ActiveRecord models. The project was originally started by <a href='http://avdi.org/'>Avdi Grimm</a>; two years ago, I took over as maintainer</p>
+
+<p>Since that time, I&#8217;ve focused my open source efforts on <a href='https://github.com/myronmarston/vcr'>several</a> <a href='https://github.com/rspec/rspec-core/commits/master?author=myronmarston'>other</a> <a href='https://github.com/seancribbs/ripple/commits?author=myronmarston'>projects</a> and I no longer have the time to maintain NullDB. I&#8217;m also not using ActiveRecord much these days so I&#8217;m not using NullDB as regularly as I used to. At this point there&#8217;s a <a href='https://github.com/nulldb/nulldb/issues'>backlog of issues and pull requests</a> that needs someone with more time and interest than I to deal with.</p>
+
+<p>I also have some ideas for some &#8220;next steps&#8221; I&#8217;d like to see for NullDB:</p>
+
+<ul>
+<li>It&#8217;d be great to get some CI builds going on <a href='http://travis-ci.org/'>Travis</a>.</li>
+
+<li>NullDB should ideally be fully de-coupled from Rails, so that it can easily be used in non-Rails ActiveRecord projects. A Rails 3 RailTie can be used for deeper NullDB/Rails integration without coupling them.</li>
+
+<li>RSpec 2 provides a great API for testing libraries to easily integrate with examples and example groups using metadata. It&#8217;d be great if NullDB took advantage of this (e.g. so that all specs except those tagged with <code>:realdb</code> used the NullDB adapter by default).</li>
+
+<li>NullDB still &#8220;officially&#8221; supports Ruby 1.8.6 and Rails 2.x. I think it&#8217;s time to drop support for those.</li>
+</ul>
+
+<p>If you&#8217;re interested in helping maintain NullDB, let me know, via a comment below, a tweet or an email. If you&#8217;re interested in helping out but don&#8217;t think you have the time to take over as the main maintainer, that&#8217;s fine&#8211;it&#8217;d be great to get multiple people who can help out!</p>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2012/04/new-nulldb-maintainer-needed';
+    var disqus_title      = 'New NullDB Maintainer Needed';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2012/04/new-nulldb-maintainer-needed';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+

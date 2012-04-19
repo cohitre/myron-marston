@@ -3,13 +3,37 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-03-20T08:38:52-07:00</updated>
+  <updated>2012-04-18T23:25:23-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>New NullDB Maintainer Needed</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/04/new-nulldb-maintainer-needed"/>
+    <updated>2012-04-19T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/04/new-nulldb-maintainer-needed</id>
+    <content type="html">&lt;p&gt;&lt;a href='https://github.com/nulldb/nulldb'&gt;NullDB&lt;/a&gt; is a handy project that makes it easy to write database-decoupled unit tests for your ActiveRecord models. The project was originally started by &lt;a href='http://avdi.org/'&gt;Avdi Grimm&lt;/a&gt;; two years ago, I took over as maintainer&lt;/p&gt;
+
+&lt;p&gt;Since that time, I&amp;#8217;ve focused my open source efforts on &lt;a href='https://github.com/myronmarston/vcr'&gt;several&lt;/a&gt; &lt;a href='https://github.com/rspec/rspec-core/commits/master?author=myronmarston'&gt;other&lt;/a&gt; &lt;a href='https://github.com/seancribbs/ripple/commits?author=myronmarston'&gt;projects&lt;/a&gt; and I no longer have the time to maintain NullDB. I&amp;#8217;m also not using ActiveRecord much these days so I&amp;#8217;m not using NullDB as regularly as I used to. At this point there&amp;#8217;s a &lt;a href='https://github.com/nulldb/nulldb/issues'&gt;backlog of issues and pull requests&lt;/a&gt; that needs someone with more time and interest than I to deal with.&lt;/p&gt;
+
+&lt;p&gt;I also have some ideas for some &amp;#8220;next steps&amp;#8221; I&amp;#8217;d like to see for NullDB:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It&amp;#8217;d be great to get some CI builds going on &lt;a href='http://travis-ci.org/'&gt;Travis&lt;/a&gt;.&lt;/li&gt;
+
+&lt;li&gt;NullDB should ideally be fully de-coupled from Rails, so that it can easily be used in non-Rails ActiveRecord projects. A Rails 3 RailTie can be used for deeper NullDB/Rails integration without coupling them.&lt;/li&gt;
+
+&lt;li&gt;RSpec 2 provides a great API for testing libraries to easily integrate with examples and example groups using metadata. It&amp;#8217;d be great if NullDB took advantage of this (e.g. so that all specs except those tagged with &lt;code&gt;:realdb&lt;/code&gt; used the NullDB adapter by default).&lt;/li&gt;
+
+&lt;li&gt;NullDB still &amp;#8220;officially&amp;#8221; supports Ruby 1.8.6 and Rails 2.x. I think it&amp;#8217;s time to drop support for those.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you&amp;#8217;re interested in helping maintain NullDB, let me know, via a comment below, a tweet or an email. If you&amp;#8217;re interested in helping out but don&amp;#8217;t think you have the time to take over as the main maintainer, that&amp;#8217;s fine&amp;#8211;it&amp;#8217;d be great to get multiple people who can help out!&lt;/p&gt;</content>
+  </entry>
   
   <entry>
     <title>Faster Test Boot Times with Bundler Standalone</title>
@@ -2291,20 +2315,6 @@ Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that
     <updated>2008-08-07T00:00:00-07:00</updated>
     <id>http://myronmars.to/n/china/2008/08/olympics</id>
     <content type="html">Well, I'm back in Qinhuangdao from Hong Kong and Taiwan.  My time in Hong Kong and Taiwan was enjoyable, but not very eventful.  I've got more about my time in China that I plan to blog about, but recently I've focused all my computer time on finishing a project that I'll be putting on my resume for when I apply for jobs.  So blogging just isn't a priority right now.&lt;br&gt;&lt;br&gt;The Olympics don't officially start until tomorrow night, but some of the events have already began.  I went to the USA vs. Norway women's soccer game last night.  Unfortunately, we lost 2-0, but it was fun to go.  I'll be going to 3 different events in Beijing before flying home in 6 days!&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-2300520823382743596?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
-  </entry>
-  
-  <entry>
-    <title>What's Next?</title>
-    <link href="http://myronmars.to/n/china/2008/06/whats-next"/>
-    <updated>2008-06-25T00:00:00-07:00</updated>
-    <id>http://myronmars.to/n/china/2008/06/whats-next</id>
-    <content type="html">Finals just finished last week, and many people are asking me, &quot;what's next?&quot;  I'm not totally sure, but I do know some of what I'll be doing in the near future...&lt;br&gt;&lt;ul&gt;
-&lt;li&gt;On July 5th, I head to Hong Kong.  I'll be there about a week.  The main reason I'm going is to get a tourist visa so I can come back to China in August (since my residence permit expires July 15th).&lt;/li&gt;
-&lt;li&gt;On July 12th, I fly to Taiwan.  I'm going there to help out with an English camp.&lt;/li&gt;
-&lt;li&gt;I'll return to mainland China on August 3rd, just in time for the start of the Olympics.&lt;/li&gt;
-&lt;li&gt;I'll be attending several different events during the Olympics: soccer (in Qinhuangdao) and rowing, hockey and handball (in Beijing).&lt;/li&gt;
-&lt;li&gt;On August 13th, I fly back to Seattle.&lt;/li&gt;
-&lt;/ul&gt;After that, I really have no idea...&lt;br&gt;&lt;br&gt;One cool bit of news I found out today: the tickets I have for the August 6th soccer game is USA vs. Norway.  I bought the tickets several months ago, so I'm lucky I get to see the USA in the one soccer game I'm going to :).&lt;br&gt;&lt;br&gt;Also, there are a few other trips I took the last two years that I haven't had time to blog about yet, but I still intend to, just for the sake of completeness and so that I don't forget.  So check back here in the future for those updates.&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-5562716077142620979?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
   </entry>
   
 </feed>
