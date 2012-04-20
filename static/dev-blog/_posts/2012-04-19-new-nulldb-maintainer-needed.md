@@ -9,7 +9,7 @@ contents_class: medium-wide
 it easy to write database-decoupled unit tests for your ActiveRecord
 models. The project was originally started by [Avdi Grimm](http://avdi.org/);
 two years ago, [I took over as
-maintainer](http://devblog.avdi.org/2010/04/06/nulldb-has-a-new-maintainer/].
+maintainer](http://devblog.avdi.org/2010/04/06/nulldb-has-a-new-maintainer/).
 
 Since that time, I've focused my open source efforts on
 [several](https://github.com/myronmarston/vcr)

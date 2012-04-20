@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-04-18T23:25:23-07:00</updated>
+  <updated>2012-04-19T21:34:15-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -16,7 +16,7 @@
     <link href="http://myronmars.to/n/dev-blog/2012/04/new-nulldb-maintainer-needed"/>
     <updated>2012-04-19T00:00:00-07:00</updated>
     <id>http://myronmars.to/n/dev-blog/2012/04/new-nulldb-maintainer-needed</id>
-    <content type="html">&lt;p&gt;&lt;a href='https://github.com/nulldb/nulldb'&gt;NullDB&lt;/a&gt; is a handy project that makes it easy to write database-decoupled unit tests for your ActiveRecord models. The project was originally started by &lt;a href='http://avdi.org/'&gt;Avdi Grimm&lt;/a&gt;; two years ago, I took over as maintainer&lt;/p&gt;
+    <content type="html">&lt;p&gt;&lt;a href='https://github.com/nulldb/nulldb'&gt;NullDB&lt;/a&gt; is a handy project that makes it easy to write database-decoupled unit tests for your ActiveRecord models. The project was originally started by &lt;a href='http://avdi.org/'&gt;Avdi Grimm&lt;/a&gt;; two years ago, &lt;a href='http://devblog.avdi.org/2010/04/06/nulldb-has-a-new-maintainer/'&gt;I took over as maintainer&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Since that time, I&amp;#8217;ve focused my open source efforts on &lt;a href='https://github.com/myronmarston/vcr'&gt;several&lt;/a&gt; &lt;a href='https://github.com/rspec/rspec-core/commits/master?author=myronmarston'&gt;other&lt;/a&gt; &lt;a href='https://github.com/seancribbs/ripple/commits?author=myronmarston'&gt;projects&lt;/a&gt; and I no longer have the time to maintain NullDB. I&amp;#8217;m also not using ActiveRecord much these days so I&amp;#8217;m not using NullDB as regularly as I used to. At this point there&amp;#8217;s a &lt;a href='https://github.com/nulldb/nulldb/issues'&gt;backlog of issues and pull requests&lt;/a&gt; that needs someone with more time and interest than I to deal with.&lt;/p&gt;
 
