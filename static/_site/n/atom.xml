@@ -3,13 +3,33 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-04-19T21:34:15-07:00</updated>
+  <updated>2012-05-08T21:20:58-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>The New NullDB Team</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/05/the-new-nulldb-team"/>
+    <updated>2012-05-09T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/05/the-new-nulldb-team</id>
+    <content type="html">&lt;p&gt;A few weeks ago, I &lt;a href='/n/dev-blog/2012/04/new-nulldb-maintainer-needed'&gt;announced&lt;/a&gt; that I was looking for a new NullDB maintainer. Since then, multiple people have stepped forward and I&amp;#8217;m happy to announce the formation of a &lt;a href='https://github.com/nulldb'&gt;NullDB core team&lt;/a&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Arvind Laxminarayan (&lt;a href='https://github.com/ardsrk'&gt;github&lt;/a&gt; | &lt;a href='https://twitter.com/ardsrk'&gt;twitter&lt;/a&gt;)&lt;/li&gt;
+
+&lt;li&gt;Isaac Sanders (&lt;a href='https://github.com/isaacsanders'&gt;github&lt;/a&gt; | &lt;a href='https://twitter.com/isaacsanders'&gt;twitter&lt;/a&gt;)&lt;/li&gt;
+
+&lt;li&gt;Matt Van Horn (&lt;a href='https://github.com/mattvanhorn'&gt;github&lt;/a&gt; | &lt;a href='https://twitter.com/nycplayer'&gt;twitter&lt;/a&gt;)&lt;/li&gt;
+
+&lt;li&gt;Woody Peterson (&lt;a href='https://github.com/woahdae'&gt;github&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Please join me in thanking Arvind, Isaac, Matt and Woody for stepping forward and taking over maintainance on this project. I&amp;#8217;m confident the project can move forward with a much better direction now that I won&amp;#8217;t be the bottleneck anymore!&lt;/p&gt;</content>
+  </entry>
   
   <entry>
     <title>New NullDB Maintainer Needed</title>
@@ -2307,14 +2327,6 @@ Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that
     <updated>2008-09-17T00:00:00-07:00</updated>
     <id>http://myronmars.to/n/china/2008/09/life-update</id>
     <content type="html">I'm back in Seattle, and have been for about a month.  Needless to say, posting on my blog has not been at the top of my list of priorities, amid everything else I've had to do (buy a car, get car insurance, file my taxes, find an apartment, move into the apartment, find a job, etc...).  But, I do intend to post a bit more about China, particularly to post some pictures and stories from a couple trips that I never got around to posting. &lt;br&gt;&lt;br&gt;I started a new job two weeks ago at &lt;a href=&quot;http://www.jobster.com/&quot;&gt;jobster.com&lt;/a&gt;.  So far it's been a great place to work.  Besides the cool people I work with and the great location, I'm a big fan of the Jobster development process.  For the sake of the few of you who will know what I'm talking about, Jobster uses a fairly agile development process (including &lt;a href=&quot;http://en.wikipedia.org/wiki/Test_Driven_Development&quot;&gt;TDD&lt;/a&gt;, which I'm a huge fan of) while not rigidly sticking to it for the sake of the buzzword.  We're a &lt;a href=&quot;http://rubyonrails.com/&quot;&gt;Ruby on Rails&lt;/a&gt; shop, which is a huge contrast from my old job at Consona/Intuitive (where I helped develop a .NET desktop ERP app).  I like using so many open source tools.  And I'm loving the fact that Jobster lets developers use any operating system or tools that they want...so I'm taking the opportunity to switch over to Mac, and I plan on buying a Mac in the not-too-distant future.&lt;br&gt;&lt;br&gt;That's enough for now.  Encourage me to write up and post the rest of the China stuff if you want to read it, as I'm sure that will help motivate me to get it done :).&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-5225532694244300995?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
-  </entry>
-  
-  <entry>
-    <title>The Olympics!</title>
-    <link href="http://myronmars.to/n/china/2008/08/olympics"/>
-    <updated>2008-08-07T00:00:00-07:00</updated>
-    <id>http://myronmars.to/n/china/2008/08/olympics</id>
-    <content type="html">Well, I'm back in Qinhuangdao from Hong Kong and Taiwan.  My time in Hong Kong and Taiwan was enjoyable, but not very eventful.  I've got more about my time in China that I plan to blog about, but recently I've focused all my computer time on finishing a project that I'll be putting on my resume for when I apply for jobs.  So blogging just isn't a priority right now.&lt;br&gt;&lt;br&gt;The Olympics don't officially start until tomorrow night, but some of the events have already began.  I went to the USA vs. Norway women's soccer game last night.  Unfortunately, we lost 2-0, but it was fun to go.  I'll be going to 3 different events in Beijing before flying home in 6 days!&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-2300520823382743596?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
   </entry>
   
 </feed>
