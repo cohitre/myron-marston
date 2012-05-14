@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; In Defense of 100% Test Coverage</title>
+    <link href="/n/stylesheets/screen.css?b50fa16c695f6c6a869efae6a4772316" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>In Defense of 100% Test Coverage</h1>
+  <p class="post-date">➜ 14 May 2012</p>
+
+  <div class="content">
+    <p>I&#8217;d like to talk a bit about something that seems to be almost universally unpopular these days: 100% test coverage. A few people like <a href='https://twitter.com/#!/unclebobmartin/statuses/190125475543261184'>Uncle Bob Martin</a> have said positive things about it, but the more popular sentiment is closer to what <a href='http://37signals.com/svn/posts/3159-testing-like-the-tsa'>DHH</a> says about it: don&#8217;t bother aiming for it.</p>
+
+<h2 id='tldr'>TL;DR</h2>
+
+<p>You should not make 100% test coverage the focus of your testing practice, but when applied carefully, I&#8217;ve found it useful on some kinds of projects, particularly as an automated &#8220;dead code&#8221; finder.</p>
+
+<h2 id='why_100_test_coverage_can_be_a_waste'>Why 100% Test Coverage Can be a Waste</h2>
+
+<p>Let&#8217;s address some common criticisms to start with:</p>
+
+<ul>
+<li>When dev managers mandate 100% test coverage on their developers, it encourages the devs to write terrible tests that are written just to meet the goal.</li>
+
+<li>In a high-level language like Ruby, you commonly have one-liner class-level macros that are &#8220;covered&#8221; simply by loading the class in the test environment. For example, a <code>validates_presence_of :name</code> declaration in your ActiveRecord model will be reported as covered by your code coverage tool as soon as the model is loaded in your test environment&#8230;but yet, there is very real behavior here that isn&#8217;t being tested at all. Thus, the code coverage number can be deceiving.</li>
+
+<li>Having 100% test coverage on a project gives a false sense of confidence. A project can be littered with bugs and yet still have 100% test coverage.</li>
+
+<li>There is a cost associated with your test suite. The longer it takes to run, the longer your red-green-refactor cycle takes. Excess tests that were written to satisfy a code coverage number may be brittle and drive up the cost of change on a project (as you have to fix numerous tests for each change you make).</li>
+</ul>
+
+<p>I absolutely agree with every single one of these criticisms. Test coverage should never be the goal, and making it the focus of your testing practice can lead to very poor tests.</p>
+
+<p>That said, even though it should never be the <em>focus</em> of how write your tests, I have 100% test coverage as reported by <a href='https://github.com/colszowka/simplecov'>SimpleCov</a> on multiple projects, and on these projects, my CI builds will fail if the test coverage drops below 100%. I find 100% test coverage to be useful and worthwhile on certain kinds of projects. I&#8217;d like to explain why I find it useful and how I generally approach test coverage.</p>
+
+<h2 id='100_test_coverage_as_an_automated_dead_code_finder'>100% Test Coverage as an Automated &#8220;Dead Code&#8221; Finder</h2>
+
+<p>A common problem on older projects is crufty code: code that may not be used anymore, but no one&#8217;s really sure, so the code gets left in the code base, &#8220;just in case&#8221;. Over time, this build up of cruft can incur significant cost in a project. Wouldn&#8217;t it be great if there was an automated tool that helped identify dead code that can safely be removed?</p>
+
+<p>It turns out there is. Your code coverage tool, paired with making it a part of your continuous integration builds, can serve this purpose. It&#8217;s a key benefit my projects have gotten out of maintaining 100% test coverage, and, surprisingly, I&#8217;ve never heard any one mention it before.</p>
+
+<p>The high level of test coverage I keep makes it possible for me to refactor my code ruthlessly. I often wind up with helper classes or methods that are not unit tested directly; they are not part of the public interface of the project, and serve to support some other method or class that is part of the public interface. Later on, when I refactor yet again, these helper methods or classes may no longer be used, and, if they still remain in the code base, the build will fail and tell me. This has helped me many times.</p>
+
+<h2 id='what_100_test_coverage_does_and_does_not_guarantee'>What 100% Test Coverage does (and does not) Guarantee</h2>
+
+<p>As I&#8217;ve already mentioned, I refactor my code ruthlessly, and it&#8217;s a huge benefit I get out of practicing TDD. Maintaining a high level of test coverage increases my confidence in the safety of my refactorings.</p>
+
+<p>It&#8217;s true that 100% test coverage can give a false sense of the &#8220;robustness&#8221; of a project, and I know that having 100% test coverage guarantees me nothing. However, having less than 100% test coverage does guarantee something: it guarantees that a project&#8217;s test suite will be unable to detect when a refactoring breaks the uncovered code. Every bit of a uncovered code is a potential source of undetectable breakage, and I like to minimize these by keeping my test coverage up.</p>
+
+<h2 id='how_i_use_test_coverage'>How I Use Test Coverage</h2>
+
+<p>The most important thing is to use your brain&#8211;don&#8217;t aim for 100% test coverage because I&#8217;ve found it useful, and don&#8217;t heap scorn on the practice because of what others say. Still, here are some guidelines that I&#8217;ve found useful:</p>
+
+<ul>
+<li>Not every project needs or warrants 100% test coverage. I&#8217;ve never maintained 100% test coverage in a rails app and probably never will. In general, the more UI a project has, the less need for high test coverage number. Most of my projects these days are backend services (which often expose an HTTP API) or gems we use internally, and it makes much more sense to maintain test coverage on these sorts of projects.</li>
+
+<li>If you manage developers, don&#8217;t ever mandate a test coverage threshold. It&#8217;s a bad idea for a team to focus their testing practice on a test coverage threshold. A team can (and should) come to a consensus about what test coverage threshold they want (if any) for themselves.</li>
+
+<li>If you want to use your code coverage tool as an automated &#8220;dead code&#8221; finder, it&#8217;s helpful to start the project at 100% test coverage. Using a lower threshold makes it harder to detect dead code since the coverage number will vary as you write and refactor code.</li>
+
+<li>In my minute-by-minute TDD cycle, I don&#8217;t think about test coverage <em>at all</em>, and I usually run my tests without SimpleCov being loaded. I have a rake task that runs the tests with SimpleCov loaded and verifies the coverage threshold. I use this right before pushing commits and as part of my CI build. The majority of the time, the tests I&#8217;ve naturally written have 100% coverage.</li>
+
+<li>Occasionally when there are holes in the coverage, it doesn&#8217;t really make sense to add tests for it. Generally, I&#8217;ll extract this code into another file and add a SimpleCov <a href='http://rubydoc.info/gems/simplecov/0.6.3/frames'>filter</a> so that it ignores the file and does not count it when calculating the coverage percent. This allows me to continue using SimpleCov as a dead code finder, without having to add silly tests that would exist only to satisfy the coverage tool.</li>
+</ul>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2012/05/in-defense-of-100-test-coverage';
+    var disqus_title      = 'In Defense of 100% Test Coverage';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2012/05/in-defense-of-100-test-coverage';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+

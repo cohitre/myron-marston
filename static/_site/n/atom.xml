@@ -3,13 +3,73 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-05-08T21:20:58-07:00</updated>
+  <updated>2012-05-13T20:59:28-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>In Defense of 100% Test Coverage</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/05/in-defense-of-100-test-coverage"/>
+    <updated>2012-05-14T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/05/in-defense-of-100-test-coverage</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;d like to talk a bit about something that seems to be almost universally unpopular these days: 100% test coverage. A few people like &lt;a href='https://twitter.com/#!/unclebobmartin/statuses/190125475543261184'&gt;Uncle Bob Martin&lt;/a&gt; have said positive things about it, but the more popular sentiment is closer to what &lt;a href='http://37signals.com/svn/posts/3159-testing-like-the-tsa'&gt;DHH&lt;/a&gt; says about it: don&amp;#8217;t bother aiming for it.&lt;/p&gt;
+
+&lt;h2 id='tldr'&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;You should not make 100% test coverage the focus of your testing practice, but when applied carefully, I&amp;#8217;ve found it useful on some kinds of projects, particularly as an automated &amp;#8220;dead code&amp;#8221; finder.&lt;/p&gt;
+
+&lt;h2 id='why_100_test_coverage_can_be_a_waste'&gt;Why 100% Test Coverage Can be a Waste&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;#8217;s address some common criticisms to start with:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;When dev managers mandate 100% test coverage on their developers, it encourages the devs to write terrible tests that are written just to meet the goal.&lt;/li&gt;
+
+&lt;li&gt;In a high-level language like Ruby, you commonly have one-liner class-level macros that are &amp;#8220;covered&amp;#8221; simply by loading the class in the test environment. For example, a &lt;code&gt;validates_presence_of :name&lt;/code&gt; declaration in your ActiveRecord model will be reported as covered by your code coverage tool as soon as the model is loaded in your test environment&amp;#8230;but yet, there is very real behavior here that isn&amp;#8217;t being tested at all. Thus, the code coverage number can be deceiving.&lt;/li&gt;
+
+&lt;li&gt;Having 100% test coverage on a project gives a false sense of confidence. A project can be littered with bugs and yet still have 100% test coverage.&lt;/li&gt;
+
+&lt;li&gt;There is a cost associated with your test suite. The longer it takes to run, the longer your red-green-refactor cycle takes. Excess tests that were written to satisfy a code coverage number may be brittle and drive up the cost of change on a project (as you have to fix numerous tests for each change you make).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I absolutely agree with every single one of these criticisms. Test coverage should never be the goal, and making it the focus of your testing practice can lead to very poor tests.&lt;/p&gt;
+
+&lt;p&gt;That said, even though it should never be the &lt;em&gt;focus&lt;/em&gt; of how write your tests, I have 100% test coverage as reported by &lt;a href='https://github.com/colszowka/simplecov'&gt;SimpleCov&lt;/a&gt; on multiple projects, and on these projects, my CI builds will fail if the test coverage drops below 100%. I find 100% test coverage to be useful and worthwhile on certain kinds of projects. I&amp;#8217;d like to explain why I find it useful and how I generally approach test coverage.&lt;/p&gt;
+
+&lt;h2 id='100_test_coverage_as_an_automated_dead_code_finder'&gt;100% Test Coverage as an Automated &amp;#8220;Dead Code&amp;#8221; Finder&lt;/h2&gt;
+
+&lt;p&gt;A common problem on older projects is crufty code: code that may not be used anymore, but no one&amp;#8217;s really sure, so the code gets left in the code base, &amp;#8220;just in case&amp;#8221;. Over time, this build up of cruft can incur significant cost in a project. Wouldn&amp;#8217;t it be great if there was an automated tool that helped identify dead code that can safely be removed?&lt;/p&gt;
+
+&lt;p&gt;It turns out there is. Your code coverage tool, paired with making it a part of your continuous integration builds, can serve this purpose. It&amp;#8217;s a key benefit my projects have gotten out of maintaining 100% test coverage, and, surprisingly, I&amp;#8217;ve never heard any one mention it before.&lt;/p&gt;
+
+&lt;p&gt;The high level of test coverage I keep makes it possible for me to refactor my code ruthlessly. I often wind up with helper classes or methods that are not unit tested directly; they are not part of the public interface of the project, and serve to support some other method or class that is part of the public interface. Later on, when I refactor yet again, these helper methods or classes may no longer be used, and, if they still remain in the code base, the build will fail and tell me. This has helped me many times.&lt;/p&gt;
+
+&lt;h2 id='what_100_test_coverage_does_and_does_not_guarantee'&gt;What 100% Test Coverage does (and does not) Guarantee&lt;/h2&gt;
+
+&lt;p&gt;As I&amp;#8217;ve already mentioned, I refactor my code ruthlessly, and it&amp;#8217;s a huge benefit I get out of practicing TDD. Maintaining a high level of test coverage increases my confidence in the safety of my refactorings.&lt;/p&gt;
+
+&lt;p&gt;It&amp;#8217;s true that 100% test coverage can give a false sense of the &amp;#8220;robustness&amp;#8221; of a project, and I know that having 100% test coverage guarantees me nothing. However, having less than 100% test coverage does guarantee something: it guarantees that a project&amp;#8217;s test suite will be unable to detect when a refactoring breaks the uncovered code. Every bit of a uncovered code is a potential source of undetectable breakage, and I like to minimize these by keeping my test coverage up.&lt;/p&gt;
+
+&lt;h2 id='how_i_use_test_coverage'&gt;How I Use Test Coverage&lt;/h2&gt;
+
+&lt;p&gt;The most important thing is to use your brain&amp;#8211;don&amp;#8217;t aim for 100% test coverage because I&amp;#8217;ve found it useful, and don&amp;#8217;t heap scorn on the practice because of what others say. Still, here are some guidelines that I&amp;#8217;ve found useful:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Not every project needs or warrants 100% test coverage. I&amp;#8217;ve never maintained 100% test coverage in a rails app and probably never will. In general, the more UI a project has, the less need for high test coverage number. Most of my projects these days are backend services (which often expose an HTTP API) or gems we use internally, and it makes much more sense to maintain test coverage on these sorts of projects.&lt;/li&gt;
+
+&lt;li&gt;If you manage developers, don&amp;#8217;t ever mandate a test coverage threshold. It&amp;#8217;s a bad idea for a team to focus their testing practice on a test coverage threshold. A team can (and should) come to a consensus about what test coverage threshold they want (if any) for themselves.&lt;/li&gt;
+
+&lt;li&gt;If you want to use your code coverage tool as an automated &amp;#8220;dead code&amp;#8221; finder, it&amp;#8217;s helpful to start the project at 100% test coverage. Using a lower threshold makes it harder to detect dead code since the coverage number will vary as you write and refactor code.&lt;/li&gt;
+
+&lt;li&gt;In my minute-by-minute TDD cycle, I don&amp;#8217;t think about test coverage &lt;em&gt;at all&lt;/em&gt;, and I usually run my tests without SimpleCov being loaded. I have a rake task that runs the tests with SimpleCov loaded and verifies the coverage threshold. I use this right before pushing commits and as part of my CI build. The majority of the time, the tests I&amp;#8217;ve naturally written have 100% coverage.&lt;/li&gt;
+
+&lt;li&gt;Occasionally when there are holes in the coverage, it doesn&amp;#8217;t really make sense to add tests for it. Generally, I&amp;#8217;ll extract this code into another file and add a SimpleCov &lt;a href='http://rubydoc.info/gems/simplecov/0.6.3/frames'&gt;filter&lt;/a&gt; so that it ignores the file and does not count it when calculating the coverage percent. This allows me to continue using SimpleCov as a dead code finder, without having to add silly tests that would exist only to satisfy the coverage tool.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
   
   <entry>
     <title>The New NullDB Team</title>
@@ -2319,14 +2379,6 @@ Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that
 &lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;I also went to the Confucius mansion in Qufu.  This is from the gardens there.&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
 &lt;a href=&quot;http://picasaweb.google.com/lh/photo/vHNKiW6l8bEgbQQraJ52cg&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;color: rgb(0, 0, 0); &quot;&gt;&lt;/span&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/vHNKiW6l8bEgbQQraJ52cg&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SNV0WB5yUFI/AAAAAAAACLA/X2CU9LKmBXI/s400/P1040651.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;
 &lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;text-decoration: underline;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;text-decoration: underline;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-6888878914179966291?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
-  </entry>
-  
-  <entry>
-    <title>Life Update</title>
-    <link href="http://myronmars.to/n/china/2008/09/life-update"/>
-    <updated>2008-09-17T00:00:00-07:00</updated>
-    <id>http://myronmars.to/n/china/2008/09/life-update</id>
-    <content type="html">I'm back in Seattle, and have been for about a month.  Needless to say, posting on my blog has not been at the top of my list of priorities, amid everything else I've had to do (buy a car, get car insurance, file my taxes, find an apartment, move into the apartment, find a job, etc...).  But, I do intend to post a bit more about China, particularly to post some pictures and stories from a couple trips that I never got around to posting. &lt;br&gt;&lt;br&gt;I started a new job two weeks ago at &lt;a href=&quot;http://www.jobster.com/&quot;&gt;jobster.com&lt;/a&gt;.  So far it's been a great place to work.  Besides the cool people I work with and the great location, I'm a big fan of the Jobster development process.  For the sake of the few of you who will know what I'm talking about, Jobster uses a fairly agile development process (including &lt;a href=&quot;http://en.wikipedia.org/wiki/Test_Driven_Development&quot;&gt;TDD&lt;/a&gt;, which I'm a huge fan of) while not rigidly sticking to it for the sake of the buzzword.  We're a &lt;a href=&quot;http://rubyonrails.com/&quot;&gt;Ruby on Rails&lt;/a&gt; shop, which is a huge contrast from my old job at Consona/Intuitive (where I helped develop a .NET desktop ERP app).  I like using so many open source tools.  And I'm loving the fact that Jobster lets developers use any operating system or tools that they want...so I'm taking the opportunity to switch over to Mac, and I plan on buying a Mac in the not-too-distant future.&lt;br&gt;&lt;br&gt;That's enough for now.  Encourage me to write up and post the rest of the China stuff if you want to read it, as I'm sure that will help motivate me to get it done :).&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-5225532694244300995?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
   </entry>
   
 </feed>
