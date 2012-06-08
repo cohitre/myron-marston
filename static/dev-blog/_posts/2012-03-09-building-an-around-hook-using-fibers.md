@@ -36,7 +36,7 @@ end
 
 `Dir.chdir` has two forms. The form above changes the directory for
 all subsequent code. The other form takes a block, and changes the
-directory for the duration of the block. This makes it an idea candidate
+directory for the duration of the block. This makes it an ideal candidate
 for an around hook. Here's what we'd like to do instead:
 
 {% codeblock chdir_spec.rb %}

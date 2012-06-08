@@ -3,7 +3,7 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-05-13T20:59:28-07:00</updated>
+  <updated>2012-06-08T09:44:45-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
@@ -273,7 +273,7 @@
 &lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
 &lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code&gt;Dir.chdir&lt;/code&gt; has two forms. The form above changes the directory for all subsequent code. The other form takes a block, and changes the directory for the duration of the block. This makes it an idea candidate for an around hook. Here&amp;#8217;s what we&amp;#8217;d like to do instead:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Dir.chdir&lt;/code&gt; has two forms. The form above changes the directory for all subsequent code. The other form takes a block, and changes the directory for the duration of the block. This makes it an ideal candidate for an around hook. Here&amp;#8217;s what we&amp;#8217;d like to do instead:&lt;/p&gt;
 &lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;chdir_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
  &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
 &lt;span class='line-number'&gt;2&lt;/span&gt;

@@ -64,7 +64,7 @@
 </span><span class='line'>  <span class='k'>end</span>
 </span><span class='line'><span class='k'>end</span>
 </span></code></pre></td></tr></table></div></figure></div></notextile></div>
-<p><code>Dir.chdir</code> has two forms. The form above changes the directory for all subsequent code. The other form takes a block, and changes the directory for the duration of the block. This makes it an idea candidate for an around hook. Here&#8217;s what we&#8217;d like to do instead:</p>
+<p><code>Dir.chdir</code> has two forms. The form above changes the directory for all subsequent code. The other form takes a block, and changes the directory for the duration of the block. This makes it an ideal candidate for an around hook. Here&#8217;s what we&#8217;d like to do instead:</p>
 <div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>chdir_spec.rb </span></figcaption>
  <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
 <span class='line-number'>2</span>
