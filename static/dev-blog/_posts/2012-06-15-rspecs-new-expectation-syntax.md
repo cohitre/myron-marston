@@ -81,7 +81,7 @@ The problem is that rspec-expectations defines `should` on `Kernel`,
 and `BasicObject` does not include `Kernel`...so `instance.should`
 triggers `method_missing` and gets delegated to the target object.
 The result is actually `:some_object.should be_fuzzy` which is
-clearly false.
+clearly false (or rather, a `NoMethodError`).
 
 It gets even more confusing when using `delegate` in the standard
 library. It [selectively
@@ -149,20 +149,28 @@ operator matchers (used with `should`), and their `expect` equivalent:
 foo.should == bar
 expect(foo).to eq(bar)
 
-foo.should < 10
-foo.should <= 10
-foo.should > 10
-foo.should >= 10
+"a string".should_not =~ /a regex/
+expect("a string").not_to match(/a regex/)
+
+[1, 2, 3].should =~ [2, 1, 3]
+expect([1, 2, 3]).to match_array([2, 1, 3])
+{% endcodeblock %}
+
+You may have noticed I didn't list the comparison matchers
+(e.g. `x.should < 10`)--that's because they work but have
+never been recommended. Who says "x should less than 10"?
+They were always intended to be used with `be`, which
+both reads better and continues to work:
+
+{% codeblock comparison_matchers.rb %}
+foo.should be < 10
+foo.should be <= 10
+foo.should be > 10
+foo.should be >= 10
 expect(foo).to be < 10
 expect(foo).to be <= 10
 expect(foo).to be > 10
 expect(foo).to be >= 10
-
-"a string".should =~ /a regex/
-expect("a string").to match(/a regex/)
-
-[1, 2, 3].should =~ [2, 1, 3]
-expect([1, 2, 3]).to match_array([2, 1, 3])
 {% endcodeblock %}
 
 ## Unification of Block vs. Value Syntaxes
@@ -218,10 +226,11 @@ users plenty of time to get acquianted with it.
 Let us know what you think!
 
 [^foot_1]: As [Mislav reports](http://mislav.uniqpath.com/2011/06/ruby-verbose-mode/),
-  you can get a "Useless use of == in void context" warning.
+  when warnings are turned on, you can get a "Useless use of == in void context" warning.
 [^foot_2]: On ruby 1.8, `x.should != y` is syntactic sugar for 
   `!(x.should == y)` and RSpec has no way to distinguish
-  `should ==` from `should !=`. On 1.9, we could distinguish,
+  `should ==` from `should !=`. On 1.9, we can distinguish between
+   them (since `!=` can now be defined as a separate method),
   but it would be confusing to support it on 1.9 but not on 1.8,
   so we [decided to just raise an error
   instead](https://github.com/rspec/rspec-expectations/issues/33).
