@@ -3,13 +3,244 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-06-08T09:44:45-07:00</updated>
+  <updated>2012-06-15T07:18:49-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>RSpec's New Expectation Syntax</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax"/>
+    <updated>2012-06-15T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax</id>
+    <content type="html">&lt;p&gt;RSpec has featured a readable english-like syntax for setting expectations for a long time:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;some_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;bar&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should_not&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;bar&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;RSpec 2.11 will include a new variant to this syntax:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;some_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;bar&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;not_to&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;bar&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;There are a few things motivating this new syntax, and I wanted to blog about it to spread awareness.&lt;/p&gt;
+
+&lt;h2 id='delegation_issues'&gt;Delegation Issues&lt;/h2&gt;
+
+&lt;p&gt;Between &lt;code&gt;method_missing&lt;/code&gt;, &lt;code&gt;BasicObject&lt;/code&gt; and the standard library&amp;#8217;s &lt;code&gt;delegate&lt;/code&gt;, ruby has very rich tools for building delegate or proxy objects. Unfortunately, RSpec&amp;#8217;s &lt;code&gt;should&lt;/code&gt; syntax, as elegantly as it reads, is prone to producing weird, confusing failures when testing delegate/proxy objects.&lt;/p&gt;
+
+&lt;p&gt;Consider a simple proxy object that subclasses &lt;code&gt;BasicObject&lt;/code&gt;:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;fuzzy_proxy.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;FuzzyProxy&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;&lt;/span&gt; &lt;span class='no'&gt;BasicObject&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;initialize&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;target&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@target&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;target&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;fuzzy?&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='kp'&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;method_missing&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='o'&gt;*&lt;/span&gt;&lt;span class='n'&gt;args&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;block&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@target&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;__send__&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='o'&gt;*&lt;/span&gt;&lt;span class='n'&gt;args&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='o'&gt;&amp;amp;&lt;/span&gt;&lt;span class='n'&gt;block&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Simple enough; it defines a &lt;code&gt;#fuzzy?&lt;/code&gt; predicate, and delegates all other method calls to the target object.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;#8217;s a simple spec to test its fuzziness:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;fuzzy_proxy_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='no'&gt;FuzzyProxy&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;is fuzzy&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;instance&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;FuzzyProxy&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:some_object&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;instance&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;be_fuzzy&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Surprisingly, this fails:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;result &lt;/span&gt;&lt;/figcaption&gt;
+&lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class=''&gt;&lt;span class='line'&gt;1) FuzzyProxy is a fuzzy proxy
+&lt;/span&gt;&lt;span class='line'&gt;     Failure/Error: instance.should be_fuzzy
+&lt;/span&gt;&lt;span class='line'&gt;     NoMethodError:
+&lt;/span&gt;&lt;span class='line'&gt;       undefined method `fuzzy?' for :some_object:Symbol
+&lt;/span&gt;&lt;span class='line'&gt;     # ./fuzzy_proxy.rb:11:in `method_missing'
+&lt;/span&gt;&lt;span class='line'&gt;     # ./fuzzy_proxy_spec.rb:6:in `block (2 levels) in &amp;lt;top (required)&gt;'
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;Finished in 0.01152 seconds
+&lt;/span&gt;&lt;span class='line'&gt;1 example, 1 failure&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;The problem is that rspec-expectations defines &lt;code&gt;should&lt;/code&gt; on &lt;code&gt;Kernel&lt;/code&gt;, and &lt;code&gt;BasicObject&lt;/code&gt; does not include &lt;code&gt;Kernel&lt;/code&gt;&amp;#8230;so &lt;code&gt;instance.should&lt;/code&gt; triggers &lt;code&gt;method_missing&lt;/code&gt; and gets delegated to the target object. The result is actually &lt;code&gt;:some_object.should be_fuzzy&lt;/code&gt; which is clearly false (or rather, a &lt;code&gt;NoMethodError&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;It gets even more confusing when using &lt;code&gt;delegate&lt;/code&gt; in the standard library. It &lt;a href='https://github.com/ruby/ruby/blob/v1_9_3_194/lib/delegate.rb#L43-50'&gt;selectively includes&lt;/a&gt; some of &lt;code&gt;Kernel&lt;/code&gt;&amp;#8217;s methods&amp;#8230;which means that if rspec-expectations gets loaded before &lt;code&gt;delegate&lt;/code&gt;, &lt;code&gt;should&lt;/code&gt; will work properly on delegate objects, but if &lt;code&gt;delegate&lt;/code&gt; is loaded first, it will proxy the &lt;code&gt;should&lt;/code&gt; calls just like in our &lt;code&gt;FuzzyProxy&lt;/code&gt; example above.&lt;/p&gt;
+
+&lt;p&gt;The underlying problem is RSpec&amp;#8217;s &lt;code&gt;should&lt;/code&gt; syntax: for &lt;code&gt;should&lt;/code&gt; to work properly, it must be defined on every object in the system&amp;#8230; but RSpec does not own every object in the system and cannot ensure that it always works consistently. As we&amp;#8217;ve seen, it doesn&amp;#8217;t work as RSpec expects on proxy objects. Note that this isn&amp;#8217;t just a problem with RSpec; it&amp;#8217;s a problem with minitest/spec&amp;#8217;s &lt;code&gt;must_xxx&lt;/code&gt; syntax as well.&lt;/p&gt;
+
+&lt;p&gt;The solution we came up with is the new &lt;code&gt;expect&lt;/code&gt; syntax:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;fuzzy_proxy_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='no'&gt;FuzzyProxy&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;is fuzzy&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;instance&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;FuzzyProxy&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:some_object&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;instance&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;be_fuzzy&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;This does not rely on any methods being present on all objects in the system, and thus avoids the underlying problem altogether.&lt;/p&gt;
+
+&lt;h2 id='almost_all_matchers_are_supported'&gt;(Almost) All Matchers Are Supported&lt;/h2&gt;
+
+&lt;p&gt;The new &lt;code&gt;expect&lt;/code&gt; syntax looks different from the old &lt;code&gt;should&lt;/code&gt; syntax, but under the covers, it&amp;#8217;s essentially the same. You pass a matcher to the &lt;code&gt;#to&lt;/code&gt; method, and it fails the example if it does not match.&lt;/p&gt;
+
+&lt;p&gt;All matchers are supported, with an important exception: the &lt;code&gt;expect&lt;/code&gt; syntax does not directly support the operator matchers.&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;eq_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# rather than:&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='n'&gt;bar&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# ...use:&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;bar&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;While operator matchers are intuitive to use, they require special handling in RSpec for them to work right, due to Ruby&amp;#8217;s precedence rules. Furthermore, &lt;code&gt;should ==&lt;/code&gt; generates a ruby warning&lt;sup id='fnref:1'&gt;&lt;a href='#fn:1' rel='footnote'&gt;1&lt;/a&gt;&lt;/sup&gt;, and people have been occasionally surprised by the fact that &lt;code&gt;should !=&lt;/code&gt; does not work as they might expect&lt;sup id='fnref:2'&gt;&lt;a href='#fn:2' rel='footnote'&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;The new syntax affords us the chance to make a clean break from the inconsistencies of the operator matchers without the risk of breaking existing test suites, so we decided not to support operator matchers with the new syntax. Here&amp;#8217;s a listing of each of the old operator matchers (used with &lt;code&gt;should&lt;/code&gt;), and their &lt;code&gt;expect&lt;/code&gt; equivalent:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;expectations.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='o'&gt;==&lt;/span&gt; &lt;span class='n'&gt;bar&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;eq&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;bar&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='s2'&gt;&amp;quot;a string&amp;quot;&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should_not&lt;/span&gt; &lt;span class='o'&gt;=~&lt;/span&gt; &lt;span class='sr'&gt;/a regex/&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;a string&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;not_to&lt;/span&gt; &lt;span class='n'&gt;match&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='sr'&gt;/a regex/&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='mi'&gt;1&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;2&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;3&lt;/span&gt;&lt;span class='o'&gt;].&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='o'&gt;=~&lt;/span&gt; &lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='mi'&gt;2&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;1&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;3&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='mi'&gt;1&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;2&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;3&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;match_array&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='mi'&gt;2&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;1&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='mi'&gt;3&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;You may have noticed I didn&amp;#8217;t list the comparison matchers (e.g. &lt;code&gt;x.should &amp;lt; 10&lt;/code&gt;)&amp;#8211;that&amp;#8217;s because they work but have never been recommended. Who says &amp;#8220;x should less than 10&amp;#8221;? They were always intended to be used with &lt;code&gt;be&lt;/code&gt;, which both reads better and continues to work:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;comparison_matchers.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;=&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;gt;&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;gt;=&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;lt;=&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;gt;&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;foo&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;be&lt;/span&gt; &lt;span class='o'&gt;&amp;gt;=&lt;/span&gt; &lt;span class='mi'&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;h2 id='unification_of_block_vs_value_syntaxes'&gt;Unification of Block vs. Value Syntaxes&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;expect&lt;/code&gt; has actually been available in RSpec for a long time&lt;sup id='fnref:3'&gt;&lt;a href='#fn:3' rel='footnote'&gt;3&lt;/a&gt;&lt;/sup&gt; in a limited form, as a more-readable alternative for block expectations:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;block_expectations.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# rather than:&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='nb'&gt;lambda&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='n'&gt;do_something&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should&lt;/span&gt; &lt;span class='n'&gt;raise_error&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;SomeError&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='c1'&gt;# ...you can do:&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;expect&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='n'&gt;something&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;to&lt;/span&gt; &lt;span class='n'&gt;raise_error&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='no'&gt;SomeError&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Before RSpec 2.11, &lt;code&gt;expect&lt;/code&gt; would not accept any normal arguments, and could not be used for value expectations. With the changes in 2.11, it&amp;#8217;s nice to have the unity of the same syntax for both kinds of expectations.&lt;/p&gt;
+
+&lt;h2 id='configuration_options'&gt;Configuration Options&lt;/h2&gt;
+
+&lt;p&gt;By default, both the &lt;code&gt;should&lt;/code&gt; and &lt;code&gt;expect&lt;/code&gt; syntaxes are available. However, if you want to use only one syntax or the other, you can configure RSpec:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;spec_helper.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='no'&gt;RSpec&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;configure&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;config&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;expect_with&lt;/span&gt; &lt;span class='ss'&gt;:rspec&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='c1'&gt;# Disable the `expect` sytax...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;syntax&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='ss'&gt;:should&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='c1'&gt;# ...or disable the `should` syntax...&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;syntax&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='ss'&gt;:expect&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='c1'&gt;# ...or explicitly enable both&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;c&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;syntax&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='o'&gt;[&lt;/span&gt;&lt;span class='ss'&gt;:should&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:expect&lt;/span&gt;&lt;span class='o'&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;For example, if you&amp;#8217;re starting a new project, and you want to ensure only &lt;code&gt;expect&lt;/code&gt; is used for consistency, you can disable &lt;code&gt;should&lt;/code&gt; entirely. When one of the syntaxes is disabled, the corresponding method will simply be undefined.&lt;/p&gt;
+
+&lt;p&gt;In the future, we plan to change the defaults so that only &lt;code&gt;expect&lt;/code&gt; is available unless you explicitly enable &lt;code&gt;should&lt;/code&gt;. We may do this as soon as RSpec 3.0, but we want to give users plenty of time to get acquianted with it.&lt;/p&gt;
+
+&lt;p&gt;Let us know what you think!&lt;/p&gt;
+&lt;div class='footnotes'&gt;&lt;hr /&gt;&lt;ol&gt;&lt;li id='fn:1'&gt;
+&lt;p&gt;As &lt;a href='http://mislav.uniqpath.com/2011/06/ruby-verbose-mode/'&gt;Mislav reports&lt;/a&gt;, when warnings are turned on, you can get a &amp;#8220;Useless use of == in void context&amp;#8221; warning.&lt;/p&gt;
+&lt;a href='#fnref:1' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;li id='fn:2'&gt;
+&lt;p&gt;On ruby 1.8, &lt;code&gt;x.should != y&lt;/code&gt; is syntactic sugar for &lt;code&gt;!(x.should == y)&lt;/code&gt; and RSpec has no way to distinguish &lt;code&gt;should ==&lt;/code&gt; from &lt;code&gt;should !=&lt;/code&gt;. On 1.9, we can distinguish between them (since &lt;code&gt;!=&lt;/code&gt; can now be defined as a separate method), but it would be confusing to support it on 1.9 but not on 1.8, so we &lt;a href='https://github.com/rspec/rspec-expectations/issues/33'&gt;decided to just raise an error instead&lt;/a&gt;.&lt;/p&gt;
+&lt;a href='#fnref:2' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;li id='fn:3'&gt;
+&lt;p&gt;It was originally added &lt;a href='https://github.com/dchelimsky/rspec/commit/7e4f872b4becbd41588da95c0e5d954a6e770293'&gt;over 3 years ago!&lt;/a&gt;&lt;/p&gt;
+&lt;a href='#fnref:3' rev='footnote'&gt;&amp;#8617;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</content>
+  </entry>
   
   <entry>
     <title>In Defense of 100% Test Coverage</title>
@@ -2293,92 +2524,6 @@ Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that
 &lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
 &lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/ZqL7vYfVwW_NTZxmh1mc3w&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbe-piZ8I/AAAAAAAACPI/qna_Xo0JUwg/s400/P1050531.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;Holding a monkey is...more fun than a barrel of monkeys.  Or something.&lt;br&gt;
 &lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;br&gt;After spending 2 days in Lijiang, we headed to the nearby &lt;a href=&quot;http://en.wikipedia.org/wiki/Tiger_Leaping_Gorge&quot;&gt;Tiger Leaping Gorge&lt;/a&gt;, which is one of the deepest gorges in the world.  I'll write about that in the next post.&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-5271433454474042634?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
-  </entry>
-  
-  <entry>
-    <title>April 2007 Shandong Trip</title>
-    <link href="http://myronmars.to/n/china/2008/09/april-2007-shandong-trip"/>
-    <updated>2008-09-20T00:00:00-07:00</updated>
-    <id>http://myronmars.to/n/china/2008/09/april-2007-shandong-trip</id>
-    <content type="html">Now that I'm mostly settled back in Seattle, I'm going to revisit a couple of my trips in China that I never got around to posting before.  This post is the first of those.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;One of the three main holidays in China is labor day, which takes place May 1st.  The government shortened it in 2008, but it was previously a full week off work/school.  As you can imagine, there are a lot of people using the transportation system during these holidays.  I had &lt;a href=&quot;/n/china/2006/10/my-national-day-holiday-travels&quot;&gt;previously traveled&lt;/a&gt; with some other teachers from my school during the National Day Holiday, and while we saw some cool stuff, there were huge travel frustrations because of how overcrowded the Chinese transportation system gets when a billion people are all trying to get somewhere.  So, this time we decided to go a week before the break and try to beat the crowds.  Josh (one of the other American teachers at my school) and I tweaked our teaching schedule a bit and headed to nearby &lt;a href=&quot;http://en.wikipedia.org/wiki/Shandong&quot;&gt;Shandong province&lt;/a&gt;.  We went to &lt;a href=&quot;http://en.wikipedia.org/wiki/Mount_Tai&quot;&gt;Tai Shan&lt;/a&gt; (one of China's sacred mountains) first, and then headed to nearby &lt;a href=&quot;http://en.wikipedia.org/wiki/Qufu&quot;&gt;Qufu&lt;/a&gt; (the birthplace of &lt;a href=&quot;http://en.wikipedia.org/wiki/Confucius&quot;&gt;Confucius&lt;/a&gt;).  &lt;/div&gt;&lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;br&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;font-weight: bold;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;font-size:x-large;&quot;&gt;Tai Shan&lt;/span&gt;&lt;/span&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;font-weight: bold;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;embed type=&quot;application/x-shockwave-flash&quot; src=&quot;http://picasaweb.google.com/s/c/bin/slideshow.swf&quot; width=&quot;400&quot; height=&quot;267&quot; flashvars=&quot;host=picasaweb.google.com&amp;amp;RGB=0x000000&amp;amp;feed=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fuser%2Fmyron.marston%2Falbumid%2F5248225136205540353%3Fkind%3Dphoto%26alt%3Drss&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot;&gt;&lt;/embed&gt;&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div&gt;Tai Shan really wasn't anything special.  Of course, both Josh and I had been to &lt;a href=&quot;/n/china/2007/04/my-winter-travels-part-13-huang-shan&quot;&gt;Huang Shan&lt;/a&gt; and &lt;a href=&quot;/n/china/2006/10/my-national-day-holiday-travels&quot;&gt;Chiang Bai Shan&lt;/a&gt;, and it's a bit hard to be impressed after seeing mountains like that.  We didn't even make it all the way to the top.  &lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div&gt;
-&lt;div style=&quot;text-align: center; &quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/tyagfdfq0JXi2ihcv6ORVg&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SNVw_IhxnXI/AAAAAAAACHI/1MKs4vDVwWc/s400/P1040501.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/tyagfdfq0JXi2ihcv6ORVg&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center; &quot;&gt;The streets of Tai'an, the city at the foot of Tai Shan.&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div&gt;
-&lt;div style=&quot;text-align: center; &quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/a2M13WMwSDd06NOe8_7bHA&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SNVw_53tfkI/AAAAAAAACHQ/psy6GvI39E0/s400/P1040504.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/a2M13WMwSDd06NOe8_7bHA&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;You've probably heard that everyone rides bikes in China.  Yep, it's true :).&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;div style=&quot;text-align: center; &quot;&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/bmaZsM4vzW82ymlv6QbaPA&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SNVw-SElBhI/AAAAAAAACHA/tqLO09QWGpI/s400/P1040491.JPG&quot;&gt;&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;A registered church in Tai'an.&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/maMMhVMkK783jwQfuvVwZA&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SNVw92lli5I/AAAAAAAACG4/cvLGn7LU1vs/s400/P1040489.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/maMMhVMkK783jwQfuvVwZA&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;Apartments in Tai'an.&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/fTlb49O2JXvf5GV--SKjug&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SNVxASzsJyI/AAAAAAAACHY/5ADcyfJ1C3A/s400/P1040509.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;The bedside stand at the hotel I stayed at.  &quot;Don't smoke&quot;--but we'll give you an ash tray in case you do.  I don't get it...&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/O02Pg4E6yZ6I8lCN__VlOQ&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SNVxAoRt1YI/AAAAAAAACHg/WwH1NIWuzA8/s400/P1040527.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/O02Pg4E6yZ6I8lCN__VlOQ&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/drQEY88yAueNt05DYeNH_w&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SNVxBskAkhI/AAAAAAAACHw/mdOHT8kYwx4/s400/P1040530.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/drQEY88yAueNt05DYeNH_w&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/RBA4KmNJoDFqpXFPx_3Xcg&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SNVxCAEJ4CI/AAAAAAAACH4/jOvrG5MKV_8/s400/P1040536.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/RBA4KmNJoDFqpXFPx_3Xcg&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;Tai Shan.&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/STqK85ZkQecJeqc_FuBi0A&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SNVxC6PZv3I/AAAAAAAACIA/B-nKvMQrTxk/s400/P1040540.JPG&quot;&gt;&lt;/a&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;I've seen rows of locks like this in many places in China, and I'm still not really sure what it means.  I think it's just something the Chinese do at a tourist site, kind of like how westerns throw a coin in a pool.&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;font-size:x-large;&quot;&gt;Qufu&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;embed type=&quot;application/x-shockwave-flash&quot; src=&quot;http://picasaweb.google.com/s/c/bin/slideshow.swf&quot; width=&quot;400&quot; height=&quot;267&quot; flashvars=&quot;host=picasaweb.google.com&amp;amp;RGB=0x000000&amp;amp;feed=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fuser%2Fmyron.marston%2Falbumid%2F5248228673579601329%3Fkind%3Dphoto%26alt%3Drss&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot;&gt;&lt;/embed&gt;&lt;br&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot; font-weight: bold;font-size:24px;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;font-size:medium;&quot;&gt;Qufu is the hometown of Confucius, and unlike Tai Shan, it's way cool.  Virtually all of the residents claim to be descendants of Confucius, but 2500 years later, it's probably impossible to trace it back anyway.  The coolest part of Qufu was the cemetary, where Confucius and many of his relatives and descendants are buried.  Josh and I rented bikes to in the cemetary and pedaled around it.  &lt;/span&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: left;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/awxt9JgUO8VP6ZSTMdT3Lg&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SNV0LpExBMI/AAAAAAAACJM/mO6Wf_L__-I/s400/IMG_6998.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;
-&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;The Qufu city wall.&lt;/div&gt;
-&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/Qd2vRF10u1jwUBQ-iS51Ow&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SNV0R-WE5QI/AAAAAAAACKM/qfmuNoHcJSA/s400/P1040574.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/Qd2vRF10u1jwUBQ-iS51Ow&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;The cemetary was covered in a carpet of these flowers.  Absolutely gorgeous.&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/Ja2PBFUSIgm_EopFzgqvyA&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SNV0NJ4R39I/AAAAAAAACJc/EIMRb_djNRs/s400/IMG_7010.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/Ja2PBFUSIgm_EopFzgqvyA&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/-RMSBzTRuxT5wNX9NhufjQ&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SNV0PETfLRI/AAAAAAAACJs/J9Ko_fP2qVA/s400/IMG_7013.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/-RMSBzTRuxT5wNX9NhufjQ&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;There were stone sculptures throughout the cemetary.&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/o4YnreZw2yZRu_5GGnbBWQ&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SNV0N1LQjLI/AAAAAAAACJk/mgpDz0CQ3Ck/s400/IMG_7012.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/o4YnreZw2yZRu_5GGnbBWQ&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;I'm not sure that this was allowed, but no one was around to stop me :).&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/YpZHko1sA6sr9XBtHRSdtw&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SNV0PyWx-NI/AAAAAAAACJ0/hhoUXe0jyD0/s400/IMG_7026.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/YpZHko1sA6sr9XBtHRSdtw&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/6fkAkPvMAweUUeNYqYhadg&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SNV0QfNiSnI/AAAAAAAACJ8/bNNsRcA1Vj0/s400/IMG_7028.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/6fkAkPvMAweUUeNYqYhadg&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/nAoYn2_91j4aiObERJuoLA&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SNV0TecN3kI/AAAAAAAACKg/nP9EQQLAi6k/s400/P1040628.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/nAoYn2_91j4aiObERJuoLA&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;The picture didn't come out so well, but this is Confucius' Tomb.  It's 2,500 years old!&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/WrySp-8pp5AdlPQZ3HbF4Q&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SNV0UORvAbI/AAAAAAAACKo/NzH7LyOraxA/s400/P1040632.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/WrySp-8pp5AdlPQZ3HbF4Q&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;This is the monument next to the grave that says something like &quot;Confucius is buried here&quot;.&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/YV_tN7rJ-ErJX12pfvOGYA&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SNV0U9Ev1yI/AAAAAAAACKw/wRMT87BXW8w/s400/P1040649.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/YV_tN7rJ-ErJX12pfvOGYA&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/ik5mKd4mwxNp6MMN7cAkLw&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SNV0VdOXw9I/AAAAAAAACK4/IRsdRZlnpj4/s400/P1040650.JPG&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/ik5mKd4mwxNp6MMN7cAkLw&quot;&gt;&lt;br&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;I also went to the Confucius mansion in Qufu.  This is from the gardens there.&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/vHNKiW6l8bEgbQQraJ52cg&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;color: rgb(0, 0, 0); &quot;&gt;&lt;/span&gt;&lt;/a&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/vHNKiW6l8bEgbQQraJ52cg&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SNV0WB5yUFI/AAAAAAAACLA/X2CU9LKmBXI/s400/P1040651.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;text-decoration: underline;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;text-decoration: underline;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-6888878914179966291?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
   </entry>
   
 </feed>

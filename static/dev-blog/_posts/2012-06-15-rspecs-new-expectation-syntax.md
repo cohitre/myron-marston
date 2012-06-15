@@ -3,7 +3,6 @@ layout: dev_post
 title: RSpec's New Expectation Syntax
 section: dev-blog
 contents_class: medium-wide
-published: false
 ---
 
 RSpec has featured a readable english-like syntax for setting
