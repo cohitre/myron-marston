@@ -3,13 +3,153 @@
   <title>myronmars.to/n</title>
   <link href="http://myronmars.to/n/atom.xml" rel="self"/>
   <link href="http://myronmars.to/n"/>
-  <updated>2012-06-15T07:18:49-07:00</updated>
+  <updated>2012-06-19T22:50:04-07:00</updated>
   <id>http://myronmars.to/n</id>
   <author>
    <name>Myron Marston</name>
    <email>myron.marston@gmail.com</email>
   </author>
 
+  
+  <entry>
+    <title>Thoughts on Mocking</title>
+    <link href="http://myronmars.to/n/dev-blog/2012/06/thoughts-on-mocking"/>
+    <updated>2012-06-20T00:00:00-07:00</updated>
+    <id>http://myronmars.to/n/dev-blog/2012/06/thoughts-on-mocking</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;ve been thinking a lot about different styles of TDD recently, particularly the mockist vs. classical schools identified by Martin Fowler in his classic article, &lt;a href='http://martinfowler.com/articles/mocksArentStubs.html'&gt;Mocks Aren&amp;#8217;t Stubs&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I personally tend to favor a more mockist style of testing, but I&amp;#8217;ve come to realize that mockist testing needs to go hand-in-hand with a particular school of OO design, and on many projects a classical testing approach would work far better.&lt;/p&gt;
+
+&lt;p&gt;My friend &lt;a href='http://cohitre.com/'&gt;Carlos&lt;/a&gt; recently came to me with some questions about how mocking should be used, and expressed frustration at how brittle the mock-based tests on his current project are. As he describe it, the mocks caused the tests to be coupled to the implementation, and thus made refactoring very difficult. Martin Fowler also &lt;a href='http://martinfowler.com/articles/mocksArentStubs.html#CouplingTestsToImplementations'&gt;discusses this problem&lt;/a&gt; in his article.&lt;/p&gt;
+
+&lt;p&gt;However, I don&amp;#8217;t think it&amp;#8217;s that simple. Mocking has often made it easier for me to refactor. And really, all tests have some level of coupling to the system-under-test, since it makes certain assumptions about how the code works or what side effects result from a particular action. I&amp;#8217;ve developed a theory recently:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Mock-based tests are more coupled to the &lt;strong&gt;interfaces&lt;/strong&gt; in your system, while classical tests are more coupled to the &lt;strong&gt;implementation&lt;/strong&gt; of an object&amp;#8217;s collaborators.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A mock-based test will verify the message the object-under-test sends to its collaborator (i.e. the interface). In contrast, in a classical test, one would typically allow the object-under-test to call a real method on a real collaborator, and then make an assertion about how that changes the state of the collaborator or one of the collaborator&amp;#8217;s collaborators. Thus, this kind of classical test contains knowledge of (and is coupled to) the implementation of the collaborator&amp;#8211;it has to know what the collaborator does in order to make an assertion about how it affects the state of the world.&lt;/p&gt;
+
+&lt;p&gt;These different kinds of coupling lend themselves to different kinds of change. With a classical test, you can refactor the interface between the object-under-test and a collaborator, and the test will continue to pass just fine. However, if you change how the collaborator is implemented&amp;#8211;and in particular, how the state change is exposed&amp;#8211;then your test will likely break. In constrast, with a mockist test, you can completely change the collaborator all you want without breaking the test as long as you keep the interface the same.&lt;/p&gt;
+
+&lt;h2 id='an_example'&gt;An Example&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;#8217;s look at a simple example to make this more concrete. We&amp;#8217;ve got a &lt;code&gt;User&lt;/code&gt; entity that delegates persistence to a collaborator and provides an &lt;code&gt;#archive!&lt;/code&gt; method:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;user.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;span class='line-number'&gt;22&lt;/span&gt;
+&lt;span class='line-number'&gt;23&lt;/span&gt;
+&lt;span class='line-number'&gt;24&lt;/span&gt;
+&lt;span class='line-number'&gt;25&lt;/span&gt;
+&lt;span class='line-number'&gt;26&lt;/span&gt;
+&lt;span class='line-number'&gt;27&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;User&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;initialize&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='nb'&gt;id&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;persistence&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Persistence&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@id&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='vi'&gt;@persistence&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='nb'&gt;id&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;persistence&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='kp'&gt;attr_reader&lt;/span&gt;   &lt;span class='ss'&gt;:id&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='ss'&gt;:persistence&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='kp'&gt;attr_accessor&lt;/span&gt; &lt;span class='ss'&gt;:archived_at&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;archive!&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='nb'&gt;self&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;archived_at&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;Time&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;now&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;persistence&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;save&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='nb'&gt;self&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;attributes&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;archived_at&amp;quot;&lt;/span&gt; &lt;span class='o'&gt;=&amp;gt;&lt;/span&gt; &lt;span class='n'&gt;archived_at&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;class&lt;/span&gt; &lt;span class='nc'&gt;Persistence&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;redis&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='vi'&gt;@redis&lt;/span&gt; &lt;span class='o'&gt;||=&lt;/span&gt; &lt;span class='no'&gt;Redis&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;def&lt;/span&gt; &lt;span class='nf'&gt;save&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;redis&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;set&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;users:&lt;/span&gt;&lt;span class='si'&gt;#{&lt;/span&gt;&lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;id&lt;/span&gt;&lt;span class='si'&gt;}&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='no'&gt;JSON&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;dump&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;attributes&lt;/span&gt;&lt;span class='p'&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Here&amp;#8217;s how we might test the &lt;code&gt;#archive!&lt;/code&gt; method using a classical test and a mockist test:&lt;/p&gt;
+&lt;div class='bogus-wrapper'&gt;&lt;notextile&gt;&lt;div class='code-wrap'&gt;&lt;figure class='code'&gt;&lt;figcaption&gt;&lt;span&gt;user_spec.rb &lt;/span&gt;&lt;/figcaption&gt;
+ &lt;div class='highlight'&gt;&lt;table&gt;&lt;tr&gt;&lt;td class='gutter'&gt;&lt;pre class='line-numbers'&gt;&lt;span class='line-number'&gt;1&lt;/span&gt;
+&lt;span class='line-number'&gt;2&lt;/span&gt;
+&lt;span class='line-number'&gt;3&lt;/span&gt;
+&lt;span class='line-number'&gt;4&lt;/span&gt;
+&lt;span class='line-number'&gt;5&lt;/span&gt;
+&lt;span class='line-number'&gt;6&lt;/span&gt;
+&lt;span class='line-number'&gt;7&lt;/span&gt;
+&lt;span class='line-number'&gt;8&lt;/span&gt;
+&lt;span class='line-number'&gt;9&lt;/span&gt;
+&lt;span class='line-number'&gt;10&lt;/span&gt;
+&lt;span class='line-number'&gt;11&lt;/span&gt;
+&lt;span class='line-number'&gt;12&lt;/span&gt;
+&lt;span class='line-number'&gt;13&lt;/span&gt;
+&lt;span class='line-number'&gt;14&lt;/span&gt;
+&lt;span class='line-number'&gt;15&lt;/span&gt;
+&lt;span class='line-number'&gt;16&lt;/span&gt;
+&lt;span class='line-number'&gt;17&lt;/span&gt;
+&lt;span class='line-number'&gt;18&lt;/span&gt;
+&lt;span class='line-number'&gt;19&lt;/span&gt;
+&lt;span class='line-number'&gt;20&lt;/span&gt;
+&lt;span class='line-number'&gt;21&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;&lt;code class='rb'&gt;&lt;span class='line'&gt;&lt;span class='n'&gt;describe&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='s2'&gt;&amp;quot;#archive!&amp;quot;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;context&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;using a mockist test&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;saves the user with the archived_at timestamp set&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;persistence&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;mock&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;Persistence&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;user&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='mi'&gt;23&lt;/span&gt;&lt;span class='p'&gt;,&lt;/span&gt; &lt;span class='n'&gt;persistence&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;persistence&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should_receive&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='ss'&gt;:save&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt; &lt;span class='p'&gt;{&lt;/span&gt; &lt;span class='o'&gt;|&lt;/span&gt;&lt;span class='n'&gt;u&lt;/span&gt;&lt;span class='o'&gt;|&lt;/span&gt; &lt;span class='n'&gt;u&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;archived_at&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should_not&lt;/span&gt; &lt;span class='n'&gt;be_nil&lt;/span&gt; &lt;span class='p'&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;archive!&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='n'&gt;context&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;using a classical test&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='n'&gt;it&lt;/span&gt; &lt;span class='s1'&gt;&amp;#39;saves the user with the archived_at timestamp set&amp;#39;&lt;/span&gt; &lt;span class='k'&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;user&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='no'&gt;User&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;new&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='mi'&gt;23&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;archive!&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='n'&gt;attributes_json&lt;/span&gt; &lt;span class='o'&gt;=&lt;/span&gt; &lt;span class='n'&gt;user&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;persistence&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;redis&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;get&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;users:23&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;      &lt;span class='no'&gt;JSON&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;load&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='n'&gt;attributes_json&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;fetch&lt;/span&gt;&lt;span class='p'&gt;(&lt;/span&gt;&lt;span class='s2'&gt;&amp;quot;archived_at&amp;quot;&lt;/span&gt;&lt;span class='p'&gt;)&lt;/span&gt;&lt;span class='o'&gt;.&lt;/span&gt;&lt;span class='n'&gt;should_not&lt;/span&gt; &lt;span class='n'&gt;be_nil&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;    &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;  &lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class='line'&gt;&lt;span class='k'&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/notextile&gt;&lt;/div&gt;
+&lt;p&gt;Which test is less brittle in this highly contrived example? It depends. If you decide to change the persistence interface (e.g. so that &lt;code&gt;#save&lt;/code&gt; is renamed as &lt;code&gt;#persist&lt;/code&gt;, or whatever), then the mockist test will break, but the classical test can continue to pass unchanged. On the other hand, if you decide to change the persistence implementation (e.g. so that it&amp;#8217;s saving to a relational database, or whatever), then the classical test will break, but the mockist test will continue to pass unchanged, as long as you preserve the &lt;code&gt;#save&lt;/code&gt; interface.&lt;/p&gt;
+
+&lt;h2 id='conclusion'&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;With these observations in hand, I think we can draw conclusions about what sorts of codebases work well with mockist tests. Mocking works really well when the interfaces between objects in your system are stable and rarely change. From experience, I&amp;#8217;ve seen two primary factors affecting the stability of interfaces:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The size of the interfaces. Large interfaces become unwieldy over time while small, focused interfaces serve a single purpose well and rarely need to change.&lt;/li&gt;
+
+&lt;li&gt;The extent to which your interfaces speak in the language of your application domain rather than the language of your technical infrastructure. This allows you to change large portions of your technical infrastructure without needing many changes to the interfaces between your domain objects.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If your codebase doesn&amp;#8217;t feature these kinds of interfaces, mocking is unlikely to work well for you and you&amp;#8217;re probably better off using classical testing techniques.&lt;/p&gt;</content>
+  </entry>
   
   <entry>
     <title>RSpec's New Expectation Syntax</title>
@@ -2492,38 +2632,6 @@ Fiber.new(&amp;amp;block)&lt;/code&gt;. The block is passed to the fiber so that
 &lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
 &lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/Kf1if2buLvOJB_pbR-sIxA&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SPIrqs1XzBI/AAAAAAAACTo/Kw4sN8sJSdo/s400/P1050738.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;
 &lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Once we reached the end of the gorge, we caught a taxi back to Lijiang.  From there we flew to Chengdu, which I'll tell you about in my next post.&lt;/div&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-7332970833364094395?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
-  </entry>
-  
-  <entry>
-    <title>Summer 2007 Travels Part 1: Lijiang</title>
-    <link href="http://myronmars.to/n/china/2008/10/summer-2007-travels-part-1-lijiang"/>
-    <updated>2008-10-12T00:00:00-07:00</updated>
-    <id>http://myronmars.to/n/china/2008/10/summer-2007-travels-part-1-lijiang</id>
-    <content type="html">When my classes ended after my first year in China (back in June 2007), I stuck around in China to do a bit of traveling before returning to Seattle for the summer.  Two great friends also came to visit and traveled with me--Tim Marston (my cousin) and Mari Becker.  I never got around to blogging about it before, and Tim's been on my case for a long time to post the pictures, so here you are, Tim :).&lt;br&gt;&lt;br&gt;We went to some of my favorite places in China on that trip.  There are so many great pictures to share that I'm going to split this in to multiple posts.  This first will be about our time in Lijiang.&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;Apple-style-span&quot; style=&quot;font-size:x-large;&quot;&gt;Lijiang&lt;/span&gt;&lt;/div&gt;&lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;embed type=&quot;application/x-shockwave-flash&quot; src=&quot;http://picasaweb.google.com/s/c/bin/slideshow.swf&quot; width=&quot;400&quot; height=&quot;267&quot; flashvars=&quot;host=picasaweb.google.com&amp;amp;RGB=0x000000&amp;amp;feed=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fuser%2Fmyron.marston%2Falbumid%2F5256152932034631345%3Fkind%3Dphoto%26alt%3Drss&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot;&gt;&lt;/embed&gt;&lt;br&gt;
-&lt;/div&gt;&lt;br&gt;From Beijing, we flew to Kunming, the capital city of &lt;a href=&quot;http://en.wikipedia.org/wiki/Yunnan&quot;&gt;Yunnan province&lt;/a&gt;, in southwest China.  We stayed there one night and headed straight to Lijiang the next day.  Lijiang is probably my favorite place in all of China.  These pictures don't really adequately capture what was so great about it.  It's this really old city with amazing architecture, canals, bridges and cobbled streets.  It's home to one of China's minority groups, the &lt;a href=&quot;http://en.wikipedia.org/wiki/Naxi&quot;&gt;Naxi&lt;/a&gt; people.  One of the more interesting things about the Naxi is that they have the last surviving written language composed of pictographs (&lt;a href=&quot;http://www.ancientscripts.com/naxi.html&quot;&gt;check this out&lt;/a&gt; for examples).  It looks a bit like Egyptian Hieroglyphics.  &lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/mtZRfoRrS8J7ATbE5UAF0w&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SPGbQjRoEII/AAAAAAAACNM/ydcCdwllWrY/s400/P1050483.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/ZFJm4pQmhrsI6o0Y6mP_hw&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SPGbRRHmwHI/AAAAAAAACNU/b2RqzuDuZAQ/s400/P1050485.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/i2N9Yu4j8V7Rl65LWwCZcA&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SPGbSqC4k_I/AAAAAAAACNc/E71t3L4QFwQ/s400/P1050566.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/debszLdp9vAkl8YJbimojg&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SPGbTcx2Z_I/AAAAAAAACNk/wy8Lt2GRt7s/s400/P1050578.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;Lijiang at night&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;a href=&quot;http://picasaweb.google.com/lh/photo/ZaJaltSMJDUicL33on2Dug&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SPGbUeyyquI/AAAAAAAACNs/JNK4RubbOHI/s400/P1050475.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;The &lt;a href=&quot;http://en.wikipedia.org/wiki/Dongjing_(music)&quot;&gt;Naxi Orchestra&lt;/a&gt;.  Unfortunately, the picture looks more interesting than the music was :(.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/D6ai-3FxvxsG-hiOtICtFw&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbVXW8rxI/AAAAAAAACN4/PcKTtixPRpA/s400/P1050486.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/PAZshjklNhA7Rh7QG0CS2g&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SPGbWUpDFiI/AAAAAAAACOA/rT7Sx66Un-E/s400/P1050487.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;Naxi Writing.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/Mg-Mf01wOlJbExEYx4CS2g&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbXHRtWMI/AAAAAAAACOI/x4QFi7aRZI0/s400/P1050491.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;There were Naxi people everywhere in the city making arts and crafts like this.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/XVB9E5ggRRsmFqSLOmXpaw&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbiD9R5UI/AAAAAAAACPs/w3SaqX5teM0/s400/P1050544.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;The roof tops of Lijiang.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/DSjXboziLxUn7tvKzrqDDg&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbX-HOObI/AAAAAAAACOQ/lf7dimJWLRk/s400/P1050493.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/G7j0CHSAtrW0Npa3A5nJOg&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SPGbbf-OWlI/AAAAAAAACOo/aI8M8WhPbL8/s400/P1050497.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;The cobbled streets of Lijiang.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/tyM0kU1v_xAMDcvHxOWU1g&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbgqT_LzI/AAAAAAAACPc/ndCv2u06uqw/s400/P1050539.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/UXaSfbqEjA8-MVQi-OMWug&quot;&gt;&lt;img src=&quot;http://lh4.ggpht.com/myron.marston/SPGbhbS9n6I/AAAAAAAACPk/j5hVAqfuKEE/s400/P1050541.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;Locals dancing in the city square.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/_fochPh-IknDxtMDNocmlw&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbfmGfMkI/AAAAAAAACPQ/4Dhn_wUBTwI/s400/P1050538.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/TcUOeNNLG7fFn67P_pxDmw&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbYxm6u0I/AAAAAAAACOY/YbFhYcRWPRc/s400/P1050494.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/7TEsj9Y5kYaFm9okJXBArA&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbabeoVLI/AAAAAAAACOg/ThN89UYyPYQ/s400/P1050496.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/TNdEpmPLsI9UBvzQijGYAw&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbi3LC2hI/AAAAAAAACP0/JTgqR_28nVA/s400/P1050563.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;A few of the canals and bridges in Lijiang.&lt;br&gt;&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/7e-OrprPy2nwaaWtf0Ug6A&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SPGbcveiiZI/AAAAAAAACOw/2yJj5Cwm8Ms/s400/P1050500.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;Tim, Mari and I.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/acQNyR_5wUxuoGvyMH972g&quot;&gt;&lt;img src=&quot;http://lh6.ggpht.com/myron.marston/SPGbdWgrZbI/AAAAAAAACO4/pW_iRlS6TGw/s400/P1050521.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/Cjb8krVBtu2W2k766mfj9Q&quot;&gt;&lt;img src=&quot;http://lh5.ggpht.com/myron.marston/SPGbeDpfRjI/AAAAAAAACPA/5cHUsKiGD_w/s400/P1050525.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;A nearby park.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;
-&lt;br&gt;&lt;a href=&quot;http://picasaweb.google.com/lh/photo/ZqL7vYfVwW_NTZxmh1mc3w&quot;&gt;&lt;img src=&quot;http://lh3.ggpht.com/myron.marston/SPGbe-piZ8I/AAAAAAAACPI/qna_Xo0JUwg/s400/P1050531.JPG&quot;&gt;&lt;/a&gt;&lt;br&gt;Holding a monkey is...more fun than a barrel of monkeys.  Or something.&lt;br&gt;
-&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;br&gt;After spending 2 days in Lijiang, we headed to the nearby &lt;a href=&quot;http://en.wikipedia.org/wiki/Tiger_Leaping_Gorge&quot;&gt;Tiger Leaping Gorge&lt;/a&gt;, which is one of the deepest gorges in the world.  I'll write about that in the next post.&lt;div class=&quot;blogger-post-footer&quot;&gt;&lt;img width=&quot;1&quot; height=&quot;1&quot; src=&quot;https://blogger.googleusercontent.com/tracker/6401909844167822225-5271433454474042634?l=myronmarston.blogspot.com&quot; alt=&quot;&quot;&gt;&lt;/div&gt;</content>
   </entry>
   
 </feed>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Myron Marston &raquo; Thoughts on Mocking</title>
+    <link href="/n/stylesheets/screen.css?b50fa16c695f6c6a869efae6a4772316" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/n/atom.xml" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id='menu'>
+  <div class="dev-blog active">
+    <a href='/n/dev-blog'>Dev Blog</a>
+  </div>
+  <div class="china">
+    <a href='/n/china'>China</a>
+  </div>
+  <div class="music">
+    <a href='/n/music'>Music</a>
+  </div>
+  <div class="open-source">
+    <a href='/n/open-source'>Open Source</a>
+  </div>
+</div>
+
+    <div id='contents' class='medium-wide dev-blog'>
+      <div id="post" class='section'>
+  <h1>Thoughts on Mocking</h1>
+  <p class="post-date">➜ 20 Jun 2012</p>
+
+  <div class="content">
+    <p>I&#8217;ve been thinking a lot about different styles of TDD recently, particularly the mockist vs. classical schools identified by Martin Fowler in his classic article, <a href='http://martinfowler.com/articles/mocksArentStubs.html'>Mocks Aren&#8217;t Stubs</a>.</p>
+
+<p>I personally tend to favor a more mockist style of testing, but I&#8217;ve come to realize that mockist testing needs to go hand-in-hand with a particular school of OO design, and on many projects a classical testing approach would work far better.</p>
+
+<p>My friend <a href='http://cohitre.com/'>Carlos</a> recently came to me with some questions about how mocking should be used, and expressed frustration at how brittle the mock-based tests on his current project are. As he describe it, the mocks caused the tests to be coupled to the implementation, and thus made refactoring very difficult. Martin Fowler also <a href='http://martinfowler.com/articles/mocksArentStubs.html#CouplingTestsToImplementations'>discusses this problem</a> in his article.</p>
+
+<p>However, I don&#8217;t think it&#8217;s that simple. Mocking has often made it easier for me to refactor. And really, all tests have some level of coupling to the system-under-test, since it makes certain assumptions about how the code works or what side effects result from a particular action. I&#8217;ve developed a theory recently:</p>
+
+<blockquote>
+<p>Mock-based tests are more coupled to the <strong>interfaces</strong> in your system, while classical tests are more coupled to the <strong>implementation</strong> of an object&#8217;s collaborators.</p>
+</blockquote>
+
+<p>A mock-based test will verify the message the object-under-test sends to its collaborator (i.e. the interface). In contrast, in a classical test, one would typically allow the object-under-test to call a real method on a real collaborator, and then make an assertion about how that changes the state of the collaborator or one of the collaborator&#8217;s collaborators. Thus, this kind of classical test contains knowledge of (and is coupled to) the implementation of the collaborator&#8211;it has to know what the collaborator does in order to make an assertion about how it affects the state of the world.</p>
+
+<p>These different kinds of coupling lend themselves to different kinds of change. With a classical test, you can refactor the interface between the object-under-test and a collaborator, and the test will continue to pass just fine. However, if you change how the collaborator is implemented&#8211;and in particular, how the state change is exposed&#8211;then your test will likely break. In constrast, with a mockist test, you can completely change the collaborator all you want without breaking the test as long as you keep the interface the same.</p>
+
+<h2 id='an_example'>An Example</h2>
+
+<p>Let&#8217;s look at a simple example to make this more concrete. We&#8217;ve got a <code>User</code> entity that delegates persistence to a collaborator and provides an <code>#archive!</code> method:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>user.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='k'>class</span> <span class='nc'>User</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>initialize</span><span class='p'>(</span><span class='nb'>id</span><span class='p'>,</span> <span class='n'>persistence</span> <span class='o'>=</span> <span class='no'>Persistence</span><span class='o'>.</span><span class='n'>new</span><span class='p'>)</span>
+</span><span class='line'>    <span class='vi'>@id</span><span class='p'>,</span> <span class='vi'>@persistence</span> <span class='o'>=</span> <span class='nb'>id</span><span class='p'>,</span> <span class='n'>persistence</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='kp'>attr_reader</span>   <span class='ss'>:id</span><span class='p'>,</span> <span class='ss'>:persistence</span>
+</span><span class='line'>  <span class='kp'>attr_accessor</span> <span class='ss'>:archived_at</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>archive!</span>
+</span><span class='line'>    <span class='nb'>self</span><span class='o'>.</span><span class='n'>archived_at</span> <span class='o'>=</span> <span class='no'>Time</span><span class='o'>.</span><span class='n'>now</span>
+</span><span class='line'>    <span class='n'>persistence</span><span class='o'>.</span><span class='n'>save</span><span class='p'>(</span><span class='nb'>self</span><span class='p'>)</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>attributes</span>
+</span><span class='line'>    <span class='p'>{</span> <span class='s2'>&quot;archived_at&quot;</span> <span class='o'>=&gt;</span> <span class='n'>archived_at</span> <span class='p'>}</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'><span class='k'>class</span> <span class='nc'>Persistence</span>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>redis</span>
+</span><span class='line'>    <span class='vi'>@redis</span> <span class='o'>||=</span> <span class='no'>Redis</span><span class='o'>.</span><span class='n'>new</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='k'>def</span> <span class='nf'>save</span><span class='p'>(</span><span class='n'>user</span><span class='p'>)</span>
+</span><span class='line'>    <span class='n'>redis</span><span class='o'>.</span><span class='n'>set</span><span class='p'>(</span><span class='s2'>&quot;users:</span><span class='si'>#{</span><span class='n'>user</span><span class='o'>.</span><span class='n'>id</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span> <span class='no'>JSON</span><span class='o'>.</span><span class='n'>dump</span><span class='p'>(</span><span class='n'>user</span><span class='o'>.</span><span class='n'>attributes</span><span class='p'>))</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Here&#8217;s how we might test the <code>#archive!</code> method using a classical test and a mockist test:</p>
+<div class='bogus-wrapper'><notextile><div class='code-wrap'><figure class='code'><figcaption><span>user_spec.rb </span></figcaption>
+ <div class='highlight'><table><tr><td class='gutter'><pre class='line-numbers'><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class='n'>describe</span> <span class='no'>User</span><span class='p'>,</span> <span class='s2'>&quot;#archive!&quot;</span> <span class='k'>do</span>
+</span><span class='line'>  <span class='n'>context</span> <span class='s1'>&#39;using a mockist test&#39;</span> <span class='k'>do</span>
+</span><span class='line'>    <span class='n'>it</span> <span class='s1'>&#39;saves the user with the archived_at timestamp set&#39;</span> <span class='k'>do</span>
+</span><span class='line'>      <span class='n'>persistence</span> <span class='o'>=</span> <span class='n'>mock</span><span class='p'>(</span><span class='s2'>&quot;Persistence&quot;</span><span class='p'>)</span>
+</span><span class='line'>      <span class='n'>user</span> <span class='o'>=</span> <span class='no'>User</span><span class='o'>.</span><span class='n'>new</span><span class='p'>(</span><span class='mi'>23</span><span class='p'>,</span> <span class='n'>persistence</span><span class='p'>)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class='n'>persistence</span><span class='o'>.</span><span class='n'>should_receive</span><span class='p'>(</span><span class='ss'>:save</span><span class='p'>)</span> <span class='p'>{</span> <span class='o'>|</span><span class='n'>u</span><span class='o'>|</span> <span class='n'>u</span><span class='o'>.</span><span class='n'>archived_at</span><span class='o'>.</span><span class='n'>should_not</span> <span class='n'>be_nil</span> <span class='p'>}</span>
+</span><span class='line'>      <span class='n'>user</span><span class='o'>.</span><span class='n'>archive!</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class='n'>context</span> <span class='s1'>&#39;using a classical test&#39;</span> <span class='k'>do</span>
+</span><span class='line'>    <span class='n'>it</span> <span class='s1'>&#39;saves the user with the archived_at timestamp set&#39;</span> <span class='k'>do</span>
+</span><span class='line'>      <span class='n'>user</span> <span class='o'>=</span> <span class='no'>User</span><span class='o'>.</span><span class='n'>new</span><span class='p'>(</span><span class='mi'>23</span><span class='p'>)</span>
+</span><span class='line'>      <span class='n'>user</span><span class='o'>.</span><span class='n'>archive!</span>
+</span><span class='line'>
+</span><span class='line'>      <span class='n'>attributes_json</span> <span class='o'>=</span> <span class='n'>user</span><span class='o'>.</span><span class='n'>persistence</span><span class='o'>.</span><span class='n'>redis</span><span class='o'>.</span><span class='n'>get</span><span class='p'>(</span><span class='s2'>&quot;users:23&quot;</span><span class='p'>)</span>
+</span><span class='line'>      <span class='no'>JSON</span><span class='o'>.</span><span class='n'>load</span><span class='p'>(</span><span class='n'>attributes_json</span><span class='p'>)</span><span class='o'>.</span><span class='n'>fetch</span><span class='p'>(</span><span class='s2'>&quot;archived_at&quot;</span><span class='p'>)</span><span class='o'>.</span><span class='n'>should_not</span> <span class='n'>be_nil</span>
+</span><span class='line'>    <span class='k'>end</span>
+</span><span class='line'>  <span class='k'>end</span>
+</span><span class='line'><span class='k'>end</span>
+</span></code></pre></td></tr></table></div></figure></div></notextile></div>
+<p>Which test is less brittle in this highly contrived example? It depends. If you decide to change the persistence interface (e.g. so that <code>#save</code> is renamed as <code>#persist</code>, or whatever), then the mockist test will break, but the classical test can continue to pass unchanged. On the other hand, if you decide to change the persistence implementation (e.g. so that it&#8217;s saving to a relational database, or whatever), then the classical test will break, but the mockist test will continue to pass unchanged, as long as you preserve the <code>#save</code> interface.</p>
+
+<h2 id='conclusion'>Conclusion</h2>
+
+<p>With these observations in hand, I think we can draw conclusions about what sorts of codebases work well with mockist tests. Mocking works really well when the interfaces between objects in your system are stable and rarely change. From experience, I&#8217;ve seen two primary factors affecting the stability of interfaces:</p>
+
+<ol>
+<li>The size of the interfaces. Large interfaces become unwieldy over time while small, focused interfaces serve a single purpose well and rarely need to change.</li>
+
+<li>The extent to which your interfaces speak in the language of your application domain rather than the language of your technical infrastructure. This allows you to change large portions of your technical infrastructure without needing many changes to the interfaces between your domain objects.</li>
+</ol>
+
+<p>If your codebase doesn&#8217;t feature these kinds of interfaces, mocking is unlikely to work well for you and you&#8217;re probably better off using classical testing techniques.</p>
+  </div>
+</div>
+
+<div id="disqus_thread" class='section'></div>
+<script type="text/javascript">
+    var disqus_shortname  = 'myronmarston-personal-site';
+    var disqus_identifier = '/n/dev-blog/2012/06/thoughts-on-mocking';
+    var disqus_title      = 'Thoughts on Mocking';
+    var disqus_url        = 'http://myronmars.to/n/dev-blog/2012/06/thoughts-on-mocking';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div class='section'>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+
+    </div>
+    <div id='about'>
+  <div class='links'>
+    <h2>Follow Me</h2>
+    <ul>
+      <li><a href="http://twitter.com/myronmarston">Twitter</a></li>
+      <li><a href="https://github.com/myronmarston">Github</a></li>
+      <li><a href="/n/atom.xml">Atom Feed</a></li>
+      <li><a href="/n/resume">Resume</a></li>
+    </ul>
+  </div>
+  <div class='bio'>
+    <h2>About Me</h2>
+    <p>
+      <a href="http://bluebirdsandthings.wordpress.com/">Husband and father</a>,
+      musician, software engineer at <a href="http://www.seomoz.org/">SEOmoz</a>,
+      open source developer specializing in Ruby and Rails, world traveler and Christian.
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3938147-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="/n/javascript/audio.js"></script>
+
+  </body>
+</html>
+
