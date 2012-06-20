@@ -2,7 +2,7 @@
 
 $light_gray: #F4F4F4
 $code_background: #E9E9E9
-$medium_gray: #D5D6D8
+$code_border_color: darken($code_background, 10%)
 $medium_gray: #D5D6D8
 $left_column_width: 200px
 
@@ -92,6 +92,22 @@ body
     margin: 0 0 5px 0
 
 code
-  font-size: 16px
   background-color: $code_background
+  border-radius: 3px
+  border: 1px solid $code_border_color
+  font-size: 16px
+  padding: 0 3px
 
+hr
+  border: none
+  border-bottom: 1px solid #FFFFFF
+  border-top: 1px solid $medium_gray
+  clear: both
+  display: block
+  font-size: 1px
+  line-height: 0
+  margin: 8px auto
+  overflow: visible
+  padding: 0
+  position: relative
+  width: 100%
